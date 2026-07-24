@@ -1,0 +1,114 @@
+aid: spreedly
+name: Spreedly
+review:
+  question: Does Spreedly publish a public developer portal with a downloadable OpenAPI specification, and what is its API posture?
+  answer: true
+  date: '2026-07-24'
+  reviewer: API Evangelist
+  homeMarket: United States
+findings:
+  summary: >-
+    Spreedly is strongly API-native. It operates a public ReadMe.io developer
+    portal at https://developer.spreedly.com/ (HTTP 200), with complete
+    reference documentation and a machine-readable OpenAPI 3.1.0 specification
+    for its Core Transactional API. The spec was harvested verbatim from the
+    ReadMe API registry (registry filename spreedly-api-v1.json, uuid
+    g8ha9omqb6dzai) and saved to openapi/spreedly-api-v1.json. It declares 68
+    paths against a single server, https://core.spreedly.com/v1, covering the
+    payments-orchestration product surface: payment method tokenization/vaulting,
+    gateway management, the transaction lifecycle (authorize, capture, purchase,
+    verify, void, credit), Composer workflow routing, network tokenization,
+    account updater (Card Refresher), 3-D Secure / SCA authentication, receivers
+    for third-party data forwarding, sub-merchants, merchant profiles, and
+    environment administration. Authentication is HTTP Basic auth over HTTPS
+    using a per-environment key as username and environment secret as password
+    (the only security scheme declared: basic_auth). No public OpenAPI file is
+    served at the conventional developer.spreedly.com/openapi.json path (404);
+    the spec is reachable only through the ReadMe registry endpoint. Spreedly is
+    a gateway/PSP-layer payments orchestration provider in the fragmented US
+    market — an independent card vault and normalizing transaction layer across
+    hundreds of downstream gateways, not itself a card network, acquirer, or
+    domestic-rail scheme; ISO 20022 and scheme-membership documentation are
+    therefore not applicable to its public surface.
+  developerPortal:
+    url: https://developer.spreedly.com/
+    status: 200
+    platform: ReadMe.io
+    confirmed: true
+  legacyDocs:
+    url: https://docs.spreedly.com/reference/api/v1/
+    status: 200
+    note: Older ReadMe docs subdomain still serving; primary portal is developer.spreedly.com.
+  openapi:
+    harvested: true
+    count: 1
+    files:
+      - path: openapi/spreedly-api-v1.json
+        title: Spreedly API V1
+        openapiVersion: 3.1.0
+        paths: 68
+        server: https://core.spreedly.com/v1
+        source: https://dash.readme.com/api/v1/api-registry/g8ha9omqb6dzai
+        registryFilename: spreedly-api-v1.json
+        registryUuid: g8ha9omqb6dzai
+        fetchDate: '2026-07-24'
+        httpStatus: 200
+    note: >-
+      developer.spreedly.com/openapi.json and developer.spreedly.com/spreedly-api-v1.json
+      both return 404; the verbatim spec is only retrievable via the ReadMe
+      api-registry endpoint referenced in the portal HTML.
+  auth:
+    model: HTTP Basic authentication over HTTPS
+    scheme: basic_auth
+    credentials: Environment key (username) + environment secret (password)
+    oauth: false
+    mtls: false
+    wellKnownOpenIDConfiguration: not served
+  webhooks:
+    present: true
+    note: >-
+      Spreedly exposes transaction/payment-method events (events and
+      list-events endpoints in the spec) and documents webhook/callback event
+      delivery; no AsyncAPI document is published.
+  postman:
+    present: false
+    note: No official public Postman collection or workspace located.
+  graphql:
+    present: false
+  grpc:
+    present: false
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://core.spreedly.com/v1
+      documented: true
+    - protocol: GraphQL
+      documented: false
+    - protocol: gRPC
+      documented: false
+    - protocol: WebSocket
+      documented: false
+sources:
+  - url: https://developer.spreedly.com/
+    type: DeveloperPortal
+    note: Primary ReadMe.io developer portal, HTTP 200.
+  - url: https://developer.spreedly.com/reference/api-introduction
+    type: APIReference
+    note: API reference introduction; base URL https://core.spreedly.com/v1, HTTP Basic auth.
+  - url: https://developer.spreedly.com/llms.txt
+    type: Documentation
+    note: LLM index listing ~88 reference operations across the Core API product areas.
+  - url: https://dash.readme.com/api/v1/api-registry/g8ha9omqb6dzai
+    type: OpenAPI
+    note: ReadMe API registry endpoint serving the verbatim Spreedly API V1 OpenAPI 3.1.0 (HTTP 200).
+  - url: https://www.spreedly.com/
+    type: Website
+    note: Company site; Payments Orchestration positioning.
+actions:
+  openapiHarvested:
+    - openapi/spreedly-api-v1.json
+  apisYmlCreated: true
+  reason: >-
+    Real public developer portal and a single downloadable OpenAPI 3.1
+    specification were confirmed and harvested verbatim; identity, API family,
+    and honest posture captured for the bootstrap.

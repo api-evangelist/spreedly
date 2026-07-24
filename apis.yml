@@ -1,0 +1,197 @@
+aid: spreedly
+url: https://raw.githubusercontent.com/api-evangelist/spreedly/refs/heads/main/apis.yml
+name: Spreedly
+kind: company
+description: >-
+  Spreedly is a United States payments orchestration platform and PCI-compliant
+  card vault that lets merchants and platforms securely tokenize payment methods
+  once and then transact against hundreds of payment gateways, processors, and
+  third-party APIs through a single integration. Founded in 2008 and
+  headquartered in Durham, North Carolina, Spreedly sits in the gateway/PSP layer
+  of the deep, fragmented US payments market as an independent, network-agnostic
+  intermediary rather than a card network or acquirer. Its Payments Orchestration
+  offering combines a universal token vault, a normalized transaction API across
+  many gateways, workflow-based routing (Composer), network tokenization, account
+  updater (Card Refresher), 3-D Secure / SCA authentication, and Receivers for
+  forwarding stored payment data to arbitrary third-party endpoints. Spreedly is
+  strongly API-native: it publishes a public developer portal with complete
+  reference documentation and a downloadable OpenAPI 3.1 specification for its
+  Core Transactional API (https://core.spreedly.com/v1), authenticated with HTTP
+  Basic auth using per-environment key/secret credentials.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Payments
+- United States
+- Payment Gateway
+- Payment Orchestration
+- Payment Processing
+- Card Vault
+- Tokenization
+- Network Tokenization
+- PCI Compliance
+- Subscriptions
+created: '2026-07-24'
+modified: '2026-07-24'
+specificationVersion: '0.19'
+apis:
+- aid: spreedly:spreedly-core-api
+  name: Spreedly Core Transactional API
+  description: >-
+    The Spreedly Core Transactional API — the primary REST surface for the
+    Payments Orchestration platform. Covers payment method tokenization/vaulting,
+    gateway creation and management, and the full transaction lifecycle
+    (authorize, capture, purchase, verify, void, credit/refund) across many
+    downstream gateways from a single normalized integration. Documented as
+    OpenAPI 3.1 with 68 paths; base URL https://core.spreedly.com/v1;
+    HTTP Basic authentication using an environment key and secret.
+  humanURL: https://developer.spreedly.com/reference/api-introduction
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Payments
+  - Transactions
+  - Vault
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: Documentation
+    url: https://developer.spreedly.com/docs/overview
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/api-introduction
+- aid: spreedly:spreedly-payment-methods-api
+  name: Spreedly Payment Methods & Vault API
+  description: >-
+    Create, retain, redact, recache, update, and inspect tokenized payment
+    methods held in Spreedly's PCI-compliant universal vault, including
+    field-level encryption and payment method event history. Part of the Core
+    Transactional API surface.
+  humanURL: https://developer.spreedly.com/reference/create-payment-method
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Vault
+  - Tokenization
+  - Payment Methods
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/list-payment-method
+  - type: Documentation
+    url: https://developer.spreedly.com/docs/advanced-vault
+- aid: spreedly:spreedly-composer-api
+  name: Spreedly Composer (Workflows) API
+  description: >-
+    Workflow-driven orchestration endpoints (Composer) that execute an
+    authorization, purchase, or verification against a configured routing
+    workflow rather than a single named gateway, enabling failover, cascading,
+    and rules-based routing across Spreedly's connected gateways.
+  humanURL: https://developer.spreedly.com/reference/composerpurchase
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Payment Orchestration
+  - Workflows
+  - Routing
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/composerauthorize
+- aid: spreedly:spreedly-network-tokenization-api
+  name: Spreedly Network Tokenization API
+  description: >-
+    Retrieve card metadata and lifecycle status for network tokens (Visa, Mastercard,
+    Amex network-provisioned tokens) managed through Spreedly, supporting
+    network tokenization for improved authorization rates and credential-on-file
+    security.
+  humanURL: https://developer.spreedly.com/reference/network-tokenization-status
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Network Tokenization
+  - Card Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/network-tokenization-card-metadata
+- aid: spreedly:spreedly-account-updater-api
+  name: Spreedly Account Updater (Card Refresher) API
+  description: >-
+    Card Refresher / account updater inquiries that refresh stored card
+    credentials (expiration dates and PANs) against the card networks' account
+    updater services to reduce declines on stored payment methods.
+  humanURL: https://developer.spreedly.com/reference/card_refresher_inquiry
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Account Updater
+  - Card Refresher
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/list-inquiries
+- aid: spreedly:spreedly-receivers-api
+  name: Spreedly Receivers API
+  description: >-
+    Receivers let merchants forward securely vaulted payment data from the
+    Spreedly vault to arbitrary third-party HTTP endpoints, extending
+    tokenization beyond payment gateways to any API that needs card data.
+  humanURL: https://developer.spreedly.com/reference/list-supported-receivers
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - Receivers
+  - Data Forwarding
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/create-receiver
+- aid: spreedly:spreedly-sca-api
+  name: Spreedly 3-D Secure / SCA Authentication API
+  description: >-
+    Strong Customer Authentication endpoints to authenticate a given payment
+    method and manage SCA providers on a merchant profile, supporting 3-D Secure
+    2.x authentication flows for cardholder verification.
+  humanURL: https://developer.spreedly.com/reference/authenticate
+  baseURL: https://core.spreedly.com/v1
+  tags:
+  - 3DS
+  - SCA
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/spreedly-api-v1.json
+  - type: APIReference
+    url: https://developer.spreedly.com/reference/create-sca-provider
+common:
+- type: Website
+  url: https://www.spreedly.com/
+- type: DeveloperPortal
+  url: https://developer.spreedly.com/
+- type: Documentation
+  url: https://developer.spreedly.com/docs/overview
+- type: APIReference
+  url: https://developer.spreedly.com/reference/api-introduction
+- type: GettingStarted
+  url: https://developer.spreedly.com/docs/overview
+- type: ChangeLog
+  url: https://developer.spreedly.com/changelog
+- type: GitHubOrganization
+  url: https://github.com/spreedly
+- type: StatusPage
+  url: https://status.spreedly.com/
+- type: Pricing
+  url: https://www.spreedly.com/pricing
+- type: Blog
+  url: https://www.spreedly.com/blog
+- type: Security
+  url: https://www.spreedly.com/security
+- type: SignUp
+  url: https://id.spreedly.com/readme/auth
+- type: TermsOfService
+  url: https://www.spreedly.com/terms-of-service
+- type: PrivacyPolicy
+  url: https://legal.spreedly.com/#privacy-policy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/spreedly
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
