@@ -1,0 +1,29 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Spreedly Core Transactional API
+  version: 1.0.0
+extends: openapi/spreedly-api-v1.json
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: spreedly
+      x-apievangelist-category: payments-orchestration
+      x-apievangelist-auth: http-basic
+      x-apievangelist-artifacts:
+        authentication: authentication/spreedly-authentication.yml
+        conventions: conventions/spreedly-conventions.yml
+        errors: errors/spreedly-problem-types.yml
+        decline_codes: errors/spreedly-decline-codes.yml
+        lifecycle: lifecycle/spreedly-lifecycle.yml
+        sandbox: sandbox/spreedly-sandbox.yml
+        data_model: data-model/spreedly-data-model.yml
+        mcp: mcp/spreedly-mcp.yml
+  - target: $.info
+    update:
+      x-apievangelist-notes: >-
+        Spreedly is a payments orchestration platform and PCI-compliant universal
+        card vault. HTTP Basic auth with an environment key (username) and access
+        secret (password). Cursor pagination via since_token + order + count.
+        Idempotency is gateway-specific (order_data.gateway_idempotency_key and
+        per-gateway idempotency fields). Normalized cross-gateway failure_reason
+        and network_advice_code values are catalogued in errors/spreedly-decline-codes.yml.

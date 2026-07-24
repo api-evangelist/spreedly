@@ -1,0 +1,72 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/docs/normalized-values
+notes: >-
+  Spreedly normalizes gateway/processor decline responses across all supported
+  gateways into two Spreedly-managed fields returned on the transaction response:
+  gateway_response.payment_outcome_data.failure_reason (WHY it failed) and
+  gateway_response.payment_outcome_data.network_advice_code (what to DO next).
+  The raw gateway values are preserved under raw_payment_outcome_data. These are
+  the cross-gateway decline taxonomy; a given gateway maps its own codes into
+  these normalized values. failure_reason has an error_type of hard or soft.
+envelope:
+  failure_reason: gateway_response.payment_outcome_data.failure_reason
+  network_advice_code: gateway_response.payment_outcome_data.network_advice_code
+  raw: gateway_response.raw_payment_outcome_data (processor_decline_code + raw merchant advice code)
+failure_reasons:
+  - code: do_not_honor
+  - code: insufficient_funds
+  - code: expired_card
+  - code: incorrect_cvv
+  - code: incorrect_zip
+  - code: incorrect_address
+  - code: invalid_card
+  - code: invalid_number
+  - code: invalid_account
+  - code: invalid_amount
+  - code: invalid_cvc
+  - code: invalid_merchant
+  - code: invalid_merchant_configuration
+  - code: card_limit_exceeded
+  - code: insufficient_amount
+  - code: amount_not_supported
+  - code: currency_not_supported
+  - code: closed_card
+  - code: restricted_card
+  - code: lost_stolen_card
+  - code: fraud_suspected
+  - code: refused_due_to_sanctions
+  - code: call_issuer
+  - code: contact_bank
+  - code: bank_error
+  - code: issuer_unavailable
+  - code: issuer_not_available
+  - code: processing_error
+  - code: processor_declined
+  - code: authentication_required
+  - code: cardholder_authentication_required
+  - code: security_code_error
+  - code: transaction_not_allowed
+  - code: not_supported
+  - code: token_not_supported
+  - code: duplicate_transaction
+  - code: cc_rejected_duplicated_payment
+  - code: cc_rejected_bad_filled_date
+  - code: non_reloadable_prepaid_card
+  - code: single_use_virtual_card_number
+  - code: multi_use_virtual_card_number
+  - code: request_authorization_card
+network_advice_codes:
+  - code: stop_recurring_payment
+  - code: do_not_try_again
+  - code: new_account_information_available
+  - code: retry_after_1_hour
+  - code: retry_after_10_days
+  - code: retry_after_24_hours
+  - code: retry_after_2_days
+  - code: retry_after_4_days
+  - code: retry_after_6_days
+  - code: retry_after_8_days
+error_types:
+  - hard
+  - soft

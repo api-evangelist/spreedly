@@ -1,0 +1,36 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/docs/test-data + https://developer.spreedly.com/docs/testing
+notes: >-
+  Spreedly has no distinct "test environment" type — all environments can run
+  billable transactions. Testing is done by provisioning a Test gateway (requires
+  no credentials) and using the published test payment methods. Test data is only
+  recognized by the Test gateway; any card not in the test set is treated as a
+  real card. Spreedly also offers a test-only payment method type called "Sprel"
+  for building Offsite Payments workflows. Test API calls are metered and billed.
+test_gateway:
+  create: POST /gateways.json with gateway_type "test"
+  credentials_required: false
+  behavior: mirrors a production gateway (direct + offsite, 3DS, bank accounts) but only accepts test payment methods
+test_cards:
+  visa: { good: '4111111111111111', declined: '4012888888881881' }
+  visa_19_digit: { good: '4444333322221111455', declined: '4917610000000000003' }
+  mastercard: { good: '5555555555554444', declined: '5105105105105100' }
+  mastercard_2series: { good: '2223003122003222', declined: '2720992720992729' }
+  amex: { good: '378282246310005', declined: '371449635398431' }
+  discover: { good: '6011111111111117', declined: '6011000990139424' }
+  diners_club: { good: '30569309025904', declined: '30207712915383' }
+  jcb: { good: '3569990010030400', declined: '3528327757705979' }
+  maestro: { good: '6759000000000000005', declined: '6799990100000000019' }
+  '3d_secure_enrolled': { good: '4556761029983886', declined: '4024007101934890' }
+  third_party_vault: { good: 'Any', declined: '4217651111111119' }
+click_to_pay_cards:
+  mastercard: ['5186001700008785', '5120350100064537']
+  visa: ['4622943127011022']
+  amex: ['373708623186001']
+  discover: ['6011208800050000']
+apple_pay:
+  note: pass test_card_number set to one of the test cards above so Spreedly recognizes it as a test payment method
+special_payment_method:
+  name: Sprel
+  purpose: test-only payment method for Offsite Payments workflows

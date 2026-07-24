@@ -1,0 +1,35 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/docs/client-sdks + https://developer.spreedly.com/docs/spreedly-express + https://github.com/spreedly
+notes: >-
+  Spreedly ships client-side, PCI-safe card-capture components that tokenize
+  payment data in the browser/app before it touches the merchant server. These
+  are distinct from server-side integration and are the front-end surface of the
+  universal vault.
+families:
+  - name: Spreedly Express / iFrame
+    kind: hosted-iframe-fields
+    platform: web
+    loader: "https://core.spreedly.com/iframe/iframe-v1.min.js"
+    description: Embeddable iFrame payment form / hosted fields that tokenize card + CVV client-side.
+    docs: https://developer.spreedly.com/docs/spreedly-express
+  - name: Spreedly Checkout Web SDK
+    kind: web-sdk
+    platform: web
+    repo: https://github.com/spreedly/web-sdk-sample-app
+    description: Checkout Web SDK for prebuilt card-capture UI.
+  - name: Spreedly Checkout iOS SDK
+    kind: mobile-sdk
+    platform: ios
+    repo: https://github.com/spreedly/checkout-ios-package
+    description: Pre-built XCFramework distribution for native iOS card capture.
+  - name: Spreedly Checkout Android SDK
+    kind: mobile-sdk
+    platform: android
+    repo: https://github.com/spreedly/checkout-android-maven
+    description: Android Archive (AAR) Maven distribution for native Android card capture.
+  - name: Spreedly Checkout React Native SDK
+    kind: mobile-sdk
+    platform: react-native
+    repo: https://github.com/spreedly/checkout-react-native-packages
+    description: React Native distribution for cross-platform mobile card capture.

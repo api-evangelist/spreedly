@@ -1,0 +1,126 @@
+generated: '2026-07-24'
+method: derived
+source: mcp/spreedly-mcp.yml + openapi/spreedly-api-v1.json
+notes: >-
+  Binds the two Spreedly MCP surfaces to the Core Transactional OpenAPI. The
+  hosted docs MCP (developer.spreedly.com/mcp) is a spec/documentation navigator:
+  its 5 tools operate ON the OpenAPI rather than invoking business operations, so
+  they are mcp_only (no backing REST operationId). The self-hosted API MCP
+  (@spreedly/spreedly-mcp) proxies the real Core operations; its tool categories
+  are gated by env flags, so tools are mapped by documented capability to the
+  backing operationId(s) — confidence honest, since live inputSchemas require
+  authenticated introspection.
+surfaces:
+  openapi:
+    file: openapi/spreedly-api-v1.json
+    operations: 84
+  mcp_docs:
+    url: https://developer.spreedly.com/mcp
+    gated: false
+    tools: 5
+  mcp_api:
+    package: "@spreedly/spreedly-mcp"
+    gated: true
+    note: tool list gated behind credentials + 3 capability flags
+crosswalk:
+  - tool: create (payment method tokenization)
+    category: tokenization
+    rest: [create-payment-method]
+    binding: rest
+    confidence: high
+  - tool: recache (payment method)
+    category: tokenization
+    rest: [recache-payment-method]
+    binding: rest
+    confidence: high
+  - tool: authorize
+    category: transactions
+    rest: [authorize, composer.authorize]
+    binding: rest
+    confidence: high
+    note: maps to gateway authorize and Composer workflow authorize
+  - tool: purchase
+    category: transactions
+    rest: [purchase, composer.purchase, reference-purchase]
+    binding: rest
+    confidence: high
+  - tool: capture
+    category: transactions
+    rest: [capture-transaction]
+    binding: rest
+    confidence: high
+  - tool: void
+    category: transactions
+    rest: [void-transaction]
+    binding: rest
+    confidence: high
+  - tool: refund / credit
+    category: transactions
+    rest: [credit-transaction, general-credit-transaction]
+    binding: rest
+    confidence: high
+  - tool: confirm
+    category: transactions
+    rest: [confirm-transactions, complete-transactions]
+    binding: rest
+    confidence: medium
+  - tool: create/update gateway (administrative)
+    category: administration
+    rest: [create-gateways, update-gateway]
+    binding: rest
+    confidence: high
+  - tool: create/update environment (administrative)
+    category: administration
+    rest: [create-environments, update-environments]
+    binding: rest
+    confidence: high
+  - tool: certificates (administrative)
+    category: administration
+    rest: [create-certificates, update-certificates]
+    binding: rest
+    confidence: medium
+  - tool: merchant profiles (administrative)
+    category: administration
+    rest: [create-merchant-profile, update-merchant-profile]
+    binding: rest
+    confidence: medium
+  - tool: SCA providers (administrative)
+    category: administration
+    rest: [create-sca-provider, authenticate]
+    binding: rest
+    confidence: medium
+  - tool: sub-merchants (administrative)
+    category: administration
+    rest: [create-sub-merchant, ubdate-sub-merchant]
+    binding: rest
+    confidence: medium
+mcp_only:
+  - tool: list-endpoints
+    reason: docs MCP — enumerates the OpenAPI paths/methods; not a business operation
+  - tool: get-endpoint
+    reason: docs MCP — returns spec detail for a path; not a business operation
+  - tool: search-endpoints
+    reason: docs MCP — searches the spec; not a business operation
+  - tool: search
+    reason: docs MCP — full-text documentation search; not a business operation
+  - tool: fetch
+    reason: docs MCP — retrieves a documentation page by id; not a business operation
+rest_only:
+  - capability: vault management
+    operations: [retain-payment-method, redact-payment-method, update-payment-method, update-gratis-payment-method, delete-metadata-payment-method, show-payment-method, list-payment-method]
+  - capability: network tokenization
+    operations: [network-tokenization-card-metadata, network-tokenization-status]
+  - capability: account updater (Card Refresher)
+    operations: [card_refresher_inquiry, show-inquiry, list-inquiries]
+  - capability: receivers / data forwarding
+    operations: [create-receiver, deliver-payment-method, export-payment-methods, redact-receiver, update-receiver]
+  - capability: reporting / events
+    operations: [list-events, show-event, list-all-payment-method-events, list-transactions, show-transactions]
+  - capability: fraud protection
+    operations: [forward-claim, list-protection-events, create-protection-provider]
+coverage:
+  tools_named: 5 docs + ~14 api-capability groups
+  docs_tools_mcp_only: 5
+  api_tools_bound: 14
+  rest_ops_total: 84
+  rest_ops_with_tool: 24

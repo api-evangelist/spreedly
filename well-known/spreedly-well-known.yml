@@ -1,0 +1,25 @@
+generated: '2026-07-24'
+method: searched
+source: live probes of Spreedly hosts
+notes: >-
+  No /.well-known/ discovery documents are published on the API, developer, or
+  marketing hosts (all 404). Spreedly authenticates with HTTP Basic auth (no
+  OAuth/OIDC), so no oauth-authorization-server / openid-configuration is
+  expected. No security.txt is published.
+hosts:
+  - host: https://core.spreedly.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+  - host: https://developer.spreedly.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+  - host: https://www.spreedly.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404

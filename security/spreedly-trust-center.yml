@@ -1,0 +1,14 @@
+generated: '2026-07-24'
+method: searched
+probe: true
+source: https://www.spreedly.com/security-compliance
+url: https://www.spreedly.com/security-compliance
+certifications:
+- SOC 2
+- PCI DSS
+evidence:
+- source: https://www.spreedly.com/security-compliance
+  keywords:
+  - soc 2
+  - pci-dss
+  - trust center

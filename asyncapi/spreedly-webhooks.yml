@@ -1,0 +1,28 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/reference/events + https://developer.spreedly.com/docs/signed-requests + https://developer.spreedly.com/docs/webhooks
+spec_type: Webhooks
+notes: >-
+  Spreedly does not publish an AsyncAPI document. Its event surface is twofold:
+  (1) a pull/polling event API — GET /events, GET /events/{event_id},
+  GET /payment_methods/events, and per-payment-method /events — that records
+  payment-method and transaction lifecycle events; and (2) push webhook
+  notifications for asynchronous reports (a report request with a
+  webhook_config.url receives a notification when the report reaches a completed
+  status, exposing the SFTP file_path). Webhook payloads can be verified via
+  Spreedly's signed-requests / signing-secret mechanism.
+webhooks:
+  - name: report.completed
+    trigger: an async report request that included webhook_config.url reaches a completed status
+    delivery: HTTP POST to the configured webhook_config.url
+    payload_fields: [status, file_path, report metadata]
+    verification: signing secret / signed requests
+event_api:
+  - GET /events
+  - GET /events/{event_id}
+  - GET /payment_methods/events
+  - GET /payment_methods/{payment_method_token}/events
+  - GET /payment_methods/events/{event_token}
+signing:
+  regenerate_secret: POST /environments/{environment_key}/regenerate_signing_secret
+  docs: https://developer.spreedly.com/docs/signed-requests

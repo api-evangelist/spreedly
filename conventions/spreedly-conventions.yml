@@ -1,0 +1,51 @@
+generated: '2026-07-24'
+method: searched
+source: openapi/spreedly-api-v1.json + https://developer.spreedly.com/docs/api-implementation + https://developer.spreedly.com/docs/normalized-request-and-response-fields
+authentication:
+  style: http-basic
+  detail: environment key as Basic username, access secret as Basic password, over HTTPS
+  ref: authentication/spreedly-authentication.yml
+base_url: https://core.spreedly.com/v1
+formats:
+  types: [json, xml]
+  note: many endpoints accept a {format} suffix (.json / .xml); JSON is the default and recommended representation
+idempotency:
+  supported: gateway-specific
+  mechanism: >-
+    Spreedly does not expose a single platform-wide Idempotency-Key header.
+    Idempotency is passed through to the downstream gateway via
+    order_data.gateway_idempotency_key and per-gateway idempotency fields (e.g.
+    Orbital idempotency_key + retry_logic, where Spreedly will auto-generate an
+    idempotency_key when retry_logic is enabled). Additionally, the transaction
+    token model lets clients look up prior transaction outcomes to avoid retries.
+  fields:
+    - order_data.gateway_idempotency_key
+    - gateway_specific_fields.<gateway>.idempotency_key
+pagination:
+  style: cursor
+  params:
+    - since_token   # cursor: return records after this token
+    - order         # asc | desc
+    - count         # page size
+  response_fields:
+    - the list payload plus a next-page cursor derived from the last token
+metadata:
+  supported: true
+  detail: arbitrary key/value metadata can be attached to payment methods and transactions; DELETE /payment_methods/{token}/metadata clears it
+normalized_fields:
+  request: risk_data, customer_data, merchant_metadata, order_data (incl. line_items)
+  response: gateway_response.card_metadata, payment_outcome_data (failure_reason, network_advice_code)
+  ref: errors/spreedly-decline-codes.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  ref: lifecycle/spreedly-lifecycle.yml
+error_envelope:
+  shape: JSON object with an errors[] array of { key, attribute?, message }
+  ref: errors/spreedly-problem-types.yml
+signed_requests:
+  supported: true
+  detail: optional request signing / signing secret per environment (regenerate_signing_secret); webhook payloads can be verified
+  ref: https://developer.spreedly.com/docs/signed-requests
+rate_limiting:
+  documented: not published as explicit numeric limits; test and production calls are metered and billed

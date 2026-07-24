@@ -1,0 +1,22 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/changelog + https://status.spreedly.com/ + https://developer.spreedly.com/docs/major-changes
+versioning:
+  scheme: uri-path
+  current: v1
+  base_url: https://core.spreedly.com/v1
+  docs: https://developer.spreedly.com/reference/api-introduction
+deprecation:
+  policy_url: https://developer.spreedly.com/docs/major-changes
+  notes: >-
+    Breaking and material changes are announced on the dated Changelog (with an
+    RSS feed) and summarized on the "Major Changes" page; a legacy documentation
+    site archives older behavior. Product/gateway changes ship frequently.
+  sunset_header: unknown
+changelog:
+  url: https://developer.spreedly.com/changelog
+  rss: https://developer.spreedly.com/changelog.rss
+sla:
+  status_page: https://status.spreedly.com/
+status_page: https://status.spreedly.com/
+deprecated_operations: []

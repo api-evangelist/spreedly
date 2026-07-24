@@ -1,0 +1,29 @@
+generated: '2026-07-24'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.spreedly.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 14 17:05:28 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: developer.spreedly.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 29 05:10:35 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: core.spreedly.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Dec 24 13:36:59 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+domains:
+- domain: spreedly.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

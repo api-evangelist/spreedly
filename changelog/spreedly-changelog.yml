@@ -1,0 +1,32 @@
+generated: '2026-07-24'
+method: searched
+source: https://developer.spreedly.com/changelog.rss
+scheme: dated-entries
+current_version: v1
+feed: https://developer.spreedly.com/changelog.rss
+url: https://developer.spreedly.com/changelog
+entries:
+  - date: '2026-07-20'
+    title: "Checkout SDK Updates — React Native v1.0.10"
+    type: addition
+  - date: '2026-07-17'
+    title: "Support gateway specific fields for the Moneris gateway"
+    type: addition
+  - date: '2026-07-15'
+    title: "Support gateway specific field for Airwallex gateway"
+    type: addition
+  - date: '2026-07-15'
+    title: "Support gateway specific field for Fibonatix gateway"
+    type: addition
+  - date: '2026-07-09'
+    title: "Checkout SDK Updates — Android v1.1.0, iOS v1.4.1"
+    type: addition
+  - date: '2026-07-09'
+    title: "Checkout SDK Updates — Web 1.2.0"
+    type: addition
+  - date: '2026-07-09'
+    title: "Added support for OpenPath gateway"
+    type: addition
+  - date: '2026-07-08'
+    title: "Support for Partial Capture and Partial Refund on PayPal"
+    type: addition

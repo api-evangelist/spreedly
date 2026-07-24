@@ -1,0 +1,88 @@
+generated: '2026-07-24'
+method: derived
+source: openapi/spreedly-api-v1.json
+notes: >-
+  Entity-relationship graph derived from the Core Transactional API path/token
+  structure. Every resource is addressed by an opaque token (payment_method_token,
+  gateway_token, transaction_token, receiver_token, environment_key, ...) scoped to
+  an environment. Relationships are inferred from path nesting and token references.
+entities:
+  - name: Environment
+    id: environment_key
+    description: A Spreedly environment; the top-level scope for credentials, gateways, and transactions.
+  - name: AccessSecret
+    id: access_secret_key
+    description: An API access secret used as the HTTP Basic password for an environment.
+  - name: PaymentMethod
+    id: payment_method_token
+    description: A tokenized/vaulted payment method (card, bank account, third-party token, Apple/Google Pay).
+  - name: Gateway
+    id: gateway_token
+    description: A configured downstream payment gateway/processor connection.
+  - name: Transaction
+    id: transaction_token
+    description: A single transaction (authorize, capture, purchase, verify, void, credit) against a gateway or workflow.
+  - name: Payment
+    id: payment_token
+    description: A payment record retrievable by token.
+  - name: Receiver
+    id: receiver_token
+    description: An endpoint that forwards vaulted payment data to an arbitrary third-party HTTP API.
+  - name: MerchantProfile
+    id: merchant_profile_token
+    description: A merchant profile grouping SCA/3DS and gateway configuration.
+  - name: SubMerchant
+    id: sub_merchant_key
+    description: A sub-merchant under a merchant/platform.
+  - name: Certificate
+    id: certificate_token
+    description: A certificate used for gateway/receiver encryption.
+  - name: ScaProvider
+    id: sca_provider_token
+    description: A Strong Customer Authentication / 3-D Secure provider on a merchant profile.
+  - name: ProtectionProvider
+    id: protection_provider_token
+    description: A fraud-protection provider connection.
+  - name: Inquiry
+    id: inquiry token
+    description: A Card Refresher (account updater) inquiry refreshing stored card credentials.
+  - name: Event
+    id: event_id / event_token
+    description: A payment-method or transaction lifecycle event.
+relationships:
+  - from: AccessSecret
+    to: Environment
+    type: belongs_to
+    via: environment_key
+  - from: Transaction
+    to: Gateway
+    type: belongs_to
+    via: gateway_token
+  - from: Transaction
+    to: PaymentMethod
+    type: belongs_to
+    via: payment_method_token
+  - from: PaymentMethod
+    to: Transaction
+    type: has_many
+    via: /payment_methods/{payment_method_token}/transactions
+  - from: PaymentMethod
+    to: Event
+    type: has_many
+    via: /payment_methods/{payment_method_token}/events
+  - from: Transaction
+    to: Transaction
+    type: has_one
+    via: reference transaction (capture/credit/void/complete reference the original transaction_token)
+  - from: Receiver
+    to: PaymentMethod
+    type: has_many
+    via: deliver/export payment methods
+  - from: ScaProvider
+    to: MerchantProfile
+    type: belongs_to
+    via: merchant_profile
+  - from: Inquiry
+    to: PaymentMethod
+    type: references
+    via: card_refresher inquiry over stored cards

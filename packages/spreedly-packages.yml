@@ -1,0 +1,62 @@
+generated: '2026-07-24'
+method: searched
+source: https://github.com/spreedly + https://www.npmjs.com/org/spreedly + https://developer.spreedly.com/docs/client-sdks
+notes: >-
+  Spreedly's first-party libraries are client-side Checkout SDKs (iOS, Android,
+  React Native, Web/iFrame) for PCI-safe card capture, plus the official Spreedly
+  MCP server on npm and Ruby libraries for decrypting Apple Pay / Google Pay
+  tokens. There is no first-party server-side REST SDK published to a registry;
+  the Core Transactional API is consumed directly over HTTPS with Basic auth
+  (community server wrappers exist but are not first-party). The Dodgeball
+  server SDKs (.NET/Go/Node/PHP) belong to Spreedly's Dodgeball fraud product.
+packages:
+  - language: typescript
+    registry: npm
+    name: "@spreedly/spreedly-mcp"
+    url: https://www.npmjs.com/package/@spreedly/spreedly-mcp
+    install: npx -y @spreedly/spreedly-mcp@latest
+    repo: https://github.com/spreedly/spreedly-mcp
+    official: true
+    description: Official Spreedly Model Context Protocol server exposing the Core payments API to AI agents as structured tools.
+  - language: swift
+    registry: github
+    name: checkout-ios-package
+    url: https://github.com/spreedly/checkout-ios-package
+    install: "Swift Package Manager / pre-built XCFramework"
+    official: true
+    description: Official Spreedly Checkout iOS SDK distribution (pre-built XCFrameworks) for PCI-safe card capture.
+  - language: kotlin
+    registry: github
+    name: checkout-android-maven
+    url: https://github.com/spreedly/checkout-android-maven
+    install: "Gradle (Maven AAR repository)"
+    official: true
+    description: Official Spreedly Checkout Android SDK distribution (Android Archive / Maven repository).
+  - language: typescript
+    registry: github
+    name: checkout-react-native-packages
+    url: https://github.com/spreedly/checkout-react-native-packages
+    install: "npm / React Native package"
+    official: true
+    description: Official Spreedly Checkout React Native SDK distribution.
+  - language: javascript
+    registry: cdn
+    name: spreedly-iframe / Express
+    url: https://developer.spreedly.com/docs/spreedly-express
+    install: "<script src=\"https://core.spreedly.com/iframe/iframe-v1.min.js\"></script>"
+    official: true
+    description: Spreedly iFrame / Express browser payment form for PCI-safe client-side tokenization.
+  - language: ruby
+    registry: github
+    name: gala
+    url: https://github.com/spreedly/gala
+    install: gem install gala
+    official: true
+    description: Official Spreedly Ruby library for decrypting Apple Pay payment tokens.
+  - language: ruby
+    registry: github
+    name: r2d2
+    url: https://github.com/spreedly/r2d2
+    install: gem install r2d2
+    official: true
+    description: Official Spreedly Ruby library for decrypting Google Pay / Android Pay payment tokens.

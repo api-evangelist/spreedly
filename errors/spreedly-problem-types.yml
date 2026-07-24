@@ -1,0 +1,29 @@
+generated: '2026-07-24'
+method: derived
+source: openapi/spreedly-api-v1.json (4xx/5xx responses) + https://developer.spreedly.com/docs/troubleshooting
+format: json-error-envelope
+envelope: >-
+  Errors are returned as a JSON object with an "errors" array; each entry carries
+  a "key" (machine code, e.g. errors.blank, errors.invalid) and a human "message".
+  Field-level validation errors also carry the offending "attribute".
+problems:
+  - status: 401
+    title: Unauthorized
+    meaning: Missing or invalid HTTP Basic credentials (environment key / access secret).
+    remediation: Send the environment key as the Basic username and a valid access secret as the password over HTTPS.
+    applies_to: all operations
+  - status: 403
+    title: Forbidden
+    meaning: Authenticated but not permitted for this environment, resource, or action (RBAC / gateway not enabled).
+    remediation: Verify the access secret's role/permissions and that the target gateway or resource belongs to the environment.
+    applies_to: all operations
+  - status: 404
+    title: Not Found
+    meaning: The referenced token (payment_method_token, gateway_token, transaction_token, receiver_token, ...) does not exist in this environment.
+    remediation: Confirm the token value and that it was created in the same environment you are authenticating against.
+    applies_to: token-scoped GET/PUT/POST operations
+  - status: 422
+    title: Unprocessable Entity
+    meaning: Request understood but validation failed — missing/invalid fields, unsupported gateway option, or a business-rule violation.
+    remediation: Inspect the errors[] array (key + attribute + message); fix the offending fields. Transaction-level failures also surface a normalized failure_reason (see errors/spreedly-decline-codes.yml).
+    applies_to: create/update/transaction operations

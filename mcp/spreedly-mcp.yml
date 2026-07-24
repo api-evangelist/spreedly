@@ -1,0 +1,59 @@
+generated: '2026-07-24'
+method: searched
+status: published
+source: https://developer.spreedly.com/docs/mcp
+notes: >-
+  Spreedly ships TWO official MCP servers. (1) A remote, hosted documentation /
+  spec-navigation server at https://developer.spreedly.com/mcp — anonymous,
+  read-only, 5 tools verified live via tools/list. (2) A self-hosted API server
+  distributed on npm as @spreedly/spreedly-mcp (github.com/spreedly/spreedly-mcp),
+  run over stdio via npx, that exposes the Core payments API to agents. Its tool
+  categories default to read-only and are gated by three env flags
+  (PAYMENT_METHOD_TOKENIZATION_ENABLED, TRANSACTION_INITIATION_ENABLED,
+  ADMINISTRATIVE_ENABLED); it authenticates with SPREEDLY_ENVIRONMENT_KEY +
+  SPREEDLY_ACCESS_SECRET (HTTP Basic), so live tools/list is credential-gated.
+servers:
+  - name: spreedly-docs
+    kind: documentation
+    transport: http
+    url: https://developer.spreedly.com/mcp
+    auth: none
+    verified: tools/list returned 5 tools (2026-07-24)
+    tools:
+      - name: list-endpoints
+        description: Lists all API paths and HTTP methods with summaries, organized by path.
+        inputSchema: {}
+      - name: get-endpoint
+        description: Gets detailed information about a specific API endpoint, including security schemes and servers.
+        inputSchema: { required: [path, method] }
+      - name: search-endpoints
+        description: Deep search through paths, operations, and parameters to discover relevant API endpoints.
+        inputSchema: { required: [pattern] }
+      - name: search
+        description: Searches Spreedly documentation for a query, returning id/title/url results.
+        inputSchema: { required: [query] }
+      - name: fetch
+        description: Gets detailed documentation content by the id returned from search.
+        inputSchema: { required: [id] }
+  - name: spreedly
+    kind: api
+    transport: stdio
+    package: "@spreedly/spreedly-mcp"
+    repo: https://github.com/spreedly/spreedly-mcp
+    launch: npx -y @spreedly/spreedly-mcp@latest
+    auth: SPREEDLY_ENVIRONMENT_KEY + SPREEDLY_ACCESS_SECRET (HTTP Basic)
+    gated: true
+    tool_flags:
+      - flag: PAYMENT_METHOD_TOKENIZATION_ENABLED
+        default: false
+        enables: payment method tokenization tools (create, recache) that send raw PAN/CVV to Spreedly
+      - flag: TRANSACTION_INITIATION_ENABLED
+        default: false
+        enables: authorize, purchase, capture, void, refund/credit, confirm and other transaction actions
+      - flag: ADMINISTRATIVE_ENABLED
+        default: false
+        enables: create/update gateways, environments, certificates, merchant profiles, SCA providers, sub-merchants
+    tools_note: >-
+      Live tool inputSchemas require authenticated introspection (credentials are
+      mandatory). Tool capabilities map to the Core Transactional API operations
+      catalogued in mcp/spreedly-tool-crosswalk.yml.

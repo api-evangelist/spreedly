@@ -1,0 +1,41 @@
+generated: '2026-07-24'
+method: searched
+source: openapi/spreedly-api-v1.json + https://www.spreedly.com/security-compliance
+standards:
+  - id: oauth2
+    conforms: false
+    evidence: only basic_auth (HTTP Basic) securityScheme is declared
+  - id: oidc
+    conforms: false
+  - id: http-basic-auth
+    conforms: true
+    evidence: openapi securityScheme basic_auth (type http, scheme basic)
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: error responses are JSON error envelopes, not application/problem+json
+  - id: rest-json
+    conforms: true
+    evidence: JSON REST API over https://core.spreedly.com/v1
+  - id: cursor-pagination
+    conforms: true
+    evidence: since_token + order + count query parameters on list operations
+  - id: idempotency
+    conforms: partial
+    evidence: gateway-specific idempotency (order_data.gateway_idempotency_key, per-gateway idempotency_key fields) rather than a platform-wide Idempotency-Key header
+  - id: pci-dss
+    conforms: true
+    evidence: PCI DSS Level 1 Service Provider (published on spreedly.com/security-compliance); universal card vault
+  - id: soc2
+    conforms: true
+    evidence: SOC 2 (published on spreedly.com/security-compliance)
+  - id: emv-3ds
+    conforms: true
+    evidence: 3-D Secure 2.x / SCA authentication endpoints (sca/providers, authenticate)
+  - id: network-tokenization
+    conforms: true
+    evidence: Visa/Mastercard/Amex network token provisioning + card metadata endpoints
+compliance:
+  program_url: https://www.spreedly.com/security-compliance
+  certifications:
+    - PCI DSS Level 1 Service Provider
+    - SOC 2

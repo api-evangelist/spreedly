@@ -1,0 +1,20 @@
+generated: '2026-07-24'
+method: generated
+source: openapi/spreedly-api-v1.json + conventions/spreedly-conventions.yml
+skills:
+  - file: spreedly-vault-and-charge.md
+    name: Vault a card and charge it
+    api: openapi/spreedly-api-v1.json
+    operations: [create-payment-method, purchase, retain-payment-method]
+  - file: spreedly-authorize-and-capture.md
+    name: Authorize then capture a payment
+    api: openapi/spreedly-api-v1.json
+    operations: [authorize, capture-transaction, void-transaction]
+  - file: spreedly-composer-route-purchase.md
+    name: Run a purchase through a Composer routing workflow
+    api: openapi/spreedly-api-v1.json
+    operations: [composer.purchase, show-transactions]
+  - file: spreedly-refund-transaction.md
+    name: Refund or credit a settled transaction
+    api: openapi/spreedly-api-v1.json
+    operations: [credit-transaction, general-credit-transaction, show-transactions]
