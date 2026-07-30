@@ -162,6 +162,8 @@ apis:
   - type: APIReference
     url: https://developer.spreedly.com/reference/create-sca-provider
 common:
+- type: PostmanWorkspace
+  url: https://www.postman.com/kinlaneapi/spreedly/overview
 - type: TrustCenter
   url: security/spreedly-trust-center.yml
 - type: Compliance
