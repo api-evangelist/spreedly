@@ -1,0 +1,2528 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spreedly API V1",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "authorize",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Authorize a payment method token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/authorize",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Authorize a payment method to be charged a specific amount at the target gateway. No funds are taken with an authorize – a follow-up [capture](https://developer.spreedly.com/reference/capture-transaction) transaction is required to actually move the funds.\n\nThe referenced gateway must exist in the environment whose environment key is being used to authenticate the API call.\n\n**Tokenized payment method:** Authorize a Payment Method Token (already stored in the Spreedly environment) to be charged "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "capture",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Capture full or partial transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/capture",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token identifying the original authorize transaction."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Capture funds previously reserved via an authorize. By specifying an amount, you can capture a partial amount. If you omit the amount parameter, the full amount will be captured."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "card_refresher",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Card Refresher Inquiry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/card_refresher/inquiry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Make an inquiry to a card network (currently Visa) to get any applicable updates for the card."
+        },
+        {
+          "info": {
+            "name": "Show inquiry",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/card_refresher/inquiry/:token",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the inquiry"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an inquiry with the given token."
+        },
+        {
+          "info": {
+            "name": "List inquiries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/card_refresher/inquiries",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of inquiries to return. By default returns 20, maximum allowed is 100."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all inquiries in the environment"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "certificates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List certificates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/certificates",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous page if iterating through records)."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all certificates in the authenticated environment."
+        },
+        {
+          "info": {
+            "name": "Create a certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/certificates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Add a certificate to the authenticated environment for use in [secure payment method tokenization](https://developer.spreedly.com/docs/iframe-api-lifecycle#security-requirements), payment method distribution functions such as [XML digital signatures](https://developer.spreedly.com/reference/order-and-pagination), or to utilize [Apple Pay](https://developer.spreedly.com/docs/apple-pay#generate-certificate)."
+        },
+        {
+          "info": {
+            "name": "Generate a certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/certificates/generate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Generate a new SSL keypair and certificate signing request (CSR). Since Spreedly is not a certificate authority we cannot issue trusted certificates. Instead, it is intended that you will get the certificate signed by your certificate authority (or sign it yourself) and update the certificate record at Spreedly with the final and signed cert."
+        },
+        {
+          "info": {
+            "name": "Update certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/certificates/:certificate_token",
+            "params": [
+              {
+                "name": "certificate_token",
+                "value": "",
+                "type": "path",
+                "description": "A unique string generated by Spreedly to identify a certificate."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update an existing SSL certificate record with the signed certificate value (in PEM format)."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "composer",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an authorization with workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/authorize",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Spreedly's workflow service will determine which gateway the transaction will be processed based on the workflow evoked and send normalized fields depending on what the gateway supports. A `workflow_key` should be sent in the request body or left as null to evoke the Default Workflow set in your Spreedly environment.\n\nTo learn more about how to enable workflows, please contact Spreedly at support@spreedly.com.\n\nPass a credit card payment method directly into the authorize request. If the card is"
+        },
+        {
+          "info": {
+            "name": "Create a purchase with workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/purchase",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Spreedly's workflow service will determine which gateway the transaction will be processed based on the workflow evoked and send normalized fields depending on what the gateway supports. A `workflow_key` should be sent in the request body or left as null to evoke the Default Workflow set in your Spreedly environment.\n\nTo learn more about how to enable workflows, please contact Spreedly at support@spreedly.com.\n\nCharge a payment method a specific amount at the target gateway. One of the following"
+        },
+        {
+          "info": {
+            "name": "Create a verify with workflows",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/verify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Spreedly's workflow service will determine which gateway the transaction will be processed based on the workflow evoked and send normalized fields depending on what the gateway supports. A `workflow_key` should be sent in the request body or left as null to evoke the Default Workflow set in your Spreedly environment.\n\nTo learn more about how to enable workflows, please contact Spreedly at support@spreedly.com.\n\nDetermine if a credit card is chargeable card and available for purchases. The `retai"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "credit",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a refund transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/credit",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token uniquely identifying this transaction (not the created payment method) at Spreedly."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Refund the full or partial amount of a purchase or capture. [Credit/Refund transactions](https://developer.spreedly.com/docs/create-transactions#payment-orchestration).\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "general_credit",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a general credit transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/general_credit",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Add funds to a credit card outside the scope of a previous reference transaction. This is different from [credit](https://developer.spreedly.com/reference/credit-transaction) which refunds money only up to the amount that had been taken during a previous transaction.\n\nSupport for general credit depends on the gateway.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "access_secrets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List environment access secrets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key/access_secrets",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve a list of all access secrets in an environment. This call should be authenticated with the key of the environment that you are accessing and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Create environment access secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key/access_secrets",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create an access secret in an environment. Authentication should be done using the environment where you want to create the secret and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Show environment access secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key/access_secrets/:access_secret_key",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              },
+              {
+                "name": "access_secret_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the access secret to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an access secret with the given key. This call should be authenticated with the key of the environment that you are accessing and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Delete environment access secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key/access_secrets/:access_secret_key",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              },
+              {
+                "name": "access_secret_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the access secret to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Delete an access secret in an environment. Authentication should be done using the environment where you want to delete the secret and an Organization Access Secret."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "environments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Regenerate signing secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key/regenerate_signing_secret",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Regenerate environment signing secret. Once this is regenerated, the old signing secret will no longer be valid and you must immediately update your application with the new signing secret. This call should be authenticated with the key of the environment that you are trying to update and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "List environments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/environments",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "Token refers to the key of the environment to start from (e.g., the last environment_key received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of environments to return. By default returns 20, maximum allowed is 100."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all environments in an organization. This call should be authenticated with an environment key from the organization and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Create an environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/environments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create an environment in your organization. You will need to create one environment and access secret manually at app.spreedly.com for authentication. After that you can authenticate the API call using that environment key and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Show environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an environment with the given key. This call should be authenticated with the key of the environment that you are trying to show and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Update environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/environments/:environment_key",
+            "params": [
+              {
+                "name": "environment_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the environment to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update an existing environment. This call should be authenticated with the key of the environment that you are trying to update and an Organization Access Secret."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "list events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/events",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `desc`, which returns the newest records first. To list older records first, use `asc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The id of the item to start from (e.g., the last id received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of payment methods to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "event_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter events by event type. If not specified, all event types are returned."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all events in the authenticated environment."
+        },
+        {
+          "info": {
+            "name": "Show event",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/events/:event_id",
+            "params": [
+              {
+                "name": "event_id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the event"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an event with the given id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "gateways",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List created gateways",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/gateways.:format",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "The format of the request. Default JSON for testing in our documentation."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of gateways to return. By default returns 20, maximum allowed is 100."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all gateways in the environment. This is different from the list of all supported gateways in that this will only return the gateway instances that have been provisioned in the authenticated environment."
+        },
+        {
+          "info": {
+            "name": "Create a gateway",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways.:format",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "The format of the request. Default JSON for testing in our documentation."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create (provision) a gateway to process card data in the authenticated environment. A test gateway is used to [test your integration](https://developer.spreedly.com/docs/testing/) to Spreedly and can only be used with [test payment methods](https://developer.spreedly.com/docs/test-data/). Production gateways process real card data and transactions. Production gateways are created using the credentials required for that gateway, meaning each call is slightly different depending on the gateway's A"
+        },
+        {
+          "info": {
+            "name": "Show gateway",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token.json",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a gateway with the given token."
+        },
+        {
+          "info": {
+            "name": "Update gateway",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token.json",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a gateway.\n\nUpdate is intended to be used for updating credentials, description, or metadata.\n"
+        },
+        {
+          "info": {
+            "name": "List supported gateways",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/gateways_options.json"
+          },
+          "docs": "Retrieve a list of all gateways, and their properties, supported by Spreedly. This call can be used to dynamically present a gateway credential form to users or to do any sort of dynamic rendering."
+        },
+        {
+          "info": {
+            "name": "Transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/transactions.json",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The transaction state on which to filter the returned list. Can be one of `succeeded`, `failed`, `gateway_processing_failed`, `gateway_processing_result_unknown`."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an ordered and paginated list of transactions executed against a specific gateway."
+        },
+        {
+          "info": {
+            "name": "Redact gateway",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/redact.json",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Redact (strip of any sensitive credentials and make inactive) a provisioned gateway."
+        },
+        {
+          "info": {
+            "name": "Retain gateway",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/retain.json",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "When gateways are created via the API, they are automatically retained. However, gateways created via the unauthenticated API (e.g., from a browser/javascript library) are created in the “cached” state. Only by retaining a cached gateway will it be saved and available for future use."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "merchant_profiles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List merchant profiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/merchant_profiles",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of merchant profiles to return. By default returns 20, maximum allowed is 100."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all merchant profiles in the environment"
+        },
+        {
+          "info": {
+            "name": "Create merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/merchant_profiles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create a Merchant Profile that holds the SCA Provider. **At least one card type object must be included in the request.** The following card types are supported: Visa, Mastercard, American Express, Discover, Diners, JCB, Dankort, Union Pay, and Cartes Bancaires."
+        },
+        {
+          "info": {
+            "name": "Show merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/merchant_profiles/:merchant_profile_token",
+            "params": [
+              {
+                "name": "merchant_profile_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the merchant profile"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a merchant profile with the given token."
+        },
+        {
+          "info": {
+            "name": "Update merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/merchant_profiles/:merchant_profile_token",
+            "params": [
+              {
+                "name": "merchant_profile_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the merchant profile"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update the `description` on the Merchant Profile. All other parameters of the Merchant Profile cannot be updated once created."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "network_tokenization",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Show card metadata for a Network Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/network_tokenization/card_metadata.:format?payment_method_token=:payment_method_token",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "The format of the request. Default JSON for testing in our documentation."
+              },
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the NT provisioned payment method"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve metadata for a card that has been tokenized at a network.\n\nThe content of the `card_metadata` object is determined and can be changed by the card network at any time. Because of this, the keys in the response are potentially variable and should not be considered idempotent.\n"
+        },
+        {
+          "info": {
+            "name": "Show status for a Network Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/network_tokenization/token_status.:format?payment_method_token=:payment_method_token",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "The format of the request. Default JSON for testing in our documentation."
+              },
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the NT provisioned payment method"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve the status of a card that has been tokenized at a network.\n\nThis endpoint provides the current status of a network token, either active or inactive.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "payment_methods",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all payment method events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods/events",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "event_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter events by event type (e.g., AddPaymentMethod, RetainPaymentMethod, RedactPaymentMethod, ReplacePaymentMethod, UpdatePaymentMethod)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of events to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "include_transactions",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include gateway transactions alongside events. Default is `false`. When `true`, returns a unified timeline of events and transactions sorted by creation time."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all payment method events in the authenticated environment.\n\nPayment method events track important changes to payment methods such as creation, retention, redaction, and other lifecycle events. This endpoint allows you to retrieve these events with optional filtering and pagination.\n\n*Response Format*\n\nThe response format varies by event type:\n- `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data\n- All other "
+        },
+        {
+          "info": {
+            "name": "Show payment method event",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods/events/:event_token",
+            "params": [
+              {
+                "name": "event_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method event"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a specific payment method event by its token.\n\nPayment method events contain detailed information about changes to payment methods, including the event type, associated payment method, event data, and timing information.\n\n*Response Format*\n\nThe response format varies by event type:\n- `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data\n- All other events are returned as `payment_method_event` objects\n"
+        },
+        {
+          "info": {
+            "name": "List payment methods",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "A metadata key/value pair represented as a hash (e.g. metadata[key]=value)."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The list of storage_states to return. By default returns retained, acceptable values are retained, redacted, cached, used"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of payment methods to return. By default returns 20, maximum allowed is 100."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all retained payment methods in the authenticated environment.\n\n*States*\nPayment methods can exist in several states in the Spreedly vault - retained, redacted, cached, or used. Retained payment methods are stored in Spreedly's vault until redacted. Redacted payment methods are payment methods that were either not retained or have been manually redacted. Cached payment methods are payment methods that have not been retained but have not yet been automati"
+        },
+        {
+          "info": {
+            "name": "Create payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/payment_methods",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Add a payment method (credit card, bank account/ACH, Apple Pay, Google Pay, or third party token) to the authenticated environment's vault.\n\nTo create a test payment method, use one of the [test card numbers](https://developer.spreedly.com/docs/test-data). For more information see the [Spreedly testing guide](https://developer.spreedly.com/docs/testing).\n\nThird party tokens are payment methods stored in the Spreedly vault, that are a reference to another payment method stored at the gateway's va"
+        },
+        {
+          "info": {
+            "name": "Show payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a payment method with the given token."
+        },
+        {
+          "info": {
+            "name": "Update payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a payment method's non-sensitive attributes."
+        },
+        {
+          "info": {
+            "name": "Retain payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/retain",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retain (keep in the Spreedly vault for future use) a payment method."
+        },
+        {
+          "info": {
+            "name": "Redact payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/redact",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Redact (strip of any sensitive credentials and make inactive) a payment method."
+        },
+        {
+          "info": {
+            "name": "Update gratis payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/update_gratis",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a payment method's management state and some specific payment method parameters associated with Advanced Vault.\nFor further details, see [Advanced Vault](https://developer.spreedly.com/docs/advanced-vault).\n\nPlease note, that this API call is only available to merchants who are currently enrolled in Advanced Vault.\n"
+        },
+        {
+          "info": {
+            "name": "List transactions payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/transactions",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an ordered and paginated list of transactions executed against a specific payment method."
+        },
+        {
+          "info": {
+            "name": "Delete metadata payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/metadata",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Remove key value pairs from a payment method's metadata."
+        },
+        {
+          "info": {
+            "name": "Recache payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/recache",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a credit card's verification value (CVV) so the card can be transacted against.\n\nNote: A credit card must be retained in your environment in order to re-cache its CVV.\n"
+        },
+        {
+          "info": {
+            "name": "List events for a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payment_methods/:payment_method_token/events",
+            "params": [
+              {
+                "name": "payment_method_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment method"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of events to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "include_transactions",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include gateway transactions alongside events. Default is `false`. When `true`, returns a unified timeline of events and transactions sorted by creation time."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a list of events for a specific payment method.\n\n*Response Format*\n\nThe response format varies by event type:\n- `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data\n- All other events are returned as `payment_method_event` objects\n"
+        },
+        {
+          "info": {
+            "name": "Create a store transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/store",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Tokenize a payment method *at the gateway*.\n\nThis transaction copies the payment method information from the Spreedly vault [to the gateway's vault](https://developer.spreedly.com/docs/third-party-vaulting) and creates a new Spreedly payment method to represent the gateway's version. The reference to the payment method at the gateway is called a ThirdPartyToken and is a separate payment method from the original payment method. It is up to you to manage the lifecycle of these linked payment metho"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Show payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/payments/:payment_token",
+            "params": [
+              {
+                "name": "payment_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the payment"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve a payment object by its token. A payment represents a collection of transaction attempts\nmade against one or more gateways when performing a [Recover transaction](https://developer.spreedly.com/docs/recover).\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "claim",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Forward a claim to the protection provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/protection/:transaction_token/claims",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the disputed transaction"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Forward a claim to the protection provider"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "protection_events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List protection events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/protection/events.:format",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "The format of the request. Default JSON for testing in our documentation."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of events to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The state of the protection check. Possible values are `pending`, `succeeded`, and `failed`."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all protection events in the environment."
+        },
+        {
+          "info": {
+            "name": "Show protection check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/protection/events/:event_token.json",
+            "params": [
+              {
+                "name": "event_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the event to retrieve"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a protection check event with the given token."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "protection_provider",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a protection provider on the given merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/protection/providers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create a Protection Provider on the given Merchant Profile. A Protection Provider can be used as part of [authorize](https://developer.spreedly.com/reference/authorize), [purchase](https://developer.spreedly.com/reference/purchase), and [verify](https://developer.spreedly.com/reference/verify) transactions. **At least one card type object must be included in the request.** The following card types are supported: `Visa`, `Mastercard`, `American Express`, `Discover`, `Diners`, `JCB`, `Dankort`, `U"
+        },
+        {
+          "info": {
+            "name": "Show protection provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/protection/providers/:protection_provider_token",
+            "params": [
+              {
+                "name": "protection_provider_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the Protection Provider"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a Protection Provider with the given token. A Protection Provider can be used as part of [authorize](https://developer.spreedly.com/reference/authorize), [purchase](https://developer.spreedly.com/reference/purchase), and [verify](https://developer.spreedly.com/reference/verify) transactions."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "purchase",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a purchase transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/purchase",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Charge a payment method a specific amount at the target gateway. One of the following payment methods must be included in the request:\n\n**Tokenized payment method:** Charge a _tokenized_ payment method (already stored in the Spreedly environment) the specified amount. The payment method can be of any type (credit card, bank account, Apple Pay, etc…), as long as it exists in the specified environment.\n\nThe `payment_method_token` field of the transaction request is required.\n\n**Pass-in credit card"
+        },
+        {
+          "info": {
+            "name": "Create a purchase transaction via reference",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/purchase",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token uniquely identifying this transaction (not the created payment method) at Spreedly."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Execute a purchase using the payment method [utilized in a previous transaction](https://developer.spreedly.com/docs/using-payment-methods#reference-purchases).\n\nThe `currency_code` field is optional for this type of purchase request. It can be inferred from the referenced transaction.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "receivers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List supported receivers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/receivers_options"
+          },
+          "docs": "Retrieve a list of all payment method distribution receivers, and their properties, supported by Spreedly.\n\nNote that this request is publicly available and _does not require authorization_.\n"
+        },
+        {
+          "info": {
+            "name": "List created receivers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/receivers",
+            "params": [
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all receivers in the authenticated environment."
+        },
+        {
+          "info": {
+            "name": "Create a receiver",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/receivers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create a receiver for use in [payment method distribution](https://developer.spreedly.com/docs/payment-method-distribution)"
+        },
+        {
+          "info": {
+            "name": "Show a receiver",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/receivers/:receiver_token",
+            "params": [
+              {
+                "name": "receiver_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the receiver at Spreedly"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get a receiver with the given token"
+        },
+        {
+          "info": {
+            "name": "Update a receiver",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/receivers/:receiver_token",
+            "params": [
+              {
+                "name": "receiver_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the receiver at Spreedly"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a receiver with new credentials"
+        },
+        {
+          "info": {
+            "name": "Redact a receiver",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/receivers/:receiver_token/redact",
+            "params": [
+              {
+                "name": "receiver_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the receiver at Spreedly"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Redact (strip of any sensitive credentials and make inactive) a receiver."
+        },
+        {
+          "info": {
+            "name": "Deliver payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/receivers/:receiver_token/deliver",
+            "params": [
+              {
+                "name": "receiver_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the receiver at Spreedly"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Deliver a payment method to the specified receiver endpoint. See the guide on [payment method distribution](https://developer.spreedly.com/docs/payment-method-distribution) to understand how to specify what is sent to the receiver. Spreedly provides an open [repository of code templates](https://github.com/spreedly/templates) for simplifying implementation of new receivers."
+        },
+        {
+          "info": {
+            "name": "Export payment methods",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/receivers/:receiver_token/export",
+            "params": [
+              {
+                "name": "receiver_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the receiver at Spreedly"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Export multiple payment methods in a single, asynchronous, batch call to an SFTP receiver endpoint."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "sca_authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Authenticate a given payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/sca/providers/:sca_provider_key/authenticate",
+            "params": [
+              {
+                "name": "sca_provider_key",
+                "value": "",
+                "type": "path",
+                "description": "The token returned by the sca providers [endpoint](https://developer.spreedly.com/docs/3ds-solutions#creating-an-sca-provider)"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Authenticate a given payment method and amount against provided SCA Provider Key (specified in the request URL)\n\nNotable response elements can be found in the table below. All other response elements are used by our `Spreedly.ThreeDS.Lifecycle` helpers and exposed for debugging purposes. We recommend that our merchants not use any fields that are not listed in the table below.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Show transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the transaction to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get the transaction with the given token.\n\nAny interaction that creates or updates information via the Spreedly API,\nor sends information to a third party such as a gateway or receiver, will\ngenerate a corresponding transaction record that may be viewed by\nsubmitting its `transaction_token`. This may be viewable in the body of the\noriginal response or by retrieving it from the Transactions List in the\n[Spreedly app](https//app.spreedly.com).\n"
+        },
+        {
+          "info": {
+            "name": "Update transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the transaction to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Run an inquiry for a transaction's status at the gateway and update\nthe state of the Spreedly transaction with the given token. Only\nfor supported gateways. See our [syncing transactions guide](https://developer.spreedly.com/docs/syncing-your-gateway-transaction) for more information.\n"
+        },
+        {
+          "info": {
+            "name": "Complete transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/complete",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the transaction to complete"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Attempts to complete or advance a pending 3DS 2 transaction. We require merchants to make authenticated\ncalls to this endpoint in response to certain `Spreedly.ThreeDS.Lifecycle` events being emitted:\n\nA pending transaction with a `required_action` of `device_fingerprint` will fire a `trigger-completion`\nevent when the transaction status was updated due to a callback in the cardholder's iFrame or when 10\nseconds have elapsed. When this event is received, it is necessary to call `complete` so tha"
+        },
+        {
+          "info": {
+            "name": "List transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/transactions",
+            "params": [
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The transaction state on which to filter the returned list. Can be one of succeeded, failed, gateway_processing_failed, gateway_processing_result_unknown."
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of transactions to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is asc, which returns the oldest records first. To list newer records first, use desc."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all transactions in the authenticated environment.\n\nThis endpoint is [rate-limited](https://developer.spreedly.com/reference/response-codes#429-too-many-requests) to 30 requests per minute, per environment.\n"
+        },
+        {
+          "info": {
+            "name": "Confirm transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/confirm",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the transaction to confirm"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Attempts to confirm a pending offsite purchase, offsite synchronous purchase or offsite synchronous authorization.\n\n**Braintree**\n  A `processing` transaction with a `payment_method_type` of 'paypal' or 'venmo' is needed to confirm this transaction.\n  [A object returned in iFrame](https://developer.spreedly.com/docs/braintree-gateway-guide#example-responses-for-callbackfunction). This could contain the following parameters; `state`, `nonce`, `payment_method`, `device_date`, `username`\n  Please s"
+        },
+        {
+          "info": {
+            "name": "Transaction transcript",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/transcript",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token identifying the transaction whose transcript is being requested"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "View the exchange between Spreedly and the external service (gateway, receiver, etc…)\nfor the given transaction in a human-readable, text format. The transcript is\nscrubbed of sensitive information so you can email it to external support\nrepresentatives to help in debugging and other support tasks.\n\nAs of December 31, 2022, Spreedly retains transaction transcripts for 90 days after\nthe initial date of the transaction. Transcript requests for transactions which are\nolder than 90 days will return "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "sca_provider",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an sca provider on the given merchant profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/sca/providers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create an SCA Provider on the given Merchant Profile. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize) and [purchase](https://developer.spreedly.com/reference/purchase) transactions. At least one card type object must be included in the request. The following card type"
+        },
+        {
+          "info": {
+            "name": "Show sca provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/sca/providers/:sca_provider_token",
+            "params": [
+              {
+                "name": "sca_provider_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the SCA Provider"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get an SCA Provider with the given token. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize-1) and [purchase](https://developer.spreedly.com/reference/reference-purchase) transactions."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "sub_merchants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List sub_merchants",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/sub_merchants",
+            "params": [
+              {
+                "name": "since_token",
+                "value": "",
+                "type": "query",
+                "description": "The token of the item to start from (e.g., the last token received in the previous list if iterating through records)"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The number of sub_merchants to return. By default returns 20, maximum allowed is 100."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Retrieve an ordered and paginated list of all Sub-merchants in an organization. This call should be authenticated with an environment key from the organization and an Organization Access Secret."
+        },
+        {
+          "info": {
+            "name": "Create sub_merchant",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/sub_merchants",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Create a sub-merchant"
+        },
+        {
+          "info": {
+            "name": "Show sub_merchant",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://core.spreedly.com/v1/sub_merchants/:sub_merchant_key",
+            "params": [
+              {
+                "name": "sub_merchant_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the sub-merchant to execute against"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Get the sub-merchant with the given key."
+        },
+        {
+          "info": {
+            "name": "Update sub_merchant",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://core.spreedly.com/v1/sub_merchants/:sub_merchant_key",
+            "params": [
+              {
+                "name": "sub_merchant_key",
+                "value": "",
+                "type": "path",
+                "description": "The key of the sub-merchant to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Update a sub-merchant"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "verify",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify a payment method",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/gateways/:gateway_token/verify",
+            "params": [
+              {
+                "name": "gateway_token",
+                "value": "",
+                "type": "path",
+                "description": "The token of the gateway to execute against"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Determine if a credit card is a [chargeable card and available for purchases](https://developer.spreedly.com/docs/using-payment-methods#verifying-a-card). The `retain_on_success` request parameter will automatically retain the card if it’s successfully verified.\n\nAlso used by Ebanx Gateway customers as part of the enrollment process for Mercado Pago recurring payments. To learn more about this visit [Ebanx Gateway](https://developer.spreedly.com/docs/ebanx-gateway-guide).\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "void",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Void a transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://core.spreedly.com/v1/transactions/:transaction_token/void",
+            "params": [
+              {
+                "name": "transaction_token",
+                "value": "",
+                "type": "path",
+                "description": "The token uniquely identifying this transaction (not the created payment method) at Spreedly."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Cancel an `authorization` transaction or a `capture`/`purchase` transaction that hasn’t yet settled at the merchant account.\n\nThis API call can also be used to cancel a `verify` transaction that was part of the Ebanx customer enrollment process. To learn more about this visit [Ebanx Gateway](https://developer.spreedly.com/docs/ebanx-gateway-guide).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
