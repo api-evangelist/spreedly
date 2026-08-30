@@ -1,0 +1,248 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Claim API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: claim
+paths:
+  /protection/{transaction_token}/claims:
+    parameters:
+    - name: transaction_token
+      in: path
+      description: The token of the disputed transaction
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Forward a claim to the protection provider
+      tags:
+      - claim
+      security:
+      - basic_auth: []
+      operationId: forward-claim
+      description: Forward a claim to the protection provider
+      parameters: []
+      responses:
+        '200':
+          description: Forwarded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/claim_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/claim_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/claim'
+            examples:
+              With Claim parameters:
+                summary: With Claim parameters
+                value:
+                  claim:
+                    additional_amount: 50
+                    amount: 1000
+                    case_id: case_789
+                    charge_id: charge_123
+                    comments: Contacted customer via phone
+                    currency: USD
+                    due_date: YYYY-MM-DD
+                    issue_date: YYYY-MM-DD
+                    order_id: order_456
+                    processor_name: Stripe
+                    reason_code: '83'
+                    reason_description: 'Fraudulent transaction: Card Not Present Environment'
+                    reason_type: FRAUD
+                    source_type: PROCESSOR_CB
+                    status: OPEN
+                    type: CHARGEBACK
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/claim'
+            examples:
+              With Claim parameters:
+                summary: With Claim parameters
+                value:
+                  claim:
+                    additional_amount: 50
+                    amount: 1000
+                    case_id: case_789
+                    charge_id: charge_123
+                    comments: Contacted customer via phone
+                    currency: USD
+                    due_date: YYYY-MM-DD
+                    issue_date: YYYY-MM-DD
+                    order_id: order_456
+                    processor_name: Stripe
+                    reason_code: '83'
+                    reason_description: 'Fraudulent transaction: Card Not Present Environment'
+                    reason_type: FRAUD
+                    source_type: PROCESSOR_CB
+                    status: OPEN
+                    type: CHARGEBACK
+components:
+  schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    claim_response:
+      type: object
+      properties:
+        claim:
+          type: object
+          properties:
+            message:
+              type: string
+              description: A human-readable message describing the result (if applicable)
+            status:
+              type: string
+              description: The status of the claim
+    claim:
+      type: object
+      properties:
+        additional_amount:
+          type: number
+          description: Additional fees associated with the claim such as processor fees or shipping recovery fees
+        amount:
+          type: number
+          description: The amount representing the value of the goods that were not retrieved
+        case_id:
+          type: string
+          description: The case number from the payment processor. (For Braintree, please map the Dispute Id instead of Case Number)
+        charge_id:
+          type: string
+          description: The unique transaction identifier from the gateway. If the fraud check and gateway transaction were done through Spreedly, this will be the `gateway_transaction_id`
+        comments:
+          type: string
+          description: Additional comments by the merchant, e.g. *Contacted customer via phone*
+        currency:
+          type: string
+          description: Transaction currency chosen by the buyer, 3-letter ISO-4217 format currency code
+        due_date:
+          type: string
+          description: Due date for disputing the claim which was stated by the processor in case of a chargeback. Otherwise, the issue date. Use YYYY-MM-DD format. The expected date timezone is UTC
+        issue_date:
+          type: string
+          description: Date the chargeback was issued / the prechargeback notification was sent. Use YYYY-MM-DD format. The expected date timezone is UTC
+        order_id:
+          type: string
+          description: The unique protect check identifier from the provider. If the transaction was completed through Spreedly this will be [the `token` returned in the `protect_fraud_check` response](https://developer.spreedly.com/reference/authorize-1)
+        processor_name:
+          type: string
+          description: The name of the gateway if the fraud check and gateway transaction were completed through Spreedly, e.g. *Stripe*
+        reason_code:
+          type: string
+          description: 'The claim code as supplied by the claim source. For example, the chargeback reason provided in the chargeback notification. Ex: *83*'
+        reason_description:
+          type: string
+          description: The claim reason as supplied by the claim source. For example, the chargeback reason provided in the chargeback notification
+        reason_type:
+          type: string
+          description: The claim reason category type
+          enum:
+          - FRAUD
+          - SERVICE
+          - OTHER
+          - AUTHORIZATION
+          - PROCESSING_ERROR
+          default: FRAUD
+        source_type:
+          type: string
+          description: The category of the source of the claim
+          enum:
+          - PROCESSOR_CB
+          - AMEX
+          - DISCOVER
+          - PAYPAL
+          - PROCESSOR_INQUIRY
+          - CUSTOMER_SUPPORT
+          - SHIPPING_CARRIER
+          - THIRD_PARTY
+          - FORTER
+          - OTHER
+          default: PROCESSOR_CB
+        status:
+          type: string
+          description: Claim status mapping from the current status of the claim. For example, a mapping of the processor chargeback dispute status
+          enum:
+          - OPEN
+          - IN_DISPUTE
+          - WON
+          - LOST
+          - CANCELED
+          default: OPEN
+        type:
+          type: string
+          description: The type of the claim
+          enum:
+          - CHARGEBACK
+          - PRE_CHARGEBACK
+          - DEBIT_MEMO
+          - REQUEST_FOR_INFORMATION
+          - FRAUD_ALERT
+          default: CHARGEBACK
+      required:
+      - amount
+      - case_id
+      - charge_id
+      - currency
+      - due_date
+      - issue_date
+      - order_id
+      - processor_name
+      - reason_code
+      - reason_description
+      - reason_type
+      - status
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

@@ -1,0 +1,447 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Sub Merchants API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: sub_merchants
+paths:
+  /sub_merchants:
+    get:
+      summary: List sub_merchants
+      tags:
+      - sub_merchants
+      security:
+      - basic_auth: []
+      operationId: list-sub-merchant
+      description: Retrieve an ordered and paginated list of all Sub-merchants in an organization. This call should be authenticated with an environment key from the organization and an Organization Access Secret.
+      parameters:
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of sub_merchants to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_sub_merchants_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_sub_merchants_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    post:
+      summary: Create sub_merchant
+      tags:
+      - sub_merchants
+      security:
+      - basic_auth: []
+      operationId: create-sub-merchant
+      description: Create a sub-merchant
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            Missing request parameter:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.merchant_data_acquirer_merchant_id_required
+                    message: acquirer_merchant_id is required when using merchant_data.
+                application/xml:
+                  value: "                <errors>\n                  <key>errors.merchant_data_acquirer_merchant_id_required</key>\n                  <message>acquirer_merchant_id is required when using merchant_data.</message>\n                </errors>\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sub_merchant_create'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/sub_merchant_create'
+  /sub_merchants/{sub_merchant_key}:
+    parameters:
+    - name: sub_merchant_key
+      in: path
+      description: The key of the sub-merchant to execute against
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show sub_merchant
+      tags:
+      - sub_merchants
+      security:
+      - basic_auth: []
+      operationId: show-sub-merchant
+      description: Get the sub-merchant with the given key.
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    put:
+      summary: Update sub_merchant
+      tags:
+      - sub_merchants
+      security:
+      - basic_auth: []
+      operationId: ubdate-sub-merchant
+      description: Update a sub-merchant
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/sub_merchant_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            Missing request parameter:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.merchant_data_acquirer_merchant_id_required
+                    message: acquirer_merchant_id is required when using merchant_data.
+                application/xml:
+                  value: "                <errors>\n                  <key>errors.merchant_data_acquirer_merchant_id_required</key>\n                  <message>acquirer_merchant_id is required when using merchant_data.</message>\n                </errors>\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sub_merchant_update'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/sub_merchant_update'
+components:
+  schemas:
+    list_sub_merchants_response:
+      type: object
+      properties:
+        sub_merchants:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/sub_merchant_properties'
+    sub_merchant_properties:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the sub_merchant at Spreedly
+        name:
+          type: string
+          description: The human readable name of the sub_merchant
+        environment_key:
+          type: string
+          description: The environment that the sub_merchant is associated with
+        organization_key:
+          type: string
+          description: The organization that the sub_merchant belongs to
+        merchant_url:
+          type: string
+          description: The merchant’s website url.
+        ein:
+          type: string
+          description: The employer identification number associated with the merchant
+        merchant_email:
+          type: string
+          description: The email address associated with the merchant
+        merchant_defined_uid:
+          type: string
+          description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to spreedly.
+        merchant_data:
+          type: object
+          description: An array of objects to store more information about the merchant
+          properties:
+            card_network:
+              type: string
+              description: The merchant data fields can be different depending on the card network. So, this field is to identify the network associated with the other fields in a merchant_data object.
+            acquirer_merchant_id:
+              type: string
+              description: The MID is a unique code that ensures the funds make it from the cardholder’s bank account to your bank account when a transaction is processed. It is passed with other transaction information and is used to help with transaction reconciliation. You receive a MID when you open a merchant account with an acquiring bank. A merchant can have multiple MIDs based on the different sales channels they have.
+            mcc:
+              type: string
+              description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
+            acquirer_bin:
+              type: string
+              description: "\tThe Acquirer Bank Identification Number (BIN) is the first four to six digits of a card number that is used to identify the bank account associated with a card network. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution."
+            business_id:
+              type: string
+              description: The merchant’s business, company, or service identifier specific to the card-network
+            merchant_data_id:
+              type: string
+              description: Spreedly generated id for each merchant_data element
+        address:
+          type: object
+          description: The address associated with the merchant
+          properties:
+            address1:
+              type: string
+              description: The first line of the merchant’s address
+            address2:
+              type: string
+              description: The second line of the merchant’s address
+            city:
+              type: string
+              description: The city of the merchant’s address
+            state:
+              type: string
+              description: The state of the merchant’s address
+            zip:
+              type: string
+              description: The zip code of the merchant’s address
+            country:
+              type: string
+              description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
+        metadata:
+          type: object
+          description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+        created_at:
+          type: string
+          description: The datetime that the sub_merchant was first created
+        updated_at:
+          type: string
+          description: The datetime that the sub_merchant was last updated
+    sub_merchant_response:
+      type: object
+      properties:
+        sub_merchant:
+          type: object
+          $ref: '#/components/schemas/sub_merchant_properties'
+    sub_merchant_create:
+      type: object
+      properties:
+        sub_merchant:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the sub_merchant
+            environment_key:
+              type: string
+              description: The key of the environment that the sub_merchant should be associated with
+            merchant_url:
+              type: string
+              description: The merchant’s website url.
+            merchant_email:
+              type: string
+              description: The email address associated with the merchant
+            ein:
+              type: string
+              description: The employer identification number associated with the merchant
+            merchant_defined_uid:
+              type: string
+              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
+            merchant_data:
+              allOf:
+              - $ref: '#/components/schemas/merchant_data_request_properties'
+            address:
+              type: object
+              description: The address associated with the merchant
+              properties:
+                address1:
+                  type: string
+                  description: The first line of the merchant’s address
+                address2:
+                  type: string
+                  description: The second line of the merchant’s address
+                city:
+                  type: string
+                  description: The city of the merchant’s address
+                state:
+                  type: string
+                  description: The state of the merchant’s address
+                zip:
+                  type: string
+                  description: The zip code of the merchant’s address
+                country:
+                  type: string
+                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+          required:
+          - name
+          - environment_key
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    merchant_data_request_properties:
+      type: array
+      description: An array of objects to store more information about the merchant
+      items:
+        type: object
+        properties:
+          card_network:
+            type: string
+            description: The merchant data fields can be different depending on the card network. So, this field is to identify the network associated with the other fields in a merchant_data object.
+          acquirer_merchant_id:
+            type: string
+            description: The MID is a unique code that ensures the funds make it from the cardholder’s bank account to your bank account when a transaction is processed. It is passed with other transaction information and is used to help with transaction reconciliation. You receive a MID when you open a merchant account with an acquiring bank. A merchant can have multiple MIDs based on the different sales channels they have.
+          acquirer_bin:
+            type: string
+            description: The Acquirer Bank Identification Number (BIN) is the first four to six digits of a card number that is used to identify the bank account associated with a card network. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution.
+          business_id:
+            type: string
+            description: The merchant’s business, company, or service identifier specific to the card-network
+          mcc:
+            type: string
+            description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
+        required:
+        - acquirer_merchant_id
+    sub_merchant_update:
+      type: object
+      properties:
+        sub_merchant:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the sub_merchant
+            merchant_url:
+              type: string
+              description: The merchant’s website url.
+            merchant_email:
+              type: string
+              description: The email address associated with the merchant
+            ein:
+              type: string
+              description: The employer identification number associated with the merchant
+            merchant_defined_uid:
+              type: string
+              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
+            merchant_data:
+              allOf:
+              - $ref: '#/components/schemas/merchant_data_request_properties'
+            address:
+              type: object
+              description: The address associated with the merchant
+              properties:
+                address1:
+                  type: string
+                  description: The first line of the merchant’s address
+                address2:
+                  type: string
+                  description: The second line of the merchant’s address
+                city:
+                  type: string
+                  description: The city of the merchant’s address
+                state:
+                  type: string
+                  description: The state of the merchant’s address
+                zip:
+                  type: string
+                  description: The zip code of the merchant’s address
+                country:
+                  type: string
+                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

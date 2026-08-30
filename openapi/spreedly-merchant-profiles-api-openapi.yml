@@ -1,0 +1,343 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Merchant Profiles API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: merchant_profiles
+paths:
+  /merchant_profiles:
+    post:
+      summary: Create merchant profile
+      tags:
+      - merchant_profiles
+      security:
+      - basic_auth: []
+      operationId: create-merchant-profile
+      description: 'Create a Merchant Profile that holds the SCA Provider. **At least one card type object must be included in the request.** The following card types are supported: Visa, Mastercard, American Express, Discover, Diners, JCB, Dankort, Union Pay, and Cartes Bancaires.'
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/merchant_profile_create'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/merchant_profile_create'
+    get:
+      summary: List merchant profiles
+      tags:
+      - merchant_profiles
+      security:
+      - basic_auth: []
+      operationId: list-merchant-profiles
+      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all merchant profiles in the environment
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of merchant profiles to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_merchant_profiles_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_merchant_profiles_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /merchant_profiles/{merchant_profile_token}:
+    parameters:
+    - name: merchant_profile_token
+      in: path
+      description: The token of the merchant profile
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show merchant profile
+      tags:
+      - merchant_profiles
+      security:
+      - basic_auth: []
+      operationId: show-merchant-profile
+      description: Get a merchant profile with the given token.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    put:
+      summary: Update merchant profile
+      tags:
+      - merchant_profiles
+      security:
+      - basic_auth: []
+      operationId: update-merchant-profile
+      description: Update the `description` on the Merchant Profile. All other parameters of the Merchant Profile cannot be updated once created.
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/merchant_profile_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/merchant_profile_update'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/merchant_profile_update'
+components:
+  schemas:
+    merchant_profile_create:
+      type: object
+      properties:
+        merchant_profile:
+          type: object
+          properties:
+            description:
+              type: string
+              description: A custom description that the merchant can assign to characterize the merchant profile.
+            sub_merchant_key:
+              type: string
+              description: The token of the Sub-merchant associated with the Merchant Profile if one exists.
+            visa:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            mastercard:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            amex:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            discover:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            diners:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            jcb:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            dankort:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            union_pay:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            cartes_bancaires:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+    merchant_profile_card_details:
+      type: object
+      properties:
+        acquirer_merchant_id:
+          type: string
+          description: The MID is a unique code that ensures the funds make it from the cardholder’s bank account to your bank account when a transaction is processed. It is passed with other transaction information and is used to help with transaction reconciliation. You receive a MID when you open a merchant account with an acquiring bank. A merchant can have multiple MIDs based on the different sales channels they have.
+        mcc:
+          type: string
+          description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
+        merchant_name:
+          type: string
+          description: Assigned by the acquiring bank; please contact them
+        country_code:
+          type: string
+          description: Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format.
+      required:
+      - acquirer_merchant_id
+      - mcc
+      - merchant_name
+      - country_code
+    merchant_profile_properties:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this merchant profile at Spreedly
+        description:
+          type: string
+          description: A custom description that the merchant can assign to characterize the merchant profile.
+        created_at:
+          type: string
+          description: The time the merchant profile was created
+        updated_at:
+          type: string
+          description: The time the merchant profile was last updated
+        sub_merchant_key:
+          type: string
+          description: The token of the Sub-merchant associated with the Merchant Profile if one exists.
+        card_networks:
+          type: object
+          description: A nested object containing merchant info per card brand that are necessary to generate 3DS credentials per merchant. See `acquirer_merchant_id`, `merchant_name`, `country_code`, and `mcc` below for nested field information
+          properties:
+            visa:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            mastercard:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            amex:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            discover:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            diners:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            jcb:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            dankort:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            union_pay:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            cartes_bancaires:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+    merchant_profile_update:
+      type: object
+      properties:
+        merchant_profile:
+          type: object
+          properties:
+            description:
+              type: string
+              description: A custom description that the merchant can assign to characterize the merchant profile.
+    merchant_profile_response:
+      type: object
+      properties:
+        merchant_profile:
+          $ref: '#/components/schemas/merchant_profile_properties'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    list_merchant_profiles_response:
+      type: object
+      properties:
+        merchant_profiles:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/merchant_profile_properties'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

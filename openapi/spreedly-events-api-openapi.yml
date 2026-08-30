@@ -1,0 +1,169 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Events API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: events
+paths:
+  /events:
+    get:
+      summary: list events
+      tags:
+      - events
+      security:
+      - basic_auth: []
+      operationId: list-events
+      description: Retrieve an ordered and paginated list of all events in the authenticated environment.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `desc`, which returns the newest records first. To list older records first, use `asc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The id of the item to start from (e.g., the last id received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of payment methods to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      - name: event_type
+        in: query
+        description: Filter events by event type. If not specified, all event types are returned.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_events_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_events_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /events/{event_id}:
+    parameters:
+    - name: event_id
+      in: path
+      description: The id of the event
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show event
+      tags:
+      - events
+      security:
+      - basic_auth: []
+      operationId: show-event
+      description: Get an event with the given id.
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/event_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    list_events_response:
+      type: object
+      properties:
+        events:
+          type: array
+          description: Root element
+          items:
+            $ref: '#/components/schemas/event_response'
+    event_response:
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The unique identifier for the event
+            request_id:
+              type: string
+              description: The X-REQUEST-ID HTTP header value of the request that generated the event
+            event_type:
+              type: string
+              description: The type of event that occurred, e.g., `AddGateway`, `UpdateMerchantProfile`
+            object_type:
+              type: string
+              description: The type of object that the event is associated with, e.g., `gateway`, `merchant_profile`
+            object_key:
+              type: string
+              description: The key of the object that the event is associated with, e.g., `6A8HT3R1XP9G78ABK04GM1957F`
+            created_at:
+              type: string
+              description: The time the event was created
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

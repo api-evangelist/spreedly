@@ -1,0 +1,3453 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Payment Methods API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: payment_methods
+paths:
+  /payment_methods/events:
+    get:
+      summary: List all payment method events
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: list-all-payment-method-events
+      description: 'Retrieve an ordered and paginated list of all payment method events in the authenticated environment.
+
+
+        Payment method events track important changes to payment methods such as creation, retention, redaction, and other lifecycle events. This endpoint allows you to retrieve these events with optional filtering and pagination.
+
+
+        *Response Format*
+
+
+        The response format varies by event type:
+
+        - `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data
+
+        - All other events are returned as `payment_method_event` objects
+
+        '
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: event_type
+        in: query
+        description: Filter events by event type (e.g., AddPaymentMethod, RetainPaymentMethod, RedactPaymentMethod, ReplacePaymentMethod, UpdatePaymentMethod)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of events to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      - name: include_transactions
+        in: query
+        description: Whether to include gateway transactions alongside events. Default is `false`. When `true`, returns a unified timeline of events and transactions sorted by creation time.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: successful
+          content:
+            List events:
+              examples:
+                application/json:
+                  value:
+                    payment_method_events:
+                    - token: SxrP4mNRxF0CRQxKIbAQNTnPF0k
+                      request_id: 86512117-dc11-4742-ad5a-91d64fb3e395
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: UpdatePaymentMethod
+                      event_data:
+                        changed_attributes:
+                          eligible_for_card_updater: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: messages.transaction_succeeded
+                    - token: 4W4TFJ8TJW9AJ92RFXR2JYJGB0
+                      request_id: null
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: RedactPaymentMethod
+                      event_data: null
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: null
+                    - token: 0B9BK4CYRC9058XQ9TCJRP2NKK
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: true
+                      state: succeeded
+                      message: null
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+            List events with transactions:
+              examples:
+                application/json:
+                  value:
+                    payment_method_events:
+                    - token: SxrP4mNRxF0CRQxKIbAQNTnPF0k
+                      request_id: 86512117-dc11-4742-ad5a-91d64fb3e395
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: UpdatePaymentMethod
+                      event_data:
+                        changed_attributes:
+                          eligible_for_card_updater: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: messages.transaction_succeeded
+                    - token: 4W4TFJ8TJW9AJ92RFXR2JYJGB0
+                      request_id: null
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: RedactPaymentMethod
+                      event_data: null
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: null
+                    - token: 0B9BK4CYRC9058XQ9TCJRP2NKK
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: true
+                      state: succeeded
+                      message: null
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+                    - on_test_gateway: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: false
+                      state: created
+                      token: 5usFkwA3Sy4lRTAgeIaQfKISwrZ
+                      transaction_type: Purchase
+                      order_id: null
+                      ip: null
+                      description: null
+                      email: null
+                      merchant_name_descriptor: null
+                      merchant_location_descriptor: null
+                      merchant_profile_key: null
+                      gateway_specific_fields: {}
+                      gateway_specific_response_fields: {}
+                      gateway_transaction_id: null
+                      sub_merchant_key: null
+                      gateway_latency_ms: null
+                      warning: null
+                      application_id: null
+                      risk_data: null
+                      merchant_metadata: null
+                      customer_data: null
+                      order_data: null
+                      workflow_key: null
+                      protection_parameters: {}
+                      amount: 4420
+                      local_amount: null
+                      currency_code: USD
+                      retain_on_success: false
+                      payment_method_added: false
+                      smart_routed: false
+                      stored_credential_initiator: null
+                      stored_credential_reason_type: null
+                      stored_credential_alternate_gateway: null
+                      stored_credential_final_payment: false
+                      message: null
+                      gateway_token: 3SVHVZFXW69QDAY7K9PG8GBM2E
+                      gateway_type: test
+                      shipping_address:
+                        name: null
+                        address1: null
+                        address2: null
+                        city: null
+                        state: null
+                        zip: null
+                        country: null
+                        phone_number: null
+                      api_urls:
+                      - referencing_transaction: []
+                      - failover_transaction: []
+                      attempt_3dsecure: false
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_events_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_events_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /payment_methods/events/{event_token}:
+    parameters:
+    - name: event_token
+      in: path
+      description: The token of the payment method event
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show payment method event
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: show-payment-method-event
+      description: 'Get a specific payment method event by its token.
+
+
+        Payment method events contain detailed information about changes to payment methods, including the event type, associated payment method, event data, and timing information.
+
+
+        *Response Format*
+
+
+        The response format varies by event type:
+
+        - `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data
+
+        - All other events are returned as `payment_method_event` objects
+
+        '
+      responses:
+        '200':
+          description: successful
+          content:
+            Payment Method Event:
+              examples:
+                application/json:
+                  value:
+                    payment_method_event:
+                      token: SxrP4mNRxF0CRQxKIbAQNTnPF0k
+                      request_id: 86512117-dc11-4742-ad5a-91d64fb3e395
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: UpdatePaymentMethod
+                      event_data:
+                        changed_attributes:
+                          eligible_for_card_updater: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: messages.transaction_succeeded
+            AddPaymentMethod Event:
+              examples:
+                application/json:
+                  value:
+                    transaction:
+                      token: 0B9BK4CYRC9058XQ9TCJRP2NKK
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: true
+                      state: succeeded
+                      message: null
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_event_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_event_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /payment_methods:
+    post:
+      summary: Create payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: create-payment-method
+      description: 'Add a payment method (credit card, bank account/ACH, Apple Pay, Google Pay, or third party token) to the authenticated environment''s vault.
+
+
+        To create a test payment method, use one of the [test card numbers](https://developer.spreedly.com/docs/test-data). For more information see the [Spreedly testing guide](https://developer.spreedly.com/docs/testing).
+
+
+        Third party tokens are payment methods stored in the Spreedly vault, that are a reference to another payment method stored at the gateway''s vault. For more information see the [third party token guide](https://developer.spreedly.com/docs/third-party-vaulting).
+
+        '
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            Network Token Provisioned:
+              examples:
+                application/json:
+                  value:
+                    transaction:
+                      token: AXKchwDYMqAmDqDhxCSaEqiHBk0
+                      created_at: '2022-04-14T18:15:18Z'
+                      updated_at: '2022-04-14T18:15:18Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: false
+                      state: succeeded
+                      message_key: messages.transaction_succeeded
+                      message: Succeeded!
+                      payment_method:
+                        token: PTp0nIk2NcqxaTlgsx3Esz2JSAN
+                        created_at: '2022-04-14T18:15:18Z'
+                        updated_at: '2022-04-14T18:15:18Z'
+                        email: joey@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata:
+                          key: string value
+                          another_key: 123
+                          final_key: true
+                        callback_url: null
+                        last_four_digits: '4444'
+                        first_six_digits: '555555'
+                        card_type: master
+                        first_name: Joe
+                        last_name: Jones
+                        month: 3
+                        year: 2029
+                        address1: 33 Lane Road
+                        address2: Apartment 4
+                        city: Wanaque
+                        state: NJ
+                        zip: '31331'
+                        country: US
+                        phone_number: 919.331.3313
+                        company: Acme Inc.
+                        full_name: Joe Jones
+                        eligible_for_card_updater: true
+                        shipping_address1: 33 Lane Road
+                        shipping_address2: Apartment 4
+                        shipping_city: Wanaque
+                        shipping_state: NJ
+                        shipping_zip: '31331'
+                        shipping_country: US
+                        shipping_phone_number: 919.331.3313
+                        issuer_identification_number: '55555555'
+                        payment_method_type: credit_card
+                        bin_metadata:
+                          card_brand: DISCOVER
+                          card_category: PERSONAL
+                          card_type: CREDIT
+                          issuing_bank: DISCOVER BANK
+                          issuing_country_iso_number: '840'
+                          issuing_country_iso_a2_code: US
+                          issuing_country_iso_a3_code: USA
+                          issuing_country_iso_name: UNITED STATES
+                          issuing_bank_phone_number: 1 (800) 347-7000
+                          issuing_bank_website: HTTPS://WWW.DISCOVER.COM/
+                          bin_type: PERSONAL
+                          regulated: Y
+                          max_pan_length: 19
+                          message: Successful
+                        errors: []
+                        fingerprint: b5fe350d5135ab64a8f3c1097fadefd9effb
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-4444
+                      network_tokenization:
+                        provisioned: true
+                        token_status: active
+                        token_reference: DWSP01234567890ABCDEF0123456789AB
+                        token_first_six_digits: '411111'
+                        token_last_four_digits: '1234'
+                        token_created_at: '2024-01-15T10:30:00Z'
+                        token_updated_at: '2024-01-15T10:30:00Z'
+                application/xml:
+                  value: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<transaction>\n  <token>AXKchwDYMqAmDqDhxCSaEqiHBk0</token>\n  <created-at>2022-04-14T18:15:18Z</created-at>\n  <updated-at>2022-04-14T18:15:18Z</updated-at>\n  <succeeded type=\"boolean\">true</succeeded>\n  <transaction-type>AddPaymentMethod</transaction-type>\n  <retained type=\"boolean\">false</retained>\n  <state>succeeded</state>\n  <message-key>messages.transaction_succeeded</message-key>\n  <message>Succeeded!</message>\n  <payment-method>\n    <token>PTp0nIk2NcqxaTlgsx3Esz2JSAN</token>\n    <created-at>2022-04-14T18:15:18Z</created-at>\n    <updated-at>2022-04-14T18:15:18Z</updated-at>\n    <email>joey@example.com</email>\n    <data nil=\"true\"/>\n    <storage-state>cached</storage-state>\n    <test type=\"boolean\">true</test>\n    <metadata>\n      <key>string value</key>\n      <another-key type=\"integer\">123</another-key>\n      <final-key type=\"boolean\">true</final-key>\n    </metadata>\n    <callback-url nil=\"true\"/>\n    <last-four-digits>4444</last-four-digits>\n    <first-six-digits>555555</first-six-digits>\n    <card-type>master</card-type>\n    <first-name>Joe</first-name>\n    <last-name>Jones</last-name>\n    <month type=\"integer\">3</month>\n    <year type=\"integer\">2029</year>\n    <address1>33 Lane Road</address1>\n    <address2>Apartment 4</address2>\n    <city>Wanaque</city>\n    <state>NJ</state>\n    <zip>31331</zip>\n    <country>US</country>\n    <phone-number>919.331.3313</phone-number>\n    <company>Acme Inc.</company>\n    <full-name>Joe Jones</full-name>\n    <eligible-for-card-updater type=\"boolean\">true</eligible-for-card-updater>\n    <shipping-address1>33 Lane Road</shipping-address1>\n    <shipping-address2>Apartment 4</shipping-address2>\n    <shipping-city>Wanaque</shipping-city>\n    <shipping-state>NJ</shipping-state>\n    <shipping-zip>31331</shipping-zip>\n    <shipping-country>US</shipping-country>\n    <shipping-phone-number>919.331.3313</shipping-phone-number>\n    <issuer-identification-number>55555555</issuer-identification-number>\n    <payment-method-type>credit_card</payment-method-type>\n    <bin-metadata>\n      <card-brand>DISCOVER</card-brand>\n      <card-category>PERSONAL</card-category>\n      <card-type>CREDIT</card-type>\n      <issuing-bank>DISCOVER BANK</issuing-bank>\n      <issuing-country-iso-number>840</issuing-country-iso-number>\n      <issuing-country-iso-a2-code>US</issuing-country-iso-a2-code>\n      <issuing-country-iso-a3-code>USA</issuing-country-iso-a3-code>\n      <issuing-country-iso-name>UNITED STATES</issuing-country-iso-name>\n      <issuing-bank-phone-number>1 (800) 347-7000</issuing-bank-phone-number>\n      <issuing-bank-website>HTTPS://WWW.DISCOVER.COM/</issuing-bank-website>\n      <bin-type>PERSONAL</bin-type>\n      <regulated>Y</regulated>\n      <max-pan-length type=\"integer\">19</max-pan-length>\n      <message>Successful</message>\n    </bin-metadata>\n    <errors type=\"array\"/>\n    <fingerprint>b5fe350d5135ab64a8f3c1097fadefd9effb</fingerprint>\n    <verification-value>XXX</verification-value>\n    <number>XXXX-XXXX-XXXX-4444</number>\n  </payment-method>\n  <network-tokenization>\n    <provisioned type=\"boolean\">true</provisioned>\n    <token-status>active</token-status>\n    <token-reference>DWSP01234567890ABCDEF0123456789AB</token-reference>\n    <token-first-six-digits>411111</token-first-six-digits>\n    <token-last-four-digits>1234</token-last-four-digits>\n    <token-created-at>2024-01-15T10:30:00Z</token-created-at>\n    <token-updated-at>2024-01-15T10:30:00Z</token-updated-at>\n  </network-tokenization>\n</transaction>\n"
+            Network Token Provision Failed:
+              examples:
+                application/json:
+                  value:
+                    transaction:
+                      token: AXKchwDYMqAmDqDhxCSaEqiHBk0
+                      created_at: '2022-04-14T18:15:18Z'
+                      updated_at: '2022-04-14T18:15:18Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: false
+                      state: succeeded
+                      message_key: messages.transaction_succeeded
+                      message: Succeeded!
+                      payment_method:
+                        token: PTp0nIk2NcqxaTlgsx3Esz2JSAN
+                        created_at: '2022-04-14T18:15:18Z'
+                        updated_at: '2022-04-14T18:15:18Z'
+                        email: joey@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata:
+                          key: string value
+                          another_key: 123
+                          final_key: true
+                        callback_url: null
+                        last_four_digits: '4444'
+                        first_six_digits: '555555'
+                        card_type: master
+                        first_name: Joe
+                        last_name: Jones
+                        month: 3
+                        year: 2029
+                        address1: 33 Lane Road
+                        address2: Apartment 4
+                        city: Wanaque
+                        state: NJ
+                        zip: '31331'
+                        country: US
+                        phone_number: 919.331.3313
+                        company: Acme Inc.
+                        full_name: Joe Jones
+                        eligible_for_card_updater: true
+                        shipping_address1: 33 Lane Road
+                        shipping_address2: Apartment 4
+                        shipping_city: Wanaque
+                        shipping_state: NJ
+                        shipping_zip: '31331'
+                        shipping_country: US
+                        shipping_phone_number: 919.331.3313
+                        issuer_identification_number: '55555555'
+                        payment_method_type: credit_card
+                        bin_metadata:
+                          card_brand: DISCOVER
+                          card_category: PERSONAL
+                          card_type: CREDIT
+                          issuing_bank: DISCOVER BANK
+                          issuing_country_iso_number: '840'
+                          issuing_country_iso_a2_code: US
+                          issuing_country_iso_a3_code: USA
+                          issuing_country_iso_name: UNITED STATES
+                          issuing_bank_phone_number: 1 (800) 347-7000
+                          issuing_bank_website: HTTPS://WWW.DISCOVER.COM/
+                          bin_type: PERSONAL
+                          regulated: Y
+                          max_pan_length: 19
+                          message: Successful
+                        errors: []
+                        fingerprint: b5fe350d5135ab64a8f3c1097fadefd9effb
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-4444
+                      network_tokenization:
+                        provisioned: false
+                        token_status: null
+                        errors:
+                        - key: invalidParameter
+                          message: Your request does not have valid set of parameters required to process the business function.
+                          action: provision_network_token
+                application/xml:
+                  value: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<transaction>\n  <token>AXKchwDYMqAmDqDhxCSaEqiHBk0</token>\n  <created-at>2022-04-14T18:15:18Z</created-at>\n  <updated-at>2022-04-14T18:15:18Z</updated-at>\n  <succeeded type=\"boolean\">true</succeeded>\n  <transaction-type>AddPaymentMethod</transaction-type>\n  <retained type=\"boolean\">false</retained>\n  <state>succeeded</state>\n  <message-key>messages.transaction_succeeded</message-key>\n  <message>Succeeded!</message>\n  <payment-method>\n    <token>PTp0nIk2NcqxaTlgsx3Esz2JSAN</token>\n    <created-at>2022-04-14T18:15:18Z</created-at>\n    <updated-at>2022-04-14T18:15:18Z</updated-at>\n    <email>joey@example.com</email>\n    <data nil=\"true\"/>\n    <storage-state>cached</storage-state>\n    <test type=\"boolean\">true</test>\n    <metadata>\n      <key>string value</key>\n      <another-key type=\"integer\">123</another-key>\n      <final-key type=\"boolean\">true</final-key>\n    </metadata>\n    <callback-url nil=\"true\"/>\n    <last-four-digits>4444</last-four-digits>\n    <first-six-digits>555555</first-six-digits>\n    <card-type>master</card-type>\n    <first-name>Joe</first-name>\n    <last-name>Jones</last-name>\n    <month type=\"integer\">3</month>\n    <year type=\"integer\">2029</year>\n    <address1>33 Lane Road</address1>\n    <address2>Apartment 4</address2>\n    <city>Wanaque</city>\n    <state>NJ</state>\n    <zip>31331</zip>\n    <country>US</country>\n    <phone-number>919.331.3313</phone-number>\n    <company>Acme Inc.</company>\n    <full-name>Joe Jones</full-name>\n    <eligible-for-card-updater type=\"boolean\">true</eligible-for-card-updater>\n    <shipping-address1>33 Lane Road</shipping-address1>\n    <shipping-address2>Apartment 4</shipping-address2>\n    <shipping-city>Wanaque</shipping-city>\n    <shipping-state>NJ</shipping-state>\n    <shipping-zip>31331</shipping-zip>\n    <shipping-country>US</shipping-country>\n    <shipping-phone-number>919.331.3313</shipping-phone-number>\n    <issuer-identification-number>55555555</issuer-identification-number>\n    <payment-method-type>credit_card</payment-method-type>\n    <bin-metadata>\n      <card-brand>DISCOVER</card-brand>\n      <card-category>PERSONAL</card-category>\n      <card-type>CREDIT</card-type>\n      <issuing-bank>DISCOVER BANK</issuing-bank>\n      <issuing-country-iso-number>840</issuing-country-iso-number>\n      <issuing-country-iso-a2-code>US</issuing-country-iso-a2-code>\n      <issuing-country-iso-a3-code>USA</issuing-country-iso-a3-code>\n      <issuing-country-iso-name>UNITED STATES</issuing-country-iso-name>\n      <issuing-bank-phone-number>1 (800) 347-7000</issuing-bank-phone-number>\n      <issuing-bank-website>HTTPS://WWW.DISCOVER.COM/</issuing-bank-website>\n      <bin-type>PERSONAL</bin-type>\n      <regulated>Y</regulated>\n      <max-pan-length type=\"integer\">19</max-pan-length>\n      <message>Successful</message>\n    </bin-metadata>\n    <errors type=\"array\"/>\n    <fingerprint>b5fe350d5135ab64a8f3c1097fadefd9effb</fingerprint>\n    <verification-value>XXX</verification-value>\n    <number>XXXX-XXXX-XXXX-4444</number>\n  </payment-method>\n  <network-tokenization>\n    <provisioned type=\"boolean\">false</provisioned>\n    <token-status nil=\"true\"/>\n    <errors type=\"array\">\n      <error>\n        <key>invalidParameter</key>\n        <message>Your request does not have valid set of parameters required to process the business function.</message>\n        <action>provision_network_token</action>\n      </error>\n    </errors>\n  </network-tokenization>\n</transaction>\n"
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_create_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_create_response'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payment_method_request'
+            examples:
+              Credit card:
+                summary: Credit card
+                value:
+                  payment_method:
+                    credit_card:
+                      first_name: Joe
+                      last_name: Jones
+                      number: '5555555555554444'
+                      verification_value: '423'
+                      month: '3'
+                      year: '2029'
+                      company: Acme Inc.
+                      address1: 33 Lane Road
+                      address2: Apartment 4
+                      city: Wanaque
+                      state: NJ
+                      zip: '31331'
+                      country: US
+                      phone_number: 919.331.3313
+                      shipping_address1: 33 Lane Road
+                      shipping_address2: Apartment 4
+                      shipping_city: Wanaque
+                      shipping_state: NJ
+                      shipping_zip: '31331'
+                      shipping_country: US
+                      shipping_phone_number: 919.331.3313
+                    email: joey@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+              Bank account/ACH:
+                summary: Bank account/ACH
+                value:
+                  payment_method:
+                    bank_account:
+                      first_name: Jon
+                      last_name: Doe
+                      bank_name: Test Bank
+                      bank_routing_number: '021000021'
+                      bank_account_number: '9876543210'
+                      bank_account_type: checking
+                      bank_account_holder_type: personal
+                    email: jon.doe@example.com
+                    data:
+                      my_payment_method_identifier: 448
+                      extra_stuff:
+                        some_other_things: Can be anything really
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+              Apple Pay:
+                summary: Apple Pay
+                value:
+                  payment_method:
+                    apple_pay:
+                      payment_data:
+                        version: ''
+                        data: ''
+                        signature: ''
+                        header:
+                          ephemeralPublicKey: ''
+                          transactionId: ''
+                          publicKeyHash: ''
+                      test_card_number: '4111111111111111'
+                    first_name: John
+                    last_name: Smith
+                    email: john.smith@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+                    address1: 12345 Example Way
+                    city: Atlanta
+                    state: GA
+                    zip: '30301'
+                    country: USA
+                    shipping_address1: 12345 Example Way
+                    shipping_city: Atlanta
+                    shipping_state: GA
+                    shipping_zip: '30301'
+                    shipping_country: USA
+              Google Pay:
+                summary: Google Pay
+                value:
+                  payment_method:
+                    google_pay:
+                      payment_data:
+                        signature: ''
+                        protocolVersion: ''
+                        signedMessage: '{}'
+                      first_name: John
+                      last_name: Smith
+                      test_card_number: '4111111111111111'
+                    email: john.smith@example.com
+              Third Party Token:
+                summary: Third Party Token
+                value:
+                  payment_method:
+                    payment_method_type: third_party_token
+                    reference: ''
+                    gateway_type: litle
+              Provision Network Token:
+                summary: Attempt to Provision Network Token
+                value:
+                  payment_method:
+                    credit_card:
+                      first_name: Joe
+                      last_name: Jones
+                      number: '5555555555554444'
+                      verification_value: '423'
+                      month: '3'
+                      year: '2029'
+                      company: Acme Inc.
+                      address1: 33 Lane Road
+                      address2: Apartment 4
+                      city: Wanaque
+                      state: NJ
+                      zip: '31331'
+                      country: US
+                      phone_number: 919.331.3313
+                      shipping_address1: 33 Lane Road
+                      shipping_address2: Apartment 4
+                      shipping_city: Wanaque
+                      shipping_state: NJ
+                      shipping_zip: '31331'
+                      shipping_country: US
+                      shipping_phone_number: 919.331.3313
+                    email: joey@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+                    provision_network_token: true
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/payment_method_request'
+            examples:
+              Credit card:
+                summary: Credit card
+                value:
+                  payment_method:
+                    credit_card:
+                      first_name: Joe
+                      last_name: Jones
+                      number: '5555555555554444'
+                      verification_value: '423'
+                      month: '3'
+                      year: '2029'
+                      company: Acme Inc.
+                      address1: 33 Lane Road
+                      address2: Apartment 4
+                      city: Wanaque
+                      state: NJ
+                      zip: '31331'
+                      country: US
+                      phone_number: 919.331.3313
+                      shipping_address1: 33 Lane Road
+                      shipping_address2: Apartment 4
+                      shipping_city: Wanaque
+                      shipping_state: NJ
+                      shipping_zip: '31331'
+                      shipping_country: US
+                      shipping_phone_number: 919.331.3313
+                    email: joey@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+              Bank account/ACH:
+                summary: Bank account/ACH
+                value:
+                  payment_method:
+                    bank_account:
+                      first_name: Jon
+                      last_name: Doe
+                      bank_name: Test Bank
+                      bank_routing_number: '021000021'
+                      bank_account_number: '9876543210'
+                      bank_account_type: checking
+                      bank_account_holder_type: personal
+                    email: jon.doe@example.com
+                    data:
+                      my_payment_method_identifier: 448
+                      extra_stuff:
+                        some_other_things: Can be anything really
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+              Apple Pay:
+                summary: Apple Pay
+                value:
+                  payment_method:
+                    apple_pay:
+                      payment_data:
+                        version: ''
+                        data: ''
+                        signature: ''
+                        header:
+                          ephemeralPublicKey: ''
+                          transactionId: ''
+                          publicKeyHash: ''
+                      test_card_number: '4111111111111111'
+                    first_name: John
+                    last_name: Smith
+                    email: john.smith@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+                    address1: 12345 Example Way
+                    city: Atlanta
+                    state: GA
+                    zip: '30301'
+                    country: USA
+                    shipping_address1: 12345 Example Way
+                    shipping_city: Atlanta
+                    shipping_state: GA
+                    shipping_zip: '30301'
+                    shipping_country: USA
+              Google Pay:
+                summary: Google Pay
+                value:
+                  payment_method:
+                    google_pay:
+                      payment_data:
+                        signature: ''
+                        protocolVersion: ''
+                        signedMessage: '{}'
+                      first_name: John
+                      last_name: Smith
+                      test_card_number: '4111111111111111'
+                    email: john.smith@example.com
+              Third Party Token:
+                summary: Third Party Token
+                value:
+                  payment_method:
+                    payment_method_type: third_party_token
+                    reference: ''
+                    gateway_type: litle
+              Provision Network Token:
+                summary: Attempt to Provision Network Token
+                value:
+                  payment_method:
+                    credit_card:
+                      first_name: Joe
+                      last_name: Jones
+                      number: '5555555555554444'
+                      verification_value: '423'
+                      month: '3'
+                      year: '2029'
+                      company: Acme Inc.
+                      address1: 33 Lane Road
+                      address2: Apartment 4
+                      city: Wanaque
+                      state: NJ
+                      zip: '31331'
+                      country: US
+                      phone_number: 919.331.3313
+                      shipping_address1: 33 Lane Road
+                      shipping_address2: Apartment 4
+                      shipping_city: Wanaque
+                      shipping_state: NJ
+                      shipping_zip: '31331'
+                      shipping_country: US
+                      shipping_phone_number: 919.331.3313
+                    email: joey@example.com
+                    metadata:
+                      key: string value
+                      another_key: 123
+                      final_key: true
+                    provision_network_token: true
+    get:
+      summary: List payment methods
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: list-payment-method
+      description: 'Retrieve an ordered and paginated list of all retained payment methods in the authenticated environment.
+
+
+        *States*
+
+        Payment methods can exist in several states in the Spreedly vault - retained, redacted, cached, or used. Retained payment methods are stored in Spreedly''s vault until redacted. Redacted payment methods are payment methods that were either not retained or have been manually redacted. Cached payment methods are payment methods that have not been retained but have not yet been automatically redacted yet. Cached payment methods can still be retained. For more information, please see our guide on [retaining payment methods](https://developer.spreedly.com/docs/create-transactions#retain).
+
+
+        If no state parameter or an invalid state parameter is passed, list will only return retained payment methods. If the state parameter is passed, list will return those parameters: retained, redacted, cached, used.
+
+
+        Example: `https://core.spreedly.com/v1/payment_methods.json?state=retained,redacted,cached,used`
+
+
+        If the state parameter is combined with other existing parameters such as metadata, both will be considered.
+
+
+        Example: `https://core.spreedly.com/v1/payment_methods.json?metadata[customer_id]=123abc&state=redacted,retained`
+
+        '
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: metadata
+        in: query
+        description: A metadata key/value pair represented as a hash (e.g. metadata[key]=value).
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: The list of storage_states to return. By default returns retained, acceptable values are retained, redacted, cached, used
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of payment methods to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_methods_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_methods_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /payment_methods/{payment_method_token}:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: show-payment-method
+      description: Get a payment method with the given token.
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_show_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_show_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    put:
+      summary: Update payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: update-payment-method
+      description: Update a payment method's non-sensitive attributes.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payment_method_update'
+            examples:
+              Update name and metadata:
+                summary: Update name and metadata
+                value: '{"payment_method":{"first_name":"New First","last_name":"New Last","metadata":{"key":"value"}}}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/payment_method_update'
+            examples:
+              Update name and metadata:
+                summary: Update name and metadata
+                value: '{"payment_method":{"first_name":"New First","last_name":"New Last","metadata":{"key":"value"}}}'
+  /payment_methods/{payment_method_token}/retain:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Retain payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: retain-payment-method
+      description: Retain (keep in the Spreedly vault for future use) a payment method.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            Network Token Provisioned:
+              examples:
+                application/json:
+                  value:
+                    transaction:
+                      token: AXKchwDYMqAmDqDhxCSaEqiHBk0
+                      created_at: '2022-04-14T18:15:18Z'
+                      updated_at: '2022-04-14T18:15:18Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: false
+                      state: succeeded
+                      message_key: messages.transaction_succeeded
+                      message: Succeeded!
+                      payment_method:
+                        token: PTp0nIk2NcqxaTlgsx3Esz2JSAN
+                        created_at: '2022-04-14T18:15:18Z'
+                        updated_at: '2022-04-14T18:15:18Z'
+                        email: joey@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata:
+                          key: string value
+                          another_key: 123
+                          final_key: true
+                        callback_url: null
+                        last_four_digits: '4444'
+                        first_six_digits: '555555'
+                        card_type: master
+                        first_name: Joe
+                        last_name: Jones
+                        month: 3
+                        year: 2029
+                        address1: 33 Lane Road
+                        address2: Apartment 4
+                        city: Wanaque
+                        state: NJ
+                        zip: '31331'
+                        country: US
+                        phone_number: 919.331.3313
+                        company: Acme Inc.
+                        full_name: Joe Jones
+                        eligible_for_card_updater: true
+                        shipping_address1: 33 Lane Road
+                        shipping_address2: Apartment 4
+                        shipping_city: Wanaque
+                        shipping_state: NJ
+                        shipping_zip: '31331'
+                        shipping_country: US
+                        shipping_phone_number: 919.331.3313
+                        issuer_identification_number: '55555555'
+                        payment_method_type: credit_card
+                        bin_metadata:
+                          card_brand: DISCOVER
+                          card_category: PERSONAL
+                          card_type: CREDIT
+                          issuing_bank: DISCOVER BANK
+                          issuing_country_iso_number: '840'
+                          issuing_country_iso_a2_code: US
+                          issuing_country_iso_a3_code: USA
+                          issuing_country_iso_name: UNITED STATES
+                          issuing_bank_phone_number: 1 (800) 347-7000
+                          issuing_bank_website: HTTPS://WWW.DISCOVER.COM/
+                          bin_type: PERSONAL
+                          regulated: Y
+                          max_pan_length: 19
+                          message: Successful
+                        errors: []
+                        fingerprint: b5fe350d5135ab64a8f3c1097fadefd9effb
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-4444
+                      network_tokenization:
+                        provisioned: true
+                        token_status: active
+                        token_reference: DWSP01234567890ABCDEF0123456789AB
+                        token_first_six_digits: '411111'
+                        token_last_four_digits: '1234'
+                        token_created_at: '2024-01-15T10:30:00Z'
+                        token_updated_at: '2024-01-15T10:30:00Z'
+                application/xml:
+                  value: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<transaction>\n  <token>AXKchwDYMqAmDqDhxCSaEqiHBk0</token>\n  <created-at>2022-04-14T18:15:18Z</created-at>\n  <updated-at>2022-04-14T18:15:18Z</updated-at>\n  <succeeded type=\"boolean\">true</succeeded>\n  <transaction-type>AddPaymentMethod</transaction-type>\n  <retained type=\"boolean\">false</retained>\n  <state>succeeded</state>\n  <message-key>messages.transaction_succeeded</message-key>\n  <message>Succeeded!</message>\n  <payment-method>\n    <token>PTp0nIk2NcqxaTlgsx3Esz2JSAN</token>\n    <created-at>2022-04-14T18:15:18Z</created-at>\n    <updated-at>2022-04-14T18:15:18Z</updated-at>\n    <email>joey@example.com</email>\n    <data nil=\"true\"/>\n    <storage-state>cached</storage-state>\n    <test type=\"boolean\">true</test>\n    <metadata>\n      <key>string value</key>\n      <another-key type=\"integer\">123</another-key>\n      <final-key type=\"boolean\">true</final-key>\n    </metadata>\n    <callback-url nil=\"true\"/>\n    <last-four-digits>4444</last-four-digits>\n    <first-six-digits>555555</first-six-digits>\n    <card-type>master</card-type>\n    <first-name>Joe</first-name>\n    <last-name>Jones</last-name>\n    <month type=\"integer\">3</month>\n    <year type=\"integer\">2029</year>\n    <address1>33 Lane Road</address1>\n    <address2>Apartment 4</address2>\n    <city>Wanaque</city>\n    <state>NJ</state>\n    <zip>31331</zip>\n    <country>US</country>\n    <phone-number>919.331.3313</phone-number>\n    <company>Acme Inc.</company>\n    <full-name>Joe Jones</full-name>\n    <eligible-for-card-updater type=\"boolean\">true</eligible-for-card-updater>\n    <shipping-address1>33 Lane Road</shipping-address1>\n    <shipping-address2>Apartment 4</shipping-address2>\n    <shipping-city>Wanaque</shipping-city>\n    <shipping-state>NJ</shipping-state>\n    <shipping-zip>31331</shipping-zip>\n    <shipping-country>US</shipping-country>\n    <shipping-phone-number>919.331.3313</shipping-phone-number>\n    <issuer-identification-number>55555555</issuer-identification-number>\n    <payment-method-type>credit_card</payment-method-type>\n    <bin-metadata>\n      <card-brand>DISCOVER</card-brand>\n      <card-category>PERSONAL</card-category>\n      <card-type>CREDIT</card-type>\n      <issuing-bank>DISCOVER BANK</issuing-bank>\n      <issuing-country-iso-number>840</issuing-country-iso-number>\n      <issuing-country-iso-a2-code>US</issuing-country-iso-a2-code>\n      <issuing-country-iso-a3-code>USA</issuing-country-iso-a3-code>\n      <issuing-country-iso-name>UNITED STATES</issuing-country-iso-name>\n      <issuing-bank-phone-number>1 (800) 347-7000</issuing-bank-phone-number>\n      <issuing-bank-website>HTTPS://WWW.DISCOVER.COM/</issuing-bank-website>\n      <bin-type>PERSONAL</bin-type>\n      <regulated>Y</regulated>\n      <max-pan-length type=\"integer\">19</max-pan-length>\n      <message>Successful</message>\n    </bin-metadata>\n    <errors type=\"array\"/>\n    <fingerprint>b5fe350d5135ab64a8f3c1097fadefd9effb</fingerprint>\n    <verification-value>XXX</verification-value>\n    <number>XXXX-XXXX-XXXX-4444</number>\n  </payment-method>\n  <network-tokenization>\n    <provisioned type=\"boolean\">true</provisioned>\n    <token-status>active</token-status>\n    <token-reference>DWSP01234567890ABCDEF0123456789AB</token-reference>\n    <token-first-six-digits>411111</token-first-six-digits>\n    <token-last-four-digits>1234</token-last-four-digits>\n    <token-created-at>2024-01-15T10:30:00Z</token-created-at>\n    <token-updated-at>2024-01-15T10:30:00Z</token-updated-at>\n  </network-tokenization>\n</transaction>\n"
+            Network Token Provision Failed:
+              examples:
+                application/json:
+                  value:
+                    transaction:
+                      token: AXKchwDYMqAmDqDhxCSaEqiHBk0
+                      created_at: '2022-04-14T18:15:18Z'
+                      updated_at: '2022-04-14T18:15:18Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: false
+                      state: succeeded
+                      message_key: messages.transaction_succeeded
+                      message: Succeeded!
+                      payment_method:
+                        token: PTp0nIk2NcqxaTlgsx3Esz2JSAN
+                        created_at: '2022-04-14T18:15:18Z'
+                        updated_at: '2022-04-14T18:15:18Z'
+                        email: joey@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata:
+                          key: string value
+                          another_key: 123
+                          final_key: true
+                        callback_url: null
+                        last_four_digits: '4444'
+                        first_six_digits: '555555'
+                        card_type: master
+                        first_name: Joe
+                        last_name: Jones
+                        month: 3
+                        year: 2029
+                        address1: 33 Lane Road
+                        address2: Apartment 4
+                        city: Wanaque
+                        state: NJ
+                        zip: '31331'
+                        country: US
+                        phone_number: 919.331.3313
+                        company: Acme Inc.
+                        full_name: Joe Jones
+                        eligible_for_card_updater: true
+                        shipping_address1: 33 Lane Road
+                        shipping_address2: Apartment 4
+                        shipping_city: Wanaque
+                        shipping_state: NJ
+                        shipping_zip: '31331'
+                        shipping_country: US
+                        shipping_phone_number: 919.331.3313
+                        issuer_identification_number: '55555555'
+                        payment_method_type: credit_card
+                        bin_metadata:
+                          card_brand: DISCOVER
+                          card_category: PERSONAL
+                          card_type: CREDIT
+                          issuing_bank: DISCOVER BANK
+                          issuing_country_iso_number: '840'
+                          issuing_country_iso_a2_code: US
+                          issuing_country_iso_a3_code: USA
+                          issuing_country_iso_name: UNITED STATES
+                          issuing_bank_phone_number: 1 (800) 347-7000
+                          issuing_bank_website: HTTPS://WWW.DISCOVER.COM/
+                          bin_type: PERSONAL
+                          regulated: Y
+                          max_pan_length: 19
+                          message: Successful
+                        errors: []
+                        fingerprint: b5fe350d5135ab64a8f3c1097fadefd9effb
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-4444
+                      network_tokenization:
+                        provisioned: false
+                        token_status: null
+                        errors:
+                        - key: invalidParameter
+                          message: Your request does not have valid set of parameters required to process the business function.
+                          action: provision_network_token
+                application/xml:
+                  value: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<transaction>\n  <token>AXKchwDYMqAmDqDhxCSaEqiHBk0</token>\n  <created-at>2022-04-14T18:15:18Z</created-at>\n  <updated-at>2022-04-14T18:15:18Z</updated-at>\n  <succeeded type=\"boolean\">true</succeeded>\n  <transaction-type>AddPaymentMethod</transaction-type>\n  <retained type=\"boolean\">false</retained>\n  <state>succeeded</state>\n  <message-key>messages.transaction_succeeded</message-key>\n  <message>Succeeded!</message>\n  <payment-method>\n    <token>PTp0nIk2NcqxaTlgsx3Esz2JSAN</token>\n    <created-at>2022-04-14T18:15:18Z</created-at>\n    <updated-at>2022-04-14T18:15:18Z</updated-at>\n    <email>joey@example.com</email>\n    <data nil=\"true\"/>\n    <storage-state>cached</storage-state>\n    <test type=\"boolean\">true</test>\n    <metadata>\n      <key>string value</key>\n      <another-key type=\"integer\">123</another-key>\n      <final-key type=\"boolean\">true</final-key>\n    </metadata>\n    <callback-url nil=\"true\"/>\n    <last-four-digits>4444</last-four-digits>\n    <first-six-digits>555555</first-six-digits>\n    <card-type>master</card-type>\n    <first-name>Joe</first-name>\n    <last-name>Jones</last-name>\n    <month type=\"integer\">3</month>\n    <year type=\"integer\">2029</year>\n    <address1>33 Lane Road</address1>\n    <address2>Apartment 4</address2>\n    <city>Wanaque</city>\n    <state>NJ</state>\n    <zip>31331</zip>\n    <country>US</country>\n    <phone-number>919.331.3313</phone-number>\n    <company>Acme Inc.</company>\n    <full-name>Joe Jones</full-name>\n    <eligible-for-card-updater type=\"boolean\">true</eligible-for-card-updater>\n    <shipping-address1>33 Lane Road</shipping-address1>\n    <shipping-address2>Apartment 4</shipping-address2>\n    <shipping-city>Wanaque</shipping-city>\n    <shipping-state>NJ</shipping-state>\n    <shipping-zip>31331</shipping-zip>\n    <shipping-country>US</shipping-country>\n    <shipping-phone-number>919.331.3313</shipping-phone-number>\n    <issuer-identification-number>55555555</issuer-identification-number>\n    <payment-method-type>credit_card</payment-method-type>\n    <bin-metadata>\n      <card-brand>DISCOVER</card-brand>\n      <card-category>PERSONAL</card-category>\n      <card-type>CREDIT</card-type>\n      <issuing-bank>DISCOVER BANK</issuing-bank>\n      <issuing-country-iso-number>840</issuing-country-iso-number>\n      <issuing-country-iso-a2-code>US</issuing-country-iso-a2-code>\n      <issuing-country-iso-a3-code>USA</issuing-country-iso-a3-code>\n      <issuing-country-iso-name>UNITED STATES</issuing-country-iso-name>\n      <issuing-bank-phone-number>1 (800) 347-7000</issuing-bank-phone-number>\n      <issuing-bank-website>HTTPS://WWW.DISCOVER.COM/</issuing-bank-website>\n      <bin-type>PERSONAL</bin-type>\n      <regulated>Y</regulated>\n      <max-pan-length type=\"integer\">19</max-pan-length>\n      <message>Successful</message>\n    </bin-metadata>\n    <errors type=\"array\"/>\n    <fingerprint>b5fe350d5135ab64a8f3c1097fadefd9effb</fingerprint>\n    <verification-value>XXX</verification-value>\n    <number>XXXX-XXXX-XXXX-4444</number>\n  </payment-method>\n  <network-tokenization>\n    <provisioned type=\"boolean\">false</provisioned>\n    <token-status nil=\"true\"/>\n    <errors type=\"array\">\n      <error>\n        <key>invalidParameter</key>\n        <message>Your request does not have valid set of parameters required to process the business function.</message>\n        <action>provision_network_token</action>\n      </error>\n    </errors>\n  </network-tokenization>\n</transaction>\n"
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_retain_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_retain_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/provision_network_token'
+            examples:
+              Provision Network Token:
+                summary: Attempt to Provision Network Token
+                value: '{"provision_network_token":true}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/provision_network_token'
+            examples:
+              Provision Network Token:
+                summary: Attempt to Provision Network Token
+                value: '{"provision_network_token":true}'
+  /payment_methods/{payment_method_token}/redact:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Redact payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: redact-payment-method
+      description: Redact (strip of any sensitive credentials and make inactive) a payment method.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_redact_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_redact_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payment_method_redact'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/payment_method_redact'
+  /payment_methods/{payment_method_token}/update_gratis:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Update gratis payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: update-gratis-payment-method
+      description: 'Update a payment method''s management state and some specific payment method parameters associated with Advanced Vault.
+
+        For further details, see [Advanced Vault](https://developer.spreedly.com/docs/advanced-vault).
+
+
+        Please note, that this API call is only available to merchants who are currently enrolled in Advanced Vault.
+
+        '
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/payment_method_update_gratis'
+            examples:
+              Update managed status:
+                summary: Update managed status
+                value: '{"payment_method":{"managed":true}}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/payment_method_update_gratis'
+            examples:
+              Update managed status:
+                summary: Update managed status
+                value: '{"payment_method":{"managed":true}}'
+  /payment_methods/{payment_method_token}/transactions:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List transactions payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: list-transactions-payment-method
+      description: Get an ordered and paginated list of transactions executed against a specific payment method.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transactions_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/transactions_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /payment_methods/{payment_method_token}/metadata:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    delete:
+      summary: Delete metadata payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: delete-metadata-payment-method
+      description: Remove key value pairs from a payment method's metadata.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/delete_metadata'
+            examples:
+              Delete metadata:
+                summary: Delete metadata
+                value: '{"keys":["another_key","final_key"]}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/delete_metadata'
+            examples:
+              Delete metadata:
+                summary: Delete metadata
+                value: '{"keys":["another_key","final_key"]}'
+  /payment_methods/{payment_method_token}/recache:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Recache payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: recache-payment-method
+      description: 'Update a credit card''s verification value (CVV) so the card can be transacted against.
+
+
+        Note: A credit card must be retained in your environment in order to re-cache its CVV.
+
+        '
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_response'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recache'
+            examples:
+              Recache CVV:
+                summary: Recache CVV
+                value: '{"payment_method":{"credit_card":{"verification_value":"123"}}}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/recache'
+            examples:
+              Recache CVV:
+                summary: Recache CVV
+                value: '{"payment_method":{"credit_card":{"verification_value":"123"}}}'
+  /payment_methods/{payment_method_token}/events:
+    parameters:
+    - name: payment_method_token
+      in: path
+      description: The token of the payment method
+      required: true
+      schema:
+        type: string
+    get:
+      summary: List events for a payment method
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: list-events-payment-method
+      description: 'Get a list of events for a specific payment method.
+
+
+        *Response Format*
+
+
+        The response format varies by event type:
+
+        - `AddPaymentMethod` events are returned as `transaction` objects with embedded payment method data
+
+        - All other events are returned as `payment_method_event` objects
+
+        '
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of events to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      - name: include_transactions
+        in: query
+        description: Whether to include gateway transactions alongside events. Default is `false`. When `true`, returns a unified timeline of events and transactions sorted by creation time.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: successful
+          content:
+            List events:
+              examples:
+                application/json:
+                  value:
+                    payment_method_events:
+                    - token: SxrP4mNRxF0CRQxKIbAQNTnPF0k
+                      request_id: 86512117-dc11-4742-ad5a-91d64fb3e395
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: UpdatePaymentMethod
+                      event_data:
+                        changed_attributes:
+                          eligible_for_card_updater: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: messages.transaction_succeeded
+                    - token: 4W4TFJ8TJW9AJ92RFXR2JYJGB0
+                      request_id: null
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: RedactPaymentMethod
+                      event_data: null
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: null
+                    - token: 0B9BK4CYRC9058XQ9TCJRP2NKK
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: true
+                      state: succeeded
+                      message: null
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+            List events with transactions:
+              examples:
+                application/json:
+                  value:
+                    payment_method_events:
+                    - token: SxrP4mNRxF0CRQxKIbAQNTnPF0k
+                      request_id: 86512117-dc11-4742-ad5a-91d64fb3e395
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: UpdatePaymentMethod
+                      event_data:
+                        changed_attributes:
+                          eligible_for_card_updater: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: messages.transaction_succeeded
+                    - token: 4W4TFJ8TJW9AJ92RFXR2JYJGB0
+                      request_id: null
+                      payment_method_key: Cq5kiRP6dXFVRjab
+                      event_type: RedactPaymentMethod
+                      event_data: null
+                      created_at: '2025-10-09T19:28:04Z'
+                      state: succeeded
+                      message: null
+                    - token: 0B9BK4CYRC9058XQ9TCJRP2NKK
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: true
+                      transaction_type: AddPaymentMethod
+                      retained: true
+                      state: succeeded
+                      message: null
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+                    - on_test_gateway: false
+                      created_at: '2025-10-09T19:28:04Z'
+                      updated_at: '2025-10-09T19:28:04Z'
+                      succeeded: false
+                      state: created
+                      token: 5usFkwA3Sy4lRTAgeIaQfKISwrZ
+                      transaction_type: Purchase
+                      order_id: null
+                      ip: null
+                      description: null
+                      email: null
+                      merchant_name_descriptor: null
+                      merchant_location_descriptor: null
+                      merchant_profile_key: null
+                      gateway_specific_fields: {}
+                      gateway_specific_response_fields: {}
+                      gateway_transaction_id: null
+                      sub_merchant_key: null
+                      gateway_latency_ms: null
+                      warning: null
+                      application_id: null
+                      risk_data: null
+                      merchant_metadata: null
+                      customer_data: null
+                      order_data: null
+                      workflow_key: null
+                      protection_parameters: {}
+                      amount: 4420
+                      local_amount: null
+                      currency_code: USD
+                      retain_on_success: false
+                      payment_method_added: false
+                      smart_routed: false
+                      stored_credential_initiator: null
+                      stored_credential_reason_type: null
+                      stored_credential_alternate_gateway: null
+                      stored_credential_final_payment: false
+                      message: null
+                      gateway_token: 3SVHVZFXW69QDAY7K9PG8GBM2E
+                      gateway_type: test
+                      shipping_address:
+                        name: null
+                        address1: null
+                        address2: null
+                        city: null
+                        state: null
+                        zip: null
+                        country: null
+                        phone_number: null
+                      api_urls:
+                      - referencing_transaction: []
+                      - failover_transaction: []
+                      attempt_3dsecure: false
+                      payment_method:
+                        token: Cq5kiRP6dXFVRjab
+                        created_at: null
+                        updated_at: null
+                        email: test@example.com
+                        data: null
+                        storage_state: cached
+                        test: true
+                        metadata: null
+                        callback_url: null
+                        last_four_digits: '1111'
+                        first_six_digits: '411111'
+                        card_type: visa
+                        first_name: Gertrud
+                        last_name: Gusikowski
+                        month: 4
+                        year: 2027
+                        address1: 116 Main Street
+                        address2: null
+                        city: Durham
+                        state: NC
+                        zip: '27705'
+                        country: US
+                        phone_number: 123-456-7890
+                        company: null
+                        full_name: Gertrud Gusikowski
+                        eligible_for_card_updater: true
+                        shipping_address1: 116 Main Street
+                        shipping_address2: null
+                        shipping_city: Durham
+                        shipping_state: NC
+                        shipping_zip: '27705'
+                        shipping_country: US
+                        shipping_phone_number: 123-456-7890
+                        issuer_identification_number: '41111111'
+                        click_to_pay: null
+                        managed: true
+                        bin_metadata:
+                          message: BIN Metadata is available only to Advanced Vault enrolled customers and payment methods. Reach out to your account representative for more details.
+                        subscribed_to_mastercard_abu: false
+                        payment_method_type: credit_card
+                        errors: []
+                        fingerprint: null
+                        verification_value: XXX
+                        number: XXXX-XXXX-XXXX-1111
+            application/json:
+              schema:
+                $ref: '#/components/schemas/payment_method_events_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/payment_method_events_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /gateways/{gateway_token}/store:
+    post:
+      summary: Create a store transaction
+      tags:
+      - payment_methods
+      security:
+      - basic_auth: []
+      operationId: payment_method.store
+      description: 'Tokenize a payment method *at the gateway*.
+
+
+        This transaction copies the payment method information from the Spreedly vault [to the gateway''s vault](https://developer.spreedly.com/docs/third-party-vaulting) and creates a new Spreedly payment method to represent the gateway''s version. The reference to the payment method at the gateway is called a ThirdPartyToken and is a separate payment method from the original payment method. It is up to you to manage the lifecycle of these linked payment methods – Spreedly does not keep them in sync in any way.
+
+
+        The ThirdPartyToken is locked to the gateway where the card is stored; it cannot be used at another gateway. If you''d like a card to be used at multiple gateways, you''ll need to [retain the card in the Spreedly vault](https://developer.spreedly.com/docs/create-transactions#retain).
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/gateway_token'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/store_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/store_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/store'
+            examples:
+              Store at gateway:
+                summary: Store at gateway
+                value: '{"transaction":{"payment_method_token":""}}'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/store'
+            examples:
+              Store at gateway:
+                summary: Store at gateway
+                value: '{"transaction":{"payment_method_token":""}}'
+components:
+  schemas:
+    store_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root element
+          properties:
+            created_at:
+              type: string
+              description: The time the transaction was created
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+            updated_at:
+              type: string
+              description: The time the transaction was last updated
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            state:
+              type: string
+              description: The current state of the transaction
+            gateway_specific_fields:
+              $ref: '#/components/schemas/gateway_specific_fields'
+            gateway_specific_response_fields:
+              type: object
+              description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+            transaction_type:
+              type: string
+              description: The type of transaction
+            third_party_token:
+              type: string
+              description: The token identifying the payment method as it exists *at the gateway*
+            gateway_transaction_id:
+              type: string
+              description: The id of the transaction *at the gateway*. To be used when corresponding with the gateway or reconciling transactions
+            gateway_latency_ms:
+              type: string
+              description: The time it took the gateway to respond to Spreedly
+            message_key:
+              type: string
+              description: A machine-parseable string indicating the result of the transaction
+            message:
+              type: string
+              description: A human-readable string indicating the result of the transaction
+            gateway_token:
+              type: string
+              description: The token of the gateway to executed against
+            gateway_type:
+              type: string
+              description: The type (short name) of the gateway
+            payment_method:
+              $ref: '#/components/schemas/third_party_token'
+            basis_payment_method:
+              type: object
+              description: The payment method vaulted at Spreedly that was copied to the gateway as part of this transaction
+            response:
+              type: object
+              description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+            sub_merchant_key:
+              type: string
+              description: The token of the sub-merchant associated with the transaction.
+    payment_method_update:
+      type: object
+      properties:
+        payment_method:
+          type: object
+          properties:
+            attribute:
+              type: string
+              description: One or more non-sensitive attributes to update. Non-sensitive attributes are attributes excluding card numbers, verification values (CVV), bank account numbers etc...
+            allow_blank_name:
+              type: boolean
+              description: '`true` if this payment method should skip the name validation requirement (credit card only)'
+            allow_expired_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expired date validation requirement (credit card only)'
+            allow_blank_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expiration date validation requirement'
+            eligible_for_card_updater:
+              type: boolean
+              description: '`true` if this payment method should be included in Account Updater'
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+    payment_method_response:
+      type: object
+      properties:
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+    payment_snapshot:
+      type: object
+      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
+      properties:
+        gateway_tokens:
+          type: array
+          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
+          items:
+            type: string
+        attempts:
+          type: integer
+          description: Number of times the transaction has been attempted.
+        messages:
+          type: object
+          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
+        mode:
+          type: string
+          description: The Recover mode used, either `standard` or `outage_only`.
+        custom_error_used:
+          type: boolean
+          description: '`true` if the transaction used a custom error in the recovery decision process.'
+        override_default_error_codes:
+          type: boolean
+          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
+        created_at:
+          type: string
+          description: The time the payment_snapshot was created.
+        updated_at:
+          type: string
+          description: The time the payment_snapshot was updated.
+        payment_token:
+          type: string
+          description: The token corresponding to the Payment object, containing all information about the Recover chain.
+        previous_transaction_tokens:
+          type: array
+          description: List of all previous transactions associated with the Recover attempt.
+          items:
+            type: string
+    store:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root request element
+          properties:
+            payment_method_token:
+              type: string
+              description: The token of the payment method to copy to the gateway
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars. Some gateways may need this for a store call but most do not.
+          required:
+          - payment_method_token
+    payment_method_update_gratis:
+      type: object
+      properties:
+        payment_method:
+          type: object
+          properties:
+            managed:
+              type: boolean
+              description: '`true` or `false`'
+            allow_blank_name:
+              type: boolean
+              description: '`true` if this payment method should skip the name validation requirement'
+            allow_expired_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expired date validation requirement'
+            allow_blank_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expiration date validation requirement'
+            eligible_for_card_updater:
+              type: boolean
+              description: '`true` if this payment method should be included in Account Updater'
+            callback_url:
+              type: string
+              description: 'The URL where Spreedly will attempt delivery of asynchronous results for Advanced Vault, 3DS, and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+    transaction_core_parameters:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        gateway_transaction_id:
+          type: string
+          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
+        retain_on_success:
+          type: boolean
+          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+        payment_method_added:
+          type: string
+          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+        response:
+          type: object
+          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+        merchant_profile_key:
+          type: string
+          description: The token of the Merchant Profile associated with the gateway used for the transaction
+        sub_merchant_key:
+          type: string
+          description: The token of the sub-merchant associated with the transaction.
+        gateway_specific_response_fields:
+          type: object
+          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+        transaction_metadata:
+          type: object
+          description: The hash of key/value pairs that was included in the transaction request body.
+        sca_authentication:
+          type: string
+          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
+        payment_snapshot:
+          $ref: '#/components/schemas/payment_snapshot'
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider that was used for this transaction.
+        protection_parameters:
+          $ref: '#/components/schemas/protection_parameters'
+    bank_account:
+      type: object
+      required:
+      - bank_account_number
+      - bank_routing_number
+      - first_name
+      - last_name
+      properties:
+        first_name:
+          type: string
+          description: The first name of the account owner
+        last_name:
+          type: string
+          description: The last name of the account owner
+        bank_routing_number:
+          type: string
+          description: The account routing number
+        bank_account_number:
+          type: string
+          description: The account number
+        bank_account_type:
+          type: string
+          description: The type of account. Can be one of `checking` or `savings`.
+          enum:
+          - checking
+          - savings
+        bank_account_holder_type:
+          type: string
+          description: The account holder type. Can be one `business` or `personal`.
+          enum:
+          - business
+          - personal
+        full_name:
+          type: string
+          description: 'The full name of the account owner. If provided, will be parsed to determine first_name and last_name. Note: optional: either full_name or both first_name and last_name are required'
+    payment_method_request:
+      type: object
+      properties:
+        payment_method:
+          type: object
+          properties:
+            credit_card:
+              $ref: '#/components/schemas/credit_card'
+            bank_account:
+              $ref: '#/components/schemas/bank_account'
+            apple_pay:
+              $ref: '#/components/schemas/apple_pay'
+            google_pay:
+              $ref: '#/components/schemas/google_pay'
+            payment_method_type:
+              type: string
+              description: For third party token vaulting requests, set to `third_party_token` to represent an externally vaulted payment method reference
+            reference:
+              type: string
+              description: For third party token vaulting requests, the token identifying the payment method at the external gateway
+            gateway_type:
+              type: string
+              description: Required for third party token vaulting requests. The type of the external gateway
+            email:
+              type: string
+              description: The email address of the customer associated with this credit card
+            retained:
+              type: boolean
+              description: '`true` if this payment method should be automatically retained on creation'
+            allow_blank_name:
+              type: boolean
+              description: '`true` if this payment method should skip the name validation requirement'
+            allow_expired_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expired date validation requirement'
+            allow_blank_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expiration date validation requirement'
+            eligible_for_card_updater:
+              type: boolean
+              description: '`true` if this payment method should be included in Account Updater'
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+            provision_network_token:
+              $ref: '#/components/schemas/provision_network_token'
+    payment_method_retain_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root element
+          properties:
+            transaction_type:
+              type: string
+              description: The type of transaction, e.g., Authorization, Capture, Credit
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            state:
+              type: string
+              description: The current state of the transaction. Valid values are `succeeded`, `failed`, and `pending`
+            payment_method:
+              $ref: '#/components/schemas/payment_method'
+            network_tokenization:
+              $ref: '#/components/schemas/network_tokenization'
+    payment_method_events_response:
+      type: object
+      properties:
+        payment_method_events:
+          type: array
+          description: Root element
+          items:
+            $ref: '#/components/schemas/payment_method_event'
+    transactions_response:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/purchase_parameters'
+    payment_method_redact:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            remove_from_gateway:
+              type: string
+              description: If the payment method is also stored at the gateway (e.g., for third party vaulting or offsite authorizations), include the token of the gateway here and it will be removed from the gateway as well as being redacted from Spreedly. This element is optional. If required, gateway_specific_fields can be used in tandem with remove_from_gateway. See your gateways guide for gateway specific field options and formatting.
+            remove_personal_data:
+              type: boolean
+              description: '`true` if personally identifiable information should be removed from the payment method and related its transactions. This element is optional.'
+    protection_parameters:
+      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
+      type: object
+      properties:
+        test_scenario:
+          type: object
+          description: The protection test scenario
+          properties:
+            scenario:
+              type: string
+              description: The test scenario to run
+              enum:
+              - protect_approved
+              - protect_sca_recommended_challenge
+              - protect_sca_recommended_authenticated
+              - protect_sca_recommended_not_authenticated
+              - protect_declined
+              default: protect_approved
+        fraud_token:
+          type: string
+          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
+        forter_mobile_uid:
+          type: string
+          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
+        user_agent:
+          type: string
+          description: Customer's User agent
+        cart_items:
+          type: array
+          description: A list of all items purchased and shipping details
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Item name
+                maxLength: 500
+              quantity:
+                type: number
+                description: Item quantity
+              type:
+                type: string
+                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
+                enum:
+                - TANGIBLE
+                - NON_TANGIBLE
+                default: TANGIBLE
+              price:
+                type: string
+                description: Final amount due for purchase, after all discounts and promotions
+            required:
+            - name
+            - quantity
+            - type
+            - price
+        delivery_type:
+          type: string
+          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
+          enum:
+          - PHYSICAL
+          - DIGITAL
+          default: PHYSICAL
+        delivery_method:
+          type: string
+          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
+          maxLength: 50
+        customer_account_id:
+          type: string
+          description: Customer's account UID in merchant's site (leave empty if guest)
+        customer_account_type:
+          type: string
+          description: Customer account type
+          enum:
+          - GUEST
+          - PRIVATE
+          - BUSINESS
+          - VIP
+          - MERCHANT_OPERATED
+          - TRIAL
+          - MERCHANT_EMPLOYEE
+          - PREMIUM_PAID
+          - SMALL_BUSINESS
+          - AGENT
+          - BUSINESS_PRIVATE
+          - BUSINESS_PREMIUM_PAID
+          default: BUSINESS
+        customer_account_creation_date:
+          type: number
+          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
+        billing_name:
+          type: string
+          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_first_name:
+          type: string
+          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_last_name:
+          type: string
+          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        email:
+          type: string
+          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_country:
+          type: string
+          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address1:
+          type: string
+          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address2:
+          type: string
+          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_city:
+          type: string
+          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_zip:
+          type: string
+          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_state:
+          type: string
+          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_phone_number:
+          type: string
+          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_name:
+          type: string
+          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_first_name:
+          type: string
+          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_last_name:
+          type: string
+          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_email:
+          type: string
+          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_country:
+          type: string
+          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address1:
+          type: string
+          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address2:
+          type: string
+          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_city:
+          type: string
+          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_zip:
+          type: string
+          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_state:
+          type: string
+          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_phone_number:
+          type: string
+          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+      required:
+      - delivery_method
+      - delivery_type
+      - cart_items
+    network_token:
+      type: object
+      description: Network token details for a payment method
+      properties:
+        status:
+          type: string
+          description: The status of the network token
+        v_provisioned_token_id:
+          type: string
+          description: The Visa provisioned token ID (Visa network tokens only)
+        token_reference:
+          type: string
+          description: The unique reference key for the network token
+        token_first_six_digits:
+          type: string
+          description: The first six digits of the network token's DPAN
+        token_last_four_digits:
+          type: string
+          description: The last four digits of the network token's DPAN
+        token_created_at:
+          type: string
+          description: The timestamp when the network token was created
+        token_updated_at:
+          type: string
+          description: The timestamp when the network token was last updated
+    payment_method_event_response:
+      type: object
+      properties:
+        payment_method_event:
+          $ref: '#/components/schemas/payment_method_event'
+    provision_network_token:
+      type: boolean
+      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
+    protect_fraud_check_response:
+      type: object
+      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
+      properties:
+        updated_at:
+          type: string
+          description: The time the fraud check was last updated
+        created_at:
+          type: string
+          description: The time the fraud check was created
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider used for this check
+        succeeded:
+          type: boolean
+          description: Whether the fraud check request was successfully executed
+        state:
+          type: string
+          description: The current state of the fraud check
+        token:
+          type: string
+          description: The token uniquely identifying this fraud check at Spreedly
+        message:
+          type: string
+          description: A human-readable message describing the result (if applicable)
+        amount:
+          type: number
+          description: The transaction amount checked
+        currency_code:
+          type: string
+          description: The currency of the funds in ISO format (e.g., USD)
+        ip:
+          type: string
+          description: The IP address associated with the transaction
+        email:
+          type: string
+          description: The email address associated with the transaction
+        transaction_type:
+          type: string
+          description: The type of transaction
+        gateway_transaction_key:
+          type: string
+          description: The Spreedly transaction token of the parent gateway transaction
+        callback_url:
+          type: string
+          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
+        test_scenario:
+          type: string
+          description: The test scenario used
+        acquiring_bank_fraud_rate:
+          type: string
+          description: The threshold for bank fraud rate used for exemption requests
+        exemption_type:
+          type: string
+          description: The type of exemption requested (if applicable)
+        warning:
+          type: string
+          description: Any warning messages from the fraud check
+        managed_order_token:
+          type: string
+          description: The token of the fraud check returned by the fraud check provider
+        fraud_decision:
+          type: string
+          description: The fraud decision outcome (e.g., approve, decline, review)
+        fraud_recommendation:
+          type: string
+          description: Additional recommendation information from the fraud provider
+        fraud_decision_reason:
+          type: string
+          description: Reason for the fraud decision
+        vendor_response:
+          type: object
+          description: Detailed response from the fraud protection vendor
+          properties:
+            forterDecision:
+              type: string
+              description: The decision returned by Forter
+            recommendation:
+              type: string
+              description: Recommended action from the vendor
+            verificationMethod:
+              type: object
+              description: Methods used to verify the transaction
+            decisionReason:
+              type: string
+              description: Reason for the vendor's decision
+            merchantPolicyId:
+              type: string
+              description: Merchant policy identifier used to make the decision
+            orderId:
+              type: string
+              description: Order identifier in the vendor's system
+            linkToEventInDashboard:
+              type: string
+              description: URL to view the transaction details in the vendor's dashboard
+    apple_pay:
+      type: object
+      required:
+      - payment_data
+      properties:
+        payment_data:
+          description: The JSON serialized [`paymentData` property of an Apple Pay PKPaymentToken](https://developer.apple.com/library/ios/documentation/PassKit/Reference/PaymentTokenJSON/PaymentTokenJSON.html#//apple_ref/doc/uid/TP40014929-CH8-SW2)
+          type: object
+          properties:
+            version: {}
+            data: {}
+            signature: {}
+            header:
+              type: object
+              properties:
+                ephemeralPublicKey: {}
+                transactionId: {}
+                publicKeyHash: {}
+        test_card_number:
+          description: Apple Pay does not provide a way to create a test payment token. To mark this as a test Apple Pay payment method, specify a [test card number](https://developer.spreedly.com/docs/test-data#credit-cards) in this field. Doing so will prevent this payment method from being used against a production gateway, while still verifying the submitted Apple Pay payment data.
+    payment_method:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the payment method in the Spreedly vault
+        created_at:
+          type: string
+          description: The time the payment method token was created
+        updated_at:
+          type: string
+          description: The time the payment method token was last updated
+        email:
+          type: string
+          description: The email address of the customer associated with this credit card
+        storage_state:
+          type: string
+          description: The `storage_state` (retained, redacted, cached, used) of the payment method
+        test:
+          type: boolean
+          description: '`true` if this payment method is a test payment method and cannot be used against real gateways or receivers'
+        metadata:
+          type: object
+          description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+        callback_url:
+          type: string
+          description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+        last_four_digits:
+          type: string
+          description: The last four digits of the credit card number. This can be displayed to the user.
+        first_six_digits:
+          type: string
+          description: The first six digits of the credit card number. This can be displayed to the user.
+        card_type:
+          type: string
+          description: The [type](https://developer.spreedly.com/docs/supported-payment-methods), or brand, of the card. Please see the `card_type_mapping` function below for more detail.
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        month:
+          type: string
+          description: The expiration month
+        year:
+          type: string
+          description: The expiration year
+        address1:
+          type: string
+          description: The first line of the billing address
+        address2:
+          type: string
+          description: The second line of the billing address
+        city:
+          type: string
+          description: The city of the billing address
+        state:
+          type: string
+          description: The state of the billing address
+        zip:
+          type: string
+          description: The zip code of the billing address
+        country:
+          type: string
+          description: The country code of the billing address
+        phone_number:
+          type: string
+          description: The phone number of the billing address
+        company:
+          type: string
+          description: The company of the cardholder
+        full_name:
+          type: string
+          description: The full name of the cardholder.
+        eligible_for_card_updater:
+          type: string
+          description: '`true` if this payment method should be included in Account Updater'
+        shipping_address1:
+          type: string
+          description: The first line of the shipping address
+        shipping_address2:
+          type: string
+          description: The second line of the shipping address
+        shipping_city:
+          type: string
+          description: The city of the shipping address
+        shipping_state:
+          type: string
+          description: The state of the shipping address
+        shipping_zip:
+          type: string
+          description: The zip code of the shipping address
+        shipping_country:
+          type: string
+          description: The country code of the shipping address
+        issuer_identification_number:
+          type: string
+          description: The numbers of the PAN required to identify the card issuer.
+        click_to_pay:
+          type: string
+          description: '`true` if the card was tokenized using Click to Pay'
+        managed:
+          type: string
+          description: The value indicating the payment method's management status.
+        payment_method_type:
+          type: string
+          description: The type of this payment method, e.g., `credit_card`, `bank_account`, `apple_pay`, `google_pay`, `third_party_token`, etc…
+        errors:
+          type: string
+          description: If the payment method is invalid (missing required fields, etc…), there will be associated error messages here
+        fingerprint:
+          type: string
+          description: An identifying string that will match all cards in the environment with the same PAN
+        verification_value:
+          type: string
+          description: The obscured verification value (CVV), e.g., XXX or XXXX
+        number:
+          type: string
+          description: The obscured credit card number, e.g., XXXX-XXXX-XXXX-4444
+        bin_metadata:
+          type: object
+          description: BIN metadata is available in the response if the card is enrolled in Advanced Vault. See [BIN metadata](https://developer.spreedly.com/docs/bin-metadata) for more information.
+          properties:
+            card_brand:
+              type: string
+            card_category:
+              type: string
+            card_type:
+              type: string
+            issuing_bank:
+              type: string
+            issuing_country_iso_number:
+              type: string
+            issuing_country_iso_a2_code:
+              type: string
+            issuing_country_iso_a3_code:
+              type: string
+            issuing_country_iso_name:
+              type: string
+            issuing_bank_phone_number:
+              type: string
+            issuing_bank_website:
+              type: string
+            bin_type:
+              type: string
+            regulated:
+              type: string
+            max_pan_length:
+              type: string
+            message:
+              type: string
+        subscribed_to_mastercard_abu:
+          type: boolean
+          example: false
+          description: '`true` if this payment method is subscribed to Mastercard ABU updating service'
+        last_successfully_used:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    payment_method_redact_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root element
+          properties:
+            transaction_type:
+              type: string
+              description: The type of transaction, e.g., Authorization, Capture, Credit
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            state:
+              type: string
+              description: The current state of the transaction. Valid values are `succeeded`, `failed`, and `pending`
+            payment_method:
+              $ref: '#/components/schemas/payment_method'
+    google_pay:
+      type: object
+      required:
+      - payment_data
+      properties:
+        payment_data:
+          description: The JSON serialized [paymentData](https://developers.google.com/pay/api/web/guides/resources/payment-data-cryptography#payment-method-token-structure)
+          type: object
+          properties:
+            signature:
+              type: string
+              description: Verifies that the message came from Google. Base64-encoded. Created using ECDSA.
+            protocolVersion:
+              type: string
+              description: Identifies the encryption/signing scheme under which the message was created. Allows the protocol to evolve over time, if needed. If it's not set, assume `ECv0`.
+            signedMessage:
+              type: string
+              description: A serialized JSON string containing the `encryptedMessage`, `ephemeralPublicKey` and `tag`. Serialized to simplify the signature verification process.
+        test_card_number:
+          type: string
+          description: Specify a [test card number](https://developer.spreedly.com/docs/test-data#credit-cards) in this field. Doing so will prevent this payment method from being used against a production gateway, while still verifying the submitted Google Pay payment data.
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        address_1:
+          type: string
+          description: Cardholder's address, line 1
+        address_2:
+          type: string
+          description: Cardholder's address, line 2
+        city:
+          type: string
+          description: Cardholder's city
+        state:
+          type: string
+          description: Cardholder's state
+        zip:
+          type: string
+          description: Cardholder's zip
+        country:
+          type: string
+          description: Cardholder's country
+    recache:
+      type: object
+      properties:
+        payment_method:
+          type: object
+          properties:
+            credit_card:
+              type: object
+              properties:
+                verification_value:
+                  type: string
+                  description: The verification value (CVV/CVC) of the card
+            allow_blank_name:
+              type: boolean
+              description: '`true` if this payment method should skip the name validation requirement for Credit Cards'
+            allow_expired_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expired date validation requirement for Credit Cards'
+            allow_blank_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expiration date validation requirement for Credit Cards'
+    delete_metadata:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+    payment_method_create_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root element
+          properties:
+            token:
+              type: string
+              description: The token uniquely identifying this transaction (not the created payment method) at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            retained:
+              type: string
+              description: if the payment method was set to be automatically retained on creation
+            payment_method:
+              type: object
+              description: The payment method created as part of this transaction
+              properties:
+                token:
+                  type: string
+                  description: The token identifying the newly created payment method in the Spreedly vault
+                created_at:
+                  type: string
+                  description: The time the payment method token was created
+                updated_at:
+                  type: string
+                  description: The time the payment method token was last updated
+                email:
+                  type: string
+                  description: The email address of the customer associated with this credit card
+                storage_state:
+                  type: string
+                  description: The `storage_state` (retained, redacted, cached, used) of the payment method
+                test:
+                  type: boolean
+                  description: '`true` if this payment method is a test payment method and cannot be used against real gateways or receivers'
+                metadata:
+                  type: object
+                  description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+                callback_url:
+                  type: string
+                  description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+                last_four_digits:
+                  type: string
+                  description: The last four digits of the credit card number. This can be displayed to the user.
+                first_six_digits:
+                  type: string
+                  description: The first six digits of the credit card number. This can be displayed to the user.
+                card_type:
+                  type: string
+                  description: The [type](https://developer.spreedly.com/docs/supported-payment-methods), or brand, of the card. Please see the `card_type_mapping` function below for more detail.
+                first_name:
+                  type: string
+                  description: The first name of the cardholder
+                last_name:
+                  type: string
+                  description: The last name of the cardholder
+                month:
+                  type: string
+                  description: The expiration month
+                year:
+                  type: string
+                  description: The expiration year
+                address1:
+                  type: string
+                  description: The first line of the billing address
+                address2:
+                  type: string
+                  description: The second line of the billing address
+                city:
+                  type: string
+                  description: The city of the billing address
+                state:
+                  type: string
+                  description: The state of the billing address
+                zip:
+                  type: string
+                  description: The zip code of the billing address
+                country:
+                  type: string
+                  description: The country code of the billing address
+                phone_number:
+                  type: string
+                  description: The phone number of the billing address
+                company:
+                  type: string
+                  description: The company of the cardholder
+                full_name:
+                  type: string
+                  description: The full name of the cardholder.
+                eligible_for_card_updater:
+                  type: string
+                  description: '`true` if this payment method should be included in Account Updater'
+                shipping_address1:
+                  type: string
+                  description: The first line of the shipping address
+                shipping_address2:
+                  type: string
+                  description: The second line of the shipping address
+                shipping_city:
+                  type: string
+                  description: The city of the shipping address
+                shipping_state:
+                  type: string
+                  description: The state of the shipping address
+                shipping_zip:
+                  type: string
+                  description: The zip code of the shipping address
+                shipping_country:
+                  type: string
+                  description: The country code of the shipping address
+                issuer_identification_number:
+                  type: string
+                  description: The numbers of the PAN required to identify the card issuer.
+                click_to_pay:
+                  type: string
+                  description: '`true` if the card was tokenized using Click to Pay'
+                managed:
+                  type: string
+                  description: The value indicating the payment method's management status.
+                payment_method_type:
+                  type: string
+                  description: The type of this payment method, e.g., `credit_card`, `bank_account`, `apple_pay`, `google_pay`, `third_party_token`, etc…
+                errors:
+                  type: string
+                  description: If the payment method is invalid (missing required fields, etc…), there will be associated error messages here
+                fingerprint:
+                  type: string
+                  description: An identifying string that will match all cards in the environment with the same PAN
+                verification_value:
+                  type: string
+                  description: The obscured verification value (CVV), e.g., XXX or XXXX
+                number:
+                  type: string
+                  description: The obscured credit card number, e.g., XXXX-XXXX-XXXX-4444
+                subscribed_to_mastercard_abu:
+                  type: boolean
+                  example: false
+                  description: '`true` if this payment method is subscribed to Mastercard ABU updating service'
+                last_successfully_used:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+            network_tokenization:
+              $ref: '#/components/schemas/network_tokenization'
+    third_party_token:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The Spreedly payment method token that references the payment method stored at the gateway
+        created_at:
+          type: string
+          description: The time the payment_method was created
+        updated_at:
+          type: string
+          description: The time the payment_method was last updated
+        gateway_type:
+          type: string
+          description: The type (short name) of the gateway.
+        storage_state:
+          type: string
+          description: The `storage_state` (retained, redacted, cached, used) of the payment method
+        metadata:
+          type: object
+          description: Metadata key-value pairs
+        third_party_token:
+          type: string
+          description: The token identifying the payment method as it exists *at the gateway*
+        payment_method_type:
+          type: string
+          description: The type of this payment method
+    payment_methods_response:
+      type: object
+      properties:
+        payment_methods:
+          type: array
+          description: Root element
+          items:
+            $ref: '#/components/schemas/payment_method'
+    credit_card:
+      type: object
+      description: Credit card element
+      properties:
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        full_name:
+          type: string
+          description: The full name of the cardholder. If provided, `full_name` will be parsed to determine `first_name` and `last_name`. If “full_name” is entered with only a single name, “first_name” will be populated with “Not Provided” and “last_name” will be populated with the provided name.
+        number:
+          type: string
+          description: The full card number
+        verification_value:
+          type: string
+          description: The verification value (CVV/CVC) of the card
+        month:
+          type: string
+          description: The expiration month of the card
+        year:
+          type: string
+          description: The 4 digit expiration year of the card
+        company:
+          type: string
+          description: The company name associated with the credit card
+        address1:
+          type: string
+          description: The first line of the billing address
+        address2:
+          type: string
+          description: The second line of the billing address
+        city:
+          type: string
+          description: The city of the billing address
+        state:
+          type: string
+          description: The state of the billing address
+        zip:
+          type: string
+          description: The zip code of the billing address
+        country:
+          type: string
+          description: The country code of the billing address
+        phone_number:
+          type: string
+          description: The phone number of the billing address
+        shipping_address1:
+          type: string
+          description: The first line of the shipping address
+        shipping_address2:
+          type: string
+          description: The second line of the shipping address
+        shipping_city:
+          type: string
+          description: The city of the shipping address
+        shipping_state:
+          type: string
+          description: The state of the shipping address
+        shipping_zip:
+          type: string
+          description: The zip code of the shipping address
+        shipping_country:
+          type: string
+          description: The country code of the shipping address
+        shipping_phone_number:
+          type: string
+          description: The phone number of the shipping address
+      required:
+      - number
+      - month
+      - year
+      - first_name
+      - last_name
+    network_tokenization:
+      type: object
+      description: The network tokenization details for the transaction
+      properties:
+        provisioned:
+          type: boolean
+          default: false
+          description: Indicates if the network tokenization was successfully provisioned
+        token_status:
+          type: string
+          description: The status of the network token
+        token_reference:
+          type: string
+          description: The unique reference key for the network token
+        token_first_six_digits:
+          type: string
+          description: The first six digits of the network token's DPAN
+        token_last_four_digits:
+          type: string
+          description: The last four digits of the network token's DPAN
+        token_created_at:
+          type: string
+          description: The timestamp when the network token was created
+        token_updated_at:
+          type: string
+          description: The timestamp when the network token was last updated
+        attempted:
+          type: boolean
+          default: false
+          description: Indicates if the transaction attempted to use a network token
+        errors:
+          type: array
+          description: An array of errors that occurred during the network tokenization process
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: The error key
+              message:
+                type: string
+                description: The error message
+              action:
+                type: string
+                description: The action taken which lead to the error
+                required: false
+    payment_method_show_response:
+      type: object
+      properties:
+        payment_method:
+          allOf:
+          - $ref: '#/components/schemas/payment_method'
+          - type: object
+            properties:
+              network_token:
+                $ref: '#/components/schemas/network_token'
+    payment_method_event:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The unique identifier for the payment method event
+        request_id:
+          type: string
+          description: The unique identifier for the request that triggered this event
+        created_at:
+          type: string
+          description: The time the event was created
+        payment_method_key:
+          type: string
+          description: The token of the payment method associated with this event
+        event_type:
+          type: string
+          description: The type of event that occurred, e.g., `UpdatePaymentMethod`, `RetainPaymentMethod`, `ReplacePaymentMethod`
+        event_data:
+          type: object
+          description: Additional data specific to the event type
+        state:
+          type: string
+          description: The resulting state of the event
+        message:
+          type: string
+          description: A human-readable string indicating the result
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    purchase_parameters:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/transaction_core_parameters'
+      - type: object
+        properties:
+          order_id:
+            type: string
+            description: The merchant specified order id. If not provided, the Spreedly transaction token will be used.
+          ip:
+            type: string
+            description: The IP address of the end-user customer. If one is not provided, this will default to `127.0.0.1`. To actually send a `nil` value, this parameter must be set to "omit".
+          description:
+            type: string
+            description: A human readable description of the transaction which will be passed to the gateway if it's supported
+          email:
+            type: string
+            description: Override the customer email address associated with the payment method for this transaction
+          merchant_name_descriptor:
+            type: string
+            description: A human readable description of the merchant
+          merchant_location_descriptor:
+            type: string
+            description: A human readable description of the merchant location
+          merchant_profile_key:
+            type: string
+            description: The token of the Merchant Profile associated with the gateway used for the transaction
+          gateway_specific_fields:
+            $ref: '#/components/schemas/gateway_specific_fields'
+          gateway_specific_response_fields:
+            type: object
+            description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+          gateway_transaction_id:
+            type: string
+            description: The id of the transaction *at the gateway*. To be used when corresponding with the gateway or reconciling transactions
+          sub_merchant_key:
+            type: string
+            description: The token of the sub-merchant associated with the transaction.
+          gateway_latency_ms:
+            type: string
+            description: The time it took the gateway to respond to Spreedly
+          warning:
+            type: string
+            description: Provides a human readable warning message if passed back by the gateway
+          application_id:
+            type: string
+            description: Customer provided application_id
+          amount:
+            type: integer
+            description: The amount to request, as an integer. E.g., `1000` for $10.00.
+          local_amount:
+            type: string
+            description: The amount to request, as an integer. E.g., `1000` for $10.00.
+          currency_code:
+            type: string
+            description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+          retain_on_success:
+            type: boolean
+            description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+          payment_method_added:
+            type: string
+            description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+          stored_credential_initiator:
+            type: string
+            description: Who is initiating this request, `merchant` or `cardholder`
+          stored_credential_reason_type:
+            type: string
+            description: What kind of transaction is the payment method being used for. e.g. `recurring`, `unscheduled`, or `installment`
+          response:
+            type: object
+            description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+          shipping_address:
+            type: object
+            description: Override the customer shipping address associated with the payment method for this transaction
+          api_urls:
+            type: array
+            description: An array of objects describing related APIs
+          attempt_3dsecure:
+            type: string
+            description: '`true` if 3dsecure transaction was attempted'
+          payment_method:
+            type: object
+            description: The payment method used in this transaction
+          workflow_key:
+            type: string
+            description: The key of the Spreedly workflow to use for this transaction. Spreedly will use the environment's default workflow_key if no value is provided. Only available via composer on the /transactions resource.
+          order_data:
+            type: object
+            description: Optional fields related to the order that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          customer_data:
+            type: object
+            description: Optional fields related to the cardholder that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          risk_data:
+            type: object
+            description: Optional fields related to risk data that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          merchant_metadata:
+            type: object
+            description: Optional fields related to the merchant that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          gateway_response:
+            type: object
+            description: A hash containing normalized fields from various gateways. Please see our [normalized response field documentation](https://developer.spreedly.com/docs/normalized-request-and-response-fields#response-fields) for more info. Only available via composer on the /transactions resource.
+          pan_retry:
+            type: boolean
+            description: '`true` if the transaction is a retry that uses PAN after a failed attempt with a network token. Only available via composer on the /transactions resource.'
+          payment_snapshot:
+            $ref: '#/components/schemas/payment_snapshot'
+          protection_provider_key:
+            type: string
+            description: The token of the Protection Provider that was used for this transaction.
+          protection_parameters:
+            $ref: '#/components/schemas/protection_parameters'
+          protect_fraud_check:
+            $ref: '#/components/schemas/protect_fraud_check_response'
+  parameters:
+    gateway_token:
+      name: gateway_token
+      description: The token of the gateway to execute against
+      in: path
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

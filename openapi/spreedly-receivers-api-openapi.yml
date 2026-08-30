@@ -1,0 +1,907 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Receivers API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: receivers
+paths:
+  /receivers_options:
+    get:
+      summary: List supported receivers
+      tags:
+      - receivers
+      operationId: list-supported-receivers
+      description: 'Retrieve a list of all payment method distribution receivers, and their properties, supported by Spreedly.
+
+
+        Note that this request is publicly available and _does not require authorization_.
+
+        '
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_supported_receivers_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_supported_receivers_response'
+  /receivers:
+    post:
+      summary: Create a receiver
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: create-receiver
+      description: Create a receiver for use in [payment method distribution](https://developer.spreedly.com/docs/payment-method-distribution)
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/http_receiver'
+              - $ref: '#/components/schemas/sftp_receiver'
+            examples:
+              HTTP Receiver:
+                summary: HTTP Receiver
+                value:
+                  receiver:
+                    receiver_type: test
+                    hostnames: https://spreedly-echo.herokuapp.com
+                    credentials:
+                    - name: app-id
+                      value: 1234
+                      safe: true
+                    - name: app-secret
+                      value: 5678
+              SFTP Receiver:
+                summary: SFTP Receiver
+                value:
+                  receiver:
+                    receiver_type: test
+                    hostnames: sftp://testserver.com
+                    protocol:
+                      user: test_user
+                      password: test_password
+          application/xml:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/http_receiver'
+              - $ref: '#/components/schemas/sftp_receiver'
+            examples:
+              HTTP Receiver:
+                summary: HTTP Receiver
+                value:
+                  receiver:
+                    receiver_type: test
+                    hostnames: https://spreedly-echo.herokuapp.com
+                    credentials:
+                    - name: app-id
+                      value: 1234
+                      safe: true
+                    - name: app-secret
+                      value: 5678
+              SFTP Receiver:
+                summary: SFTP Receiver
+                value:
+                  receiver:
+                    receiver_type: test
+                    hostnames: sftp://testserver.com
+                    protocol:
+                      user: test_user
+                      password: test_password
+    get:
+      summary: List created receivers
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: list-created-receivers
+      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all receivers in the authenticated environment.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_created_receivers_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_created_receivers_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /receivers/{receiver_token}:
+    parameters:
+    - name: receiver_token
+      in: path
+      description: The token of the receiver at Spreedly
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show a receiver
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: show-receiver
+      description: Get a receiver with the given token
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    put:
+      summary: Update a receiver
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: update-receiver
+      description: Update a receiver with new credentials
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/receiver_update'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/receiver_update'
+  /receivers/{receiver_token}/redact:
+    parameters:
+    - name: receiver_token
+      in: path
+      description: The token of the receiver at Spreedly
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Redact a receiver
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: redact-receiver
+      description: Redact (strip of any sensitive credentials and make inactive) a receiver.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/receiver_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /receivers/{receiver_token}/deliver:
+    parameters:
+    - name: receiver_token
+      in: path
+      description: The token of the receiver at Spreedly
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Deliver payment method
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: deliver-payment-method
+      description: Deliver a payment method to the specified receiver endpoint. See the guide on [payment method distribution](https://developer.spreedly.com/docs/payment-method-distribution) to understand how to specify what is sent to the receiver. Spreedly provides an open [repository of code templates](https://github.com/spreedly/templates) for simplifying implementation of new receivers.
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deliver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/deliver_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            Receiver not found:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.receiver_not_found
+                    message: Unable to find the specified receiver.
+                application/xml:
+                  value: "            <errors>\n               <error key=\"errors.receiver_not_found\">Unable to find the specified receiver.</error>\n            </errors>\n"
+            Payment method not found:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.payment_method_not_found
+                    message: Unable to find the specified payment method.
+                application/xml:
+                  value: "            <errors>\n               <error key=\"errors.payment_method_not_found\">Unable to find the specified payment method.</error>\n             </errors>\n"
+        '422':
+          description: Unknown error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deliver_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/deliver_response'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deliver'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/deliver'
+  /receivers/{receiver_token}/export:
+    parameters:
+    - name: receiver_token
+      in: path
+      description: The token of the receiver at Spreedly
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Export payment methods
+      tags:
+      - receivers
+      security:
+      - basic_auth: []
+      operationId: export-payment-methods
+      description: Export multiple payment methods in a single, asynchronous, batch call to an SFTP receiver endpoint.
+      parameters: []
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/export_response'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/export_properties'
+components:
+  schemas:
+    payment_method:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the payment method in the Spreedly vault
+        created_at:
+          type: string
+          description: The time the payment method token was created
+        updated_at:
+          type: string
+          description: The time the payment method token was last updated
+        email:
+          type: string
+          description: The email address of the customer associated with this credit card
+        storage_state:
+          type: string
+          description: The `storage_state` (retained, redacted, cached, used) of the payment method
+        test:
+          type: boolean
+          description: '`true` if this payment method is a test payment method and cannot be used against real gateways or receivers'
+        metadata:
+          type: object
+          description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+        callback_url:
+          type: string
+          description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+        last_four_digits:
+          type: string
+          description: The last four digits of the credit card number. This can be displayed to the user.
+        first_six_digits:
+          type: string
+          description: The first six digits of the credit card number. This can be displayed to the user.
+        card_type:
+          type: string
+          description: The [type](https://developer.spreedly.com/docs/supported-payment-methods), or brand, of the card. Please see the `card_type_mapping` function below for more detail.
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        month:
+          type: string
+          description: The expiration month
+        year:
+          type: string
+          description: The expiration year
+        address1:
+          type: string
+          description: The first line of the billing address
+        address2:
+          type: string
+          description: The second line of the billing address
+        city:
+          type: string
+          description: The city of the billing address
+        state:
+          type: string
+          description: The state of the billing address
+        zip:
+          type: string
+          description: The zip code of the billing address
+        country:
+          type: string
+          description: The country code of the billing address
+        phone_number:
+          type: string
+          description: The phone number of the billing address
+        company:
+          type: string
+          description: The company of the cardholder
+        full_name:
+          type: string
+          description: The full name of the cardholder.
+        eligible_for_card_updater:
+          type: string
+          description: '`true` if this payment method should be included in Account Updater'
+        shipping_address1:
+          type: string
+          description: The first line of the shipping address
+        shipping_address2:
+          type: string
+          description: The second line of the shipping address
+        shipping_city:
+          type: string
+          description: The city of the shipping address
+        shipping_state:
+          type: string
+          description: The state of the shipping address
+        shipping_zip:
+          type: string
+          description: The zip code of the shipping address
+        shipping_country:
+          type: string
+          description: The country code of the shipping address
+        issuer_identification_number:
+          type: string
+          description: The numbers of the PAN required to identify the card issuer.
+        click_to_pay:
+          type: string
+          description: '`true` if the card was tokenized using Click to Pay'
+        managed:
+          type: string
+          description: The value indicating the payment method's management status.
+        payment_method_type:
+          type: string
+          description: The type of this payment method, e.g., `credit_card`, `bank_account`, `apple_pay`, `google_pay`, `third_party_token`, etc…
+        errors:
+          type: string
+          description: If the payment method is invalid (missing required fields, etc…), there will be associated error messages here
+        fingerprint:
+          type: string
+          description: An identifying string that will match all cards in the environment with the same PAN
+        verification_value:
+          type: string
+          description: The obscured verification value (CVV), e.g., XXX or XXXX
+        number:
+          type: string
+          description: The obscured credit card number, e.g., XXXX-XXXX-XXXX-4444
+        bin_metadata:
+          type: object
+          description: BIN metadata is available in the response if the card is enrolled in Advanced Vault. See [BIN metadata](https://developer.spreedly.com/docs/bin-metadata) for more information.
+          properties:
+            card_brand:
+              type: string
+            card_category:
+              type: string
+            card_type:
+              type: string
+            issuing_bank:
+              type: string
+            issuing_country_iso_number:
+              type: string
+            issuing_country_iso_a2_code:
+              type: string
+            issuing_country_iso_a3_code:
+              type: string
+            issuing_country_iso_name:
+              type: string
+            issuing_bank_phone_number:
+              type: string
+            issuing_bank_website:
+              type: string
+            bin_type:
+              type: string
+            regulated:
+              type: string
+            max_pan_length:
+              type: string
+            message:
+              type: string
+        subscribed_to_mastercard_abu:
+          type: boolean
+          example: false
+          description: '`true` if this payment method is subscribed to Mastercard ABU updating service'
+        last_successfully_used:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    receiver_properties:
+      type: object
+      properties:
+        company_name:
+          type: string
+          description: The name of the company providing the receiver
+        receiver_type:
+          type: string
+          description: The type of the receiver
+        state:
+          type: string
+          description: The storage state of the receiver. Can be one of `retained` or `redacted`. By default, receivers are created in the `retained` state and must be explicitly redacted if they are no longer required.
+        token:
+          type: string
+          description: The token uniquely identifying this receiver at Spreedly
+        created_at:
+          type: string
+          description: The time the receiver was created
+        updated_at:
+          type: string
+          description: The time the receiver was last updated
+        credentials:
+          type: array
+          description: One or more name/value pairs used to authenticate with the receiver. Only credentials marked as safe will have their values echoed.
+        hostnames:
+          type: string
+          description: The allowed list of hostnames to which payment methods can be delivered
+        sub_merchant_key:
+          type: string
+          description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current receiver. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
+    list_supported_receivers_response:
+      type: object
+      properties:
+        receivers:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The human readable name of the receiver
+              receiver_type:
+                type: string
+                description: The type (short name) of the receiver. Use this value when provisioning a receiver.
+              hostnames:
+                type: string
+                description: The urls used to interact with the receiver
+              company_name:
+                type: string
+                description: The name of the company providing the receiver
+    deliver:
+      type: object
+      properties:
+        delivery:
+          type: object
+          properties:
+            continue_caching:
+              type: boolean
+              description: An option to keep the cvv cached for a few minutes. Otherwise cvv is deleted immediately.
+            payment_method_token:
+              type: string
+              description: The token of the payment method to send to the receiver and whose values will be applied to the delivery template.
+            attempt_network_token:
+              type: boolean
+              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
+            url:
+              type: string
+              description: The full qualified URL to send the payment method. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The URL string can include distribution variable placeholders, e.g., `https://prod.receiver.com/path/book?user={{user_name}}`.
+            request_method:
+              type: string
+              description: An option to specify the HTTP method to use when contacting the receiver. Acceptable values are `PUT`, `PATCH`, and `POST`. If omitted, the default value is `POST`.
+            headers:
+              type: string
+              description: 'The request headers to be sent to the receiver as a [colon-delimited, new-line separated, string](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#General_format). `Host` and `Content-Length` can be omitted as they are automatically generated by Spreedly. Headers can include distribution variable placeholders, e.g., `User: {{ user_name }}`.'
+            body:
+              type: string
+              description: The request body that will get sent to the receiver. The body can include distribution variable placeholders, e.g., `<cardNumber>{{ credit_card_number }}</cardNumber>`.
+            encode_response:
+              type: boolean
+              description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
+          required:
+          - payment_method_token
+          - url
+          - body
+    sftp_receiver:
+      type: object
+      properties:
+        receiver:
+          type: object
+          properties:
+            receiver_type:
+              type: string
+              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
+            protocol:
+              type: object
+              description: A hash of protocol values, currently only used for the SFTP protocol. e.g. `sftp://user:password@127.0.0.0`
+              properties:
+                user:
+                  type: string
+                  description: The user value
+                password:
+                  type: string
+                  description: The password value
+            hostnames:
+              type: string
+              description: Allowed list of hosts that the receiver can send payments to. Supports a comma sepaerated list of hostnames if multiple are required. Hostnames should include the protocol and domain, but not the path, e.g., `sftp://testing.receiver.com`. If provided for a `test` receiver, we will validate the delivery URL against the list of hostnames when simulating delivery to the receiver. Production receivers can omit hostnames as their values are hard-coded.
+          required:
+          - receiver_type
+          - protocol
+    deliver_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          allOf:
+          - type: object
+            properties:
+              token:
+                type: string
+                description: The token of this transaction
+              transaction_type:
+                type: string
+                description: The type of transaction, e.g., DeliverPaymentMethod, Capture, Credit
+              state:
+                type: string
+                description: The current state of the transaction
+              created_at:
+                type: string
+                description: The time the transaction token was created
+              updated_at:
+                type: string
+                description: The time the transaction was last updated
+              succeeded:
+                type: boolean
+                description: '`true` if the transaction request was successfully executed, `false` otherwise'
+              message:
+                type: string
+                description: A human-readable string indicating the result of the transaction
+              sub_merchant_key:
+                type: string
+                description: The token of the sub-merchant associated with the transaction.
+              url:
+                type: string
+                description: The full qualified URL where the payment method was sent.
+              deliver_time_ms:
+                type: number
+                description: The time it took for the deliver transaction to process in milliseconds.
+              response:
+                type: object
+                description: The raw response status, header and body returned from the receiver. Parse these values to retrieve relevant response fields.
+                properties:
+                  status:
+                    type: number
+                    description: The status code returned by the receiver.
+                  headers:
+                    type: string
+                    description: The headers, as delivered exactly by the receiver
+                  body:
+                    type: string
+                    description: The raw body delivered from the receiver, with account numbers and sensitive data redacted.
+          - type: object
+            description: The receiver the payment method was delivered to
+            properties:
+              receiver:
+                $ref: '#/components/schemas/receiver_properties'
+          - type: object
+            description: The payment method created as part of this transaction
+            properties:
+              payment_method:
+                $ref: '#/components/schemas/payment_method'
+    http_receiver:
+      type: object
+      properties:
+        receiver:
+          type: object
+          properties:
+            receiver_type:
+              type: string
+              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
+            hostnames:
+              type: string
+              description: The allowed list of hostnames to which payment methods can be delivered
+            credentials:
+              type: array
+              description: Sensitive values that should be securely stored and made available to the request template at time of delivery
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the credential. This will be the name of the variable in the delivery request template.
+                  value:
+                    type: string
+                    description: The value of the credential. This will be the value substituted in for the credential variable in the delivery request template.
+                  safe:
+                    type: boolean
+                    description: _Default:_ `false`. Set to `true` if the credential is not a sensitive value (e.g., a user name). Otherwise it is assumed to be a sensitive value and will not be echoed back in API responses.
+          required:
+          - receiver_type
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    export_properties:
+      type: object
+      properties:
+        export:
+          type: object
+          properties:
+            payment_method_tokens:
+              type: array
+              description: An array of payment method tokens to include in the export
+              items:
+                type: string
+            payment_method_data:
+              type: object
+              description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
+            url:
+              type: string
+              description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
+            body:
+              type: string
+              description: The request body that will get sent to the receiver e.g., `{{#payment_methods}}<cardNumber>{{ credit_card_number }}</cardNumber>{{/payment_methods}}`.
+            callback_url:
+              type: string
+              description: The url where Spreedly will attempt delivery of transaction results. Transaction results are posted in JSON format.
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
+      required:
+      - payment_method_tokens
+      - url
+      - body
+    list_created_receivers_response:
+      type: object
+      properties:
+        receivers:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/receiver_properties'
+    export_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          allOf:
+          - type: object
+            properties:
+              token:
+                type: string
+                description: The token of this transaction
+              transaction_type:
+                type: string
+                description: The type of transaction, e.g., ExportPaymentMethods, Capture, Credit
+              state:
+                type: string
+                description: The state of this transaction. The state will be “pending” until the transaction has completed processing. Once processed, the state can be either “succeeded” or “failed”
+              created_at:
+                type: string
+                description: The time the transaction was created
+              updated_at:
+                type: string
+                description: The time the transaction was last updated
+              succeeded:
+                type: boolean
+                description: Shows if the transaction completed with a non error status. While the transaction is pending, this value will be false.
+              message:
+                type: string
+                description: A brief description of the results of the transaction.
+              payment_methods_submitted:
+                type: array
+                description: The payment method tokens in the original export request
+              payment_method_data:
+                type: object
+                description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
+              payment_methods_included:
+                type: array
+                description: The payment method tokens included in the export to the receiver. This value is null while the transaction is pending. Once the transaction is processed, this value will be an array of payment method tokens.
+              encode_response:
+                type: boolean
+                description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
+              callback_url:
+                type: string
+                description: The url where Spreedly attempted delivery of transaction results. Transaction results are posted in JSON format.
+              url:
+                type: string
+                description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
+              payment_methods_excluded:
+                type: object
+                description: The payment methods that were not included in the export to the receiver. The value is null while the transaction is pending. Once the transaction is processed, this value will be a hash with key/value pairs. The keys are payment method tokens, the values are the reason the payment method was not included in the export to the receiver.
+              response:
+                type: string
+                description: The response status returned from the receiver. The response is null while the transaction is pending.
+          - type: object
+            description: The receiver the payment method was exported to
+            properties:
+              receiver:
+                $ref: '#/components/schemas/receiver_properties'
+    receiver_response:
+      type: object
+      properties:
+        receiver:
+          $ref: '#/components/schemas/receiver_properties'
+    receiver_update:
+      type: object
+      properties:
+        receiver:
+          type: object
+          properties:
+            credentials:
+              type: array
+              description: Sensitive values that should be securely stored and made available to the request template at time of delivery
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the credential. This will be the name of the variable in the delivery request template.
+                  value:
+                    type: string
+                    description: The value of the credential. This will be the value substituted in for the credential variable in the delivery request template.
+                  safe:
+                    type: boolean
+                    description: _Default:_ `false`. Set to `true` if the credential is not a sensitive value (e.g., a user name). Otherwise it is assumed to be a sensitive value and will not be echoed back in API responses.
+          required:
+          - credentials
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

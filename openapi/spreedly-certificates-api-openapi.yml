@@ -1,0 +1,1091 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Certificates API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: certificates
+paths:
+  /certificates:
+    get:
+      summary: List certificates
+      tags:
+      - certificates
+      security:
+      - basic_auth: []
+      operationId: list-certificates
+      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all certificates in the authenticated environment.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous page if iterating through records).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              examples:
+                list_certificates:
+                  value:
+                    certificates:
+                    - token: 8ERbJicjPjc2p8OfDnSZXbFHDdp
+                      level: environment
+                      algorithm: ec-prime256v1
+                      cn: MyApp ApplePay Testing Certificate
+                      o: null
+                      ou: null
+                      c: null
+                      st: null
+                      l: null
+                      email_address: security@yourorg.com
+                      public_key: '-----BEGIN PUBLIC KEY-----
+
+                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYKXdTdWUxdSjgHVN6uRUEjExXvE5
+
+                        7hPhu9BuQTuBDaQCdIhsDXj+aTaJL73BAQI8asKhcZynfcSIHJCoz0Xthg==
+
+                        -----END PUBLIC KEY-----
+
+                        '
+                      public_key_hash: K3xhhI8Efg1/oVezCy2/r5EbC3MhrNTijO2sDo3YMaE=
+                      csr: '-----BEGIN CERTIFICATE REQUEST-----
+
+                        MIIBSDCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv
+
+                        biBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ
+
+                        MAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv
+
+                        dXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYKXdTdWUxdSjgHVN
+
+                        6uRUEjExXvE57hPhu9BuQTuBDaQCdIhsDXj+aTaJL73BAQI8asKhcZynfcSIHJCo
+
+                        z0XthqAAMAoGCCqGSM49BAMCA0gAMEUCIQDiwBI8XLAzt/23h7PIMSnPR71EoSyi
+
+                        r8ivSDzwW1bGdAIgQ3MH5fbtU9XFckDizWko+4Yvuy0OKDifYKp0c0qjP8c=
+
+                        -----END CERTIFICATE REQUEST-----
+
+                        '
+                      pem: null
+                      created_at: '2017-06-22T20:42:05Z'
+                      updated_at: '2020-06-22T20:42:05Z'
+                    - token: J1Conxz9vbU8RBzj3Z1jMKaquwS
+                      level: organization
+                      algorithm: ec-prime256v1
+                      cn: MyApp ApplePay Production Certificate
+                      o: null
+                      ou: null
+                      c: null
+                      st: null
+                      l: null
+                      email_address: security@yourorg.com
+                      public_key: '-----BEGIN PUBLIC KEY-----
+
+                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwueSZR2V+2bSdjuok5GNDPjfseuU
+
+                        BkTFmAvHns5LKjOnLHI9cE1zJYOn6Lvc3mAoQoCawO/M0pJQuOd+uqco7w==
+
+                        -----END PUBLIC KEY-----
+
+                        '
+                      public_key_hash: lXtoHJvMFdmRq/N7Hm8UFnNr+9jJcdtYSWNfDLsMYzk=
+                      csr: '-----BEGIN CERTIFICATE REQUEST-----
+
+                        MIIBSTCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv
+
+                        biBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ
+
+                        MAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv
+
+                        dXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwueSZR2V+2bSdjuo
+
+                        k5GNDPjfseuUBkTFmAvHns5LKjOnLHI9cE1zJYOn6Lvc3mAoQoCawO/M0pJQuOd+
+
+                        uqco76AAMAoGCCqGSM49BAMCA0kAMEYCIQDiyLXI8RqeQJCSoM80IR0uKhtjHPFz
+
+                        4YrBZmA9E+GoeAIhAJFL7zUT/Xo/e1o5TBKJKamtG6hSAF8amP+96/LXymly
+
+                        -----END CERTIFICATE REQUEST-----
+
+                        '
+                      pem: null
+                      created_at: '2021-06-22T21:24:27Z'
+                      updated_at: '2023-06-22T21:24:27Z'
+              schema:
+                $ref: '#/components/schemas/list_certificates_response'
+            application/xml:
+              examples:
+                list_certificates:
+                  value: "<certificates>\n\t<certificate>\n\t\t<token>8ERbJicjPjc2p8OfDnSZXbFHDdp</token>\n\t\t<algorithm>ec-prime256v1</algorithm>\n\t\t<cn>MyApp ApplePay Testing Certificate</cn>\n\t\t<o />\n\t\t<ou />\n\t\t<c />\n\t\t<st />\n\t\t<l />\n\t\t<email_address>security@yourorg.com</email_address>\n\t\t<public_key>-----BEGIN PUBLIC KEY-----\n\t\t\tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYKXdTdWUxdSjgHVN6uRUEjExXvE5\n\t\t\t7hPhu9BuQTuBDaQCdIhsDXj+aTaJL73BAQI8asKhcZynfcSIHJCoz0Xthg==\n\t\t\t-----END PUBLIC KEY-----\n\t\t</public_key>\n\t\t<public_key_hash>K3xhhI8Efg1/oVezCy2/r5EbC3MhrNTijO2sDo3YMaE=</public_key_hash>\n\t\t<csr>-----BEGIN CERTIFICATE REQUEST-----\n\t\t\tMIIBSDCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv\n\t\t\tbiBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ\n\t\t\tMAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv\n\t\t\tdXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYKXdTdWUxdSjgHVN\n\t\t\t6uRUEjExXvE57hPhu9BuQTuBDaQCdIhsDXj+aTaJL73BAQI8asKhcZynfcSIHJCo\n\t\t\tz0XthqAAMAoGCCqGSM49BAMCA0gAMEUCIQDiwBI8XLAzt/23h7PIMSnPR71EoSyi\n\t\t\tr8ivSDzwW1bGdAIgQ3MH5fbtU9XFckDizWko+4Yvuy0OKDifYKp0c0qjP8c=\n\t\t\t-----END CERTIFICATE REQUEST-----\n\t\t</csr>\n\t\t<pem />\n\t\t<created_at>2017-06-22T20:42:05Z</created_at>\n\t\t<updated_at>2020-06-22T20:42:05Z</updated_at>\n\t</certificate>\n\t<certificate>\n\t\t<token>J1Conxz9vbU8RBzj3Z1jMKaquwS</token>\n\t\t<algorithm>ec-prime256v1</algorithm>\n\t\t<cn>MyApp ApplePay Production Certificate</cn>\n\t\t<o />\n\t\t<ou />\n\t\t<c />\n\t\t<st />\n\t\t<l />\n\t\t<email_address>security@yourorg.com</email_address>\n\t\t<public_key>-----BEGIN PUBLIC KEY-----\n\t\t\tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwueSZR2V+2bSdjuok5GNDPjfseuU\n\t\t\tBkTFmAvHns5LKjOnLHI9cE1zJYOn6Lvc3mAoQoCawO/M0pJQuOd+uqco7w==\n\t\t\t-----END PUBLIC KEY-----\n\t\t</public_key>\n\t\t<public_key_hash>lXtoHJvMFdmRq/N7Hm8UFnNr+9jJcdtYSWNfDLsMYzk=</public_key_hash>\n\t\t<csr>-----BEGIN CERTIFICATE REQUEST-----\n\t\t\tMIIBSTCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv\n\t\t\tbiBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ\n\t\t\tMAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv\n\t\t\tdXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwueSZR2V+2bSdjuo\n\t\t\tk5GNDPjfseuUBkTFmAvHns5LKjOnLHI9cE1zJYOn6Lvc3mAoQoCawO/M0pJQuOd+\n\t\t\tuqco76AAMAoGCCqGSM49BAMCA0kAMEYCIQDiyLXI8RqeQJCSoM80IR0uKhtjHPFz\n\t\t\t4YrBZmA9E+GoeAIhAJFL7zUT/Xo/e1o5TBKJKamtG6hSAF8amP+96/LXymly\n\t\t\t-----END CERTIFICATE REQUEST-----\n\t\t</csr>\n\t\t<pem />\n\t\t<created_at>2021-06-22T21:24:27Z</created_at>\n\t\t<updated_at>2023-06-22T21:24:27Z</updated_at>\n\t</certificate>\n</certificates>"
+              schema:
+                $ref: '#/components/schemas/list_certificates_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    post:
+      summary: Create a certificate
+      tags:
+      - certificates
+      security:
+      - basic_auth: []
+      operationId: create-certificates
+      description: Add a certificate to the authenticated environment for use in [secure payment method tokenization](https://developer.spreedly.com/docs/iframe-api-lifecycle#security-requirements), payment method distribution functions such as [XML digital signatures](https://developer.spreedly.com/reference/order-and-pagination), or to utilize [Apple Pay](https://developer.spreedly.com/docs/apple-pay#generate-certificate).
+      parameters: []
+      responses:
+        '201':
+          description: Successful
+          content:
+            application/json:
+              examples:
+                create_certificate:
+                  value:
+                    certificate:
+                      token: VRYbo8zKRpCSTgMvfPuBOpeyN5n
+                      algorithm: null
+                      cn: MyApp XML Signature Production Certificate
+                      o: null
+                      ou: null
+                      c: null
+                      st: null
+                      l: null
+                      email_address: security@yourorg.com
+                      public_key: '-----BEGIN PUBLIC KEY-----
+
+                        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyV1sJK9aNE76M4H2k5t5
+
+                        HNVTdCqmxFMf1HDufcueK49t1sj3wG9psZXPBan6cLJEy7bVo2QIl/NQDwaC5vDg
+
+                        IiJKIz+KwxeF1q+0it2cutxURjWY4ycxs/WuOJewSHIML+GZhzhX0nJ8xCiJKzyf
+
+                        xoBdlATrlMI70Gcgqmv5Xh7D+CR65ynIuU8J3YMRn7bhojcueWJD8AEh01KVBfji
+
+                        fno1f2W6Lj6euxvwiapaMTZioHe8uH4geOVw5WIuI3uLsR5RNuLT/q/Ft0SIwuev
+
+                        fp6odCkAC69AIvttPEfqGcqNn+F0fLRnn2Ad+YRsipuOYefWBPmw+SFikxvkliKr
+
+                        fwIDAQAB
+
+                        -----END PUBLIC KEY-----
+
+                        '
+                      public_key_hash: dnb3kyfglEbIgOB5wK6VfggYZFNU1q1Ms7sJn/6cjRc=
+                      csr: null
+                      pem: '-----BEGIN CERTIFICATE-----
+
+                        MIIDMDCCAhgCCQCJjV5tUn0DNTANBgkqhkiG9w0BAQsFADBaMTMwMQYDVQQDDCpN
+
+                        eUFwcCBYTUwgU2lnbmF0dXJlIFByb2R1Y3Rpb24gQ2VydGlmaWNhdGUxIzAhBgkq
+
+                        hkiG9w0BCQEWFHNlY3VyaXR5QHlvdXJvcmcuY29tMB4XDTE5MDQwMjE4MjIzMFoX
+
+                        DTIwMDQwMTE4MjIzMFowWjEzMDEGA1UEAwwqTXlBcHAgWE1MIFNpZ25hdHVyZSBQ
+
+                        cm9kdWN0aW9uIENlcnRpZmljYXRlMSMwIQYJKoZIhvcNAQkBFhRzZWN1cml0eUB5
+
+                        b3Vyb3JnLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMldbCSv
+
+                        WjRO+jOB9pObeRzVU3QqpsRTH9Rw7n3LniuPbdbI98BvabGVzwWp+nCyRMu21aNk
+
+                        CJfzUA8Ggubw4CIiSiM/isMXhdavtIrdnLrcVEY1mOMnMbP1rjiXsEhyDC/hmYc4
+
+                        V9JyfMQoiSs8n8aAXZQE65TCO9BnIKpr+V4ew/gkeucpyLlPCd2DEZ+24aI3Lnli
+
+                        Q/ABIdNSlQX44n56NX9lui4+nrsb8ImqWjE2YqB3vLh+IHjlcOViLiN7i7EeUTbi
+
+                        0/6vxbdEiMLnr36eqHQpAAuvQCL7bTxH6hnKjZ/hdHy0Z59gHfmEbIqbjmHn1gT5
+
+                        sPkhYpMb5JYiq38CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAGNjf8tNsQ/mvQNk4
+
+                        3b4knwlCIT6elhiofeKXoV9224C5ZcM1bw0hRfeEIXG5fs8ZEwlLGAS+bNgCctmW
+
+                        NcuqxEreR4TiV07WT/18m1go+34IygGxlxgntLQOZQyX6mjVyZjgOjefweA8OFyG
+
+                        s+xqgVuR9G7Zu8KFW0MaCj7QZBl1h4FfA3Hz25R1WC2qcbY04Db3EkLYPU4hBEzX
+
+                        HXkAyW5LWRk4pzxew9CRQ+uHyumPyi2O6Yv9avI9QA5PkuRoH0xgQ87n3AXgQ08p
+
+                        HDoiNxcDFhfL13lspowI40bsOWfGm2vvTrV42PvobHB2Hwb3a77mM2Z6bCvdN32R
+
+                        jn30kQ==
+
+                        -----END CERTIFICATE-----
+
+                        '
+                      created_at: '2024-04-03T21:12:44Z'
+                      updated_at: '2024-04-03T21:12:44Z'
+              schema:
+                $ref: '#/components/schemas/create_certificate_response'
+            application/xml:
+              examples:
+                create_certificate:
+                  value: "<certificate>\n\t<token>VRYbo8zKRpCSTgMvfPuBOpeyN5n</token>\n\t<algorithm />\n\t<cn>MyApp XML Signature Production Certificate</cn>\n\t<o />\n\t<ou />\n\t<c />\n\t<st />\n\t<l />\n\t<email_address>security@yourorg.com</email_address>\n\t<public_key>-----BEGIN PUBLIC KEY-----\n\t\tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyV1sJK9aNE76M4H2k5t5\n\t\tHNVTdCqmxFMf1HDufcueK49t1sj3wG9psZXPBan6cLJEy7bVo2QIl/NQDwaC5vDg\n\t\tIiJKIz+KwxeF1q+0it2cutxURjWY4ycxs/WuOJewSHIML+GZhzhX0nJ8xCiJKzyf\n\t\txoBdlATrlMI70Gcgqmv5Xh7D+CR65ynIuU8J3YMRn7bhojcueWJD8AEh01KVBfji\n\t\tfno1f2W6Lj6euxvwiapaMTZioHe8uH4geOVw5WIuI3uLsR5RNuLT/q/Ft0SIwuev\n\t\tfp6odCkAC69AIvttPEfqGcqNn+F0fLRnn2Ad+YRsipuOYefWBPmw+SFikxvkliKr\n\t\tfwIDAQAB\n\t\t-----END PUBLIC KEY-----\n\t</public_key>\n\t<public_key_hash>dnb3kyfglEbIgOB5wK6VfggYZFNU1q1Ms7sJn/6cjRc=</public_key_hash>\n\t<csr />\n\t<pem>-----BEGIN CERTIFICATE-----\n\t\tMIIDMDCCAhgCCQCJjV5tUn0DNTANBgkqhkiG9w0BAQsFADBaMTMwMQYDVQQDDCpN\n\t\teUFwcCBYTUwgU2lnbmF0dXJlIFByb2R1Y3Rpb24gQ2VydGlmaWNhdGUxIzAhBgkq\n\t\thkiG9w0BCQEWFHNlY3VyaXR5QHlvdXJvcmcuY29tMB4XDTE5MDQwMjE4MjIzMFoX\n\t\tDTIwMDQwMTE4MjIzMFowWjEzMDEGA1UEAwwqTXlBcHAgWE1MIFNpZ25hdHVyZSBQ\n\t\tcm9kdWN0aW9uIENlcnRpZmljYXRlMSMwIQYJKoZIhvcNAQkBFhRzZWN1cml0eUB5\n\t\tb3Vyb3JnLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMldbCSv\n\t\tWjRO+jOB9pObeRzVU3QqpsRTH9Rw7n3LniuPbdbI98BvabGVzwWp+nCyRMu21aNk\n\t\tCJfzUA8Ggubw4CIiSiM/isMXhdavtIrdnLrcVEY1mOMnMbP1rjiXsEhyDC/hmYc4\n\t\tV9JyfMQoiSs8n8aAXZQE65TCO9BnIKpr+V4ew/gkeucpyLlPCd2DEZ+24aI3Lnli\n\t\tQ/ABIdNSlQX44n56NX9lui4+nrsb8ImqWjE2YqB3vLh+IHjlcOViLiN7i7EeUTbi\n\t\t0/6vxbdEiMLnr36eqHQpAAuvQCL7bTxH6hnKjZ/hdHy0Z59gHfmEbIqbjmHn1gT5\n\t\tsPkhYpMb5JYiq38CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAGNjf8tNsQ/mvQNk4\n\t\t3b4knwlCIT6elhiofeKXoV9224C5ZcM1bw0hRfeEIXG5fs8ZEwlLGAS+bNgCctmW\n\t\tNcuqxEreR4TiV07WT/18m1go+34IygGxlxgntLQOZQyX6mjVyZjgOjefweA8OFyG\n\t\ts+xqgVuR9G7Zu8KFW0MaCj7QZBl1h4FfA3Hz25R1WC2qcbY04Db3EkLYPU4hBEzX\n\t\tHXkAyW5LWRk4pzxew9CRQ+uHyumPyi2O6Yv9avI9QA5PkuRoH0xgQ87n3AXgQ08p\n\t\tHDoiNxcDFhfL13lspowI40bsOWfGm2vvTrV42PvobHB2Hwb3a77mM2Z6bCvdN32R\n\t\tjn30kQ==\n\t\t-----END CERTIFICATE-----\n\t</pem>\n\t<created_at>2024-04-03T21:12:44Z</created_at>\n\t<updated_at>2024-04-03T21:12:44Z</updated_at>\n</certificate>"
+              schema:
+                $ref: '#/components/schemas/create_certificate_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Request not processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_certificate'
+            examples:
+              Create certificate:
+                summary: Create certificate
+                value:
+                  certificate:
+                    pem: '-----BEGIN CERTIFICATE-----
+
+                      MIIDMDCCAhgCCQCJjV5tUn0DNTANBgkqhkiG9w0BAQsFADBaMTMwMQYDVQQDDCpN
+
+                      eUFwcCBYTUwgU2lnbmF0dXJlIFByb2R1Y3Rpb24gQ2VydGlmaWNhdGUxIzAhBgkq
+
+                      hkiG9w0BCQEWFHNlY3VyaXR5QHlvdXJvcmcuY29tMB4XDTE5MDQwMjE4MjIzMFoX
+
+                      DTIwMDQwMTE4MjIzMFowWjEzMDEGA1UEAwwqTXlBcHAgWE1MIFNpZ25hdHVyZSBQ
+
+                      cm9kdWN0aW9uIENlcnRpZmljYXRlMSMwIQYJKoZIhvcNAQkBFhRzZWN1cml0eUB5
+
+                      b3Vyb3JnLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMldbCSv
+
+                      WjRO+jOB9pObeRzVU3QqpsRTH9Rw7n3LniuPbdbI98BvabGVzwWp+nCyRMu21aNk
+
+                      CJfzUA8Ggubw4CIiSiM/isMXhdavtIrdnLrcVEY1mOMnMbP1rjiXsEhyDC/hmYc4
+
+                      V9JyfMQoiSs8n8aAXZQE65TCO9BnIKpr+V4ew/gkeucpyLlPCd2DEZ+24aI3Lnli
+
+                      Q/ABIdNSlQX44n56NX9lui4+nrsb8ImqWjE2YqB3vLh+IHjlcOViLiN7i7EeUTbi
+
+                      0/6vxbdEiMLnr36eqHQpAAuvQCL7bTxH6hnKjZ/hdHy0Z59gHfmEbIqbjmHn1gT5
+
+                      sPkhYpMb5JYiq38CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAGNjf8tNsQ/mvQNk4
+
+                      3b4knwlCIT6elhiofeKXoV9224C5ZcM1bw0hRfeEIXG5fs8ZEwlLGAS+bNgCctmW
+
+                      NcuqxEreR4TiV07WT/18m1go+34IygGxlxgntLQOZQyX6mjVyZjgOjefweA8OFyG
+
+                      s+xqgVuR9G7Zu8KFW0MaCj7QZBl1h4FfA3Hz25R1WC2qcbY04Db3EkLYPU4hBEzX
+
+                      HXkAyW5LWRk4pzxew9CRQ+uHyumPyi2O6Yv9avI9QA5PkuRoH0xgQ87n3AXgQ08p
+
+                      HDoiNxcDFhfL13lspowI40bsOWfGm2vvTrV42PvobHB2Hwb3a77mM2Z6bCvdN32R
+
+                      jn30kQ==
+
+                      -----END CERTIFICATE-----
+
+                      '
+                    private_key: '-----BEGIN RSA PRIVATE KEY-----
+
+                      MIIEpAIBAAKCAQEAyV1sJK9aNE76M4H2k5t5HNVTdCqmxFMf1HDufcueK49t1sj3
+
+                      wG9psZXPBan6cLJEy7bVo2QIl/NQDwaC5vDgIiJKIz+KwxeF1q+0it2cutxURjWY
+
+                      4ycxs/WuOJewSHIML+GZhzhX0nJ8xCiJKzyfxoBdlATrlMI70Gcgqmv5Xh7D+CR6
+
+                      5ynIuU8J3YMRn7bhojcueWJD8AEh01KVBfjifno1f2W6Lj6euxvwiapaMTZioHe8
+
+                      uH4geOVw5WIuI3uLsR5RNuLT/q/Ft0SIwuevfp6odCkAC69AIvttPEfqGcqNn+F0
+
+                      fLRnn2Ad+YRsipuOYefWBPmw+SFikxvkliKrfwIDAQABAoIBAQCAUYNPoVrHSKjS
+
+                      V/hsub+lKyAiP+fD5gC7nTetfCsQMTdajviqbZUZ8JBbWKVaWY/TjXB4zY9YXVng
+
+                      KVMTnd4GgnliGuTvS7cjRxazA2QUA8HEd/U0k85tkpryP1+72sl/XbE7ZSE533E4
+
+                      g2hd4CUlFroLUFNbmacKOB2t3F6tpaXZD3TXGd2QIWEdRVbBHcbH5ZLhOVlvyJ5k
+
+                      +gHXvpdVsZnmC8eZPPs/JL3B0SwJop8Ln+DKkg6P4s+oq9dkR0OwuhuE+iWV8evF
+
+                      LFb0j87kJV8JsHMvk3qbbunWHisQr23U4Vl/k6rjkodryrzDrwQ3czzR3nlKN/Kl
+
+                      VROR8TMBAoGBAOmi434+RbZQP9PdVEa+pEh2IA81L3og6+TqemL4sZtqlCEfrOZD
+
+                      FsSH6CEU13SMn7l+riYCzBYSdvPDAynhJp+u0REUQFPJAMcgefxw2mfJwFrtn9Ap
+
+                      JWaAPhcMeK8l/5rdZxnjECDRAkW+5SdtYj9x6rjgsmJ89DFdd5EW1JL/AoGBANyj
+
+                      vpNSRBdy+lM62T0DiAJ6gc0HpYQpNzIydIT9bh8zkmwU5z0pVtczpmIzdK0lPlHO
+
+                      ERWgBXXsfRfEupVoFND9H5A7tTMQtJF4rLg3gUpa2alTUXSWfm9uS7TWVRYR7hsV
+
+                      /ui7oW3zIXdD8dRHozITSzM27gfiMy6Q3I/SIGeBAoGAf0lgObJBlq8n5wxpUtWg
+
+                      eV3p338xa48uFZxtqygk0zCAnX89WoHokJAeto89RuEqUAwlYs4ZVFkg93MicRma
+
+                      SlsayfxHg545z0LxUshFJVB0fNWDQQx5tNtfeH0x7vJ7zGqdNixP6CEW5Nq4y/87
+
+                      DKfKoojAhwnenFp4vtI6ZA8CgYBqTvcvEo8+YSbd3Vf4fvAUiaRq/okwgY9Xv1nH
+
+                      Djj2Dao6K2QzYuy1qew8GqDYID7Dua8fpUecRwMK5b4k6M5G1/9SRoKLBTyLbwKB
+
+                      jDTed6GyZTO1IiHvXMxbaH38sUzxfgqhZm5khKYWSgWGC7JFGWi9V3UfFU0l3aR4
+
+                      I317gQKBgQCxWrKZlfq/iWcvBqB8Ep4wiJPXZXjl/Dvic/2pCC69MMimtDTHQ8o8
+
+                      gp7c3Fp+RDO8U5wgqq2amodR1RPbAdgG7rQvewnzPsaTIKSfOueY3LG4UR22tNvZ
+
+                      LeaSV7WUssler/Ybk6Gj+psx8RXbL+ZcYPoeL7mb6kUoWFfzcmpIjA==
+
+                      -----END RSA PRIVATE KEY-----
+
+                      '
+                    level: organization
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/create_certificate'
+            examples:
+              Create certificate:
+                summary: Create certificate
+                value:
+                  certificate:
+                    pem: '-----BEGIN CERTIFICATE-----
+
+                      MIIDMDCCAhgCCQCJjV5tUn0DNTANBgkqhkiG9w0BAQsFADBaMTMwMQYDVQQDDCpN
+
+                      eUFwcCBYTUwgU2lnbmF0dXJlIFByb2R1Y3Rpb24gQ2VydGlmaWNhdGUxIzAhBgkq
+
+                      hkiG9w0BCQEWFHNlY3VyaXR5QHlvdXJvcmcuY29tMB4XDTE5MDQwMjE4MjIzMFoX
+
+                      DTIwMDQwMTE4MjIzMFowWjEzMDEGA1UEAwwqTXlBcHAgWE1MIFNpZ25hdHVyZSBQ
+
+                      cm9kdWN0aW9uIENlcnRpZmljYXRlMSMwIQYJKoZIhvcNAQkBFhRzZWN1cml0eUB5
+
+                      b3Vyb3JnLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMldbCSv
+
+                      WjRO+jOB9pObeRzVU3QqpsRTH9Rw7n3LniuPbdbI98BvabGVzwWp+nCyRMu21aNk
+
+                      CJfzUA8Ggubw4CIiSiM/isMXhdavtIrdnLrcVEY1mOMnMbP1rjiXsEhyDC/hmYc4
+
+                      V9JyfMQoiSs8n8aAXZQE65TCO9BnIKpr+V4ew/gkeucpyLlPCd2DEZ+24aI3Lnli
+
+                      Q/ABIdNSlQX44n56NX9lui4+nrsb8ImqWjE2YqB3vLh+IHjlcOViLiN7i7EeUTbi
+
+                      0/6vxbdEiMLnr36eqHQpAAuvQCL7bTxH6hnKjZ/hdHy0Z59gHfmEbIqbjmHn1gT5
+
+                      sPkhYpMb5JYiq38CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAGNjf8tNsQ/mvQNk4
+
+                      3b4knwlCIT6elhiofeKXoV9224C5ZcM1bw0hRfeEIXG5fs8ZEwlLGAS+bNgCctmW
+
+                      NcuqxEreR4TiV07WT/18m1go+34IygGxlxgntLQOZQyX6mjVyZjgOjefweA8OFyG
+
+                      s+xqgVuR9G7Zu8KFW0MaCj7QZBl1h4FfA3Hz25R1WC2qcbY04Db3EkLYPU4hBEzX
+
+                      HXkAyW5LWRk4pzxew9CRQ+uHyumPyi2O6Yv9avI9QA5PkuRoH0xgQ87n3AXgQ08p
+
+                      HDoiNxcDFhfL13lspowI40bsOWfGm2vvTrV42PvobHB2Hwb3a77mM2Z6bCvdN32R
+
+                      jn30kQ==
+
+                      -----END CERTIFICATE-----
+
+                      '
+                    private_key: '-----BEGIN RSA PRIVATE KEY-----
+
+                      MIIEpAIBAAKCAQEAyV1sJK9aNE76M4H2k5t5HNVTdCqmxFMf1HDufcueK49t1sj3
+
+                      wG9psZXPBan6cLJEy7bVo2QIl/NQDwaC5vDgIiJKIz+KwxeF1q+0it2cutxURjWY
+
+                      4ycxs/WuOJewSHIML+GZhzhX0nJ8xCiJKzyfxoBdlATrlMI70Gcgqmv5Xh7D+CR6
+
+                      5ynIuU8J3YMRn7bhojcueWJD8AEh01KVBfjifno1f2W6Lj6euxvwiapaMTZioHe8
+
+                      uH4geOVw5WIuI3uLsR5RNuLT/q/Ft0SIwuevfp6odCkAC69AIvttPEfqGcqNn+F0
+
+                      fLRnn2Ad+YRsipuOYefWBPmw+SFikxvkliKrfwIDAQABAoIBAQCAUYNPoVrHSKjS
+
+                      V/hsub+lKyAiP+fD5gC7nTetfCsQMTdajviqbZUZ8JBbWKVaWY/TjXB4zY9YXVng
+
+                      KVMTnd4GgnliGuTvS7cjRxazA2QUA8HEd/U0k85tkpryP1+72sl/XbE7ZSE533E4
+
+                      g2hd4CUlFroLUFNbmacKOB2t3F6tpaXZD3TXGd2QIWEdRVbBHcbH5ZLhOVlvyJ5k
+
+                      +gHXvpdVsZnmC8eZPPs/JL3B0SwJop8Ln+DKkg6P4s+oq9dkR0OwuhuE+iWV8evF
+
+                      LFb0j87kJV8JsHMvk3qbbunWHisQr23U4Vl/k6rjkodryrzDrwQ3czzR3nlKN/Kl
+
+                      VROR8TMBAoGBAOmi434+RbZQP9PdVEa+pEh2IA81L3og6+TqemL4sZtqlCEfrOZD
+
+                      FsSH6CEU13SMn7l+riYCzBYSdvPDAynhJp+u0REUQFPJAMcgefxw2mfJwFrtn9Ap
+
+                      JWaAPhcMeK8l/5rdZxnjECDRAkW+5SdtYj9x6rjgsmJ89DFdd5EW1JL/AoGBANyj
+
+                      vpNSRBdy+lM62T0DiAJ6gc0HpYQpNzIydIT9bh8zkmwU5z0pVtczpmIzdK0lPlHO
+
+                      ERWgBXXsfRfEupVoFND9H5A7tTMQtJF4rLg3gUpa2alTUXSWfm9uS7TWVRYR7hsV
+
+                      /ui7oW3zIXdD8dRHozITSzM27gfiMy6Q3I/SIGeBAoGAf0lgObJBlq8n5wxpUtWg
+
+                      eV3p338xa48uFZxtqygk0zCAnX89WoHokJAeto89RuEqUAwlYs4ZVFkg93MicRma
+
+                      SlsayfxHg545z0LxUshFJVB0fNWDQQx5tNtfeH0x7vJ7zGqdNixP6CEW5Nq4y/87
+
+                      DKfKoojAhwnenFp4vtI6ZA8CgYBqTvcvEo8+YSbd3Vf4fvAUiaRq/okwgY9Xv1nH
+
+                      Djj2Dao6K2QzYuy1qew8GqDYID7Dua8fpUecRwMK5b4k6M5G1/9SRoKLBTyLbwKB
+
+                      jDTed6GyZTO1IiHvXMxbaH38sUzxfgqhZm5khKYWSgWGC7JFGWi9V3UfFU0l3aR4
+
+                      I317gQKBgQCxWrKZlfq/iWcvBqB8Ep4wiJPXZXjl/Dvic/2pCC69MMimtDTHQ8o8
+
+                      gp7c3Fp+RDO8U5wgqq2amodR1RPbAdgG7rQvewnzPsaTIKSfOueY3LG4UR22tNvZ
+
+                      LeaSV7WUssler/Ybk6Gj+psx8RXbL+ZcYPoeL7mb6kUoWFfzcmpIjA==
+
+                      -----END RSA PRIVATE KEY-----
+
+                      '
+                    level: organization
+  /certificates/generate:
+    post:
+      summary: Generate a certificate
+      tags:
+      - certificates
+      security:
+      - basic_auth: []
+      operationId: generate-certificates
+      description: Generate a new SSL keypair and certificate signing request (CSR). Since Spreedly is not a certificate authority we cannot issue trusted certificates. Instead, it is intended that you will get the certificate signed by your certificate authority (or sign it yourself) and update the certificate record at Spreedly with the final and signed cert.
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              examples:
+                generate_certificate:
+                  value:
+                    certificate:
+                      token: 65ZDETqI5decVMjVMyR5ckhaO9I
+                      algorithm: ec-prime256v1
+                      cn: MyApp ApplePay Production Certificate
+                      o: YourOrg
+                      ou: OrgUnit
+                      c: United States
+                      st: NC
+                      l: Durham
+                      email_address: security@yourorg.com
+                      public_key: '-----BEGIN PUBLIC KEY-----
+
+                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoQsY700wd1Vz8LzVDmH2ts4rYRRh
+
+                        k751oz+yW/2U2oe29yWrPJA5oLHZw8L7P8qmuyzuoFOjNxRlTypTyCFuag==
+
+                        -----END PUBLIC KEY-----
+
+                        '
+                      public_key_hash: DkI5At7x9GHqoLfgANfHiL7/+S5CzxAmHOe09T6ubNg=
+                      csr: '-----BEGIN CERTIFICATE REQUEST-----
+
+                        MIIBSDCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv
+
+                        biBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ
+
+                        MAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv
+
+                        dXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoQsY700wd1Vz8LzV
+
+                        DmH2ts4rYRRhk751oz+yW/2U2oe29yWrPJA5oLHZw8L7P8qmuyzuoFOjNxRlTypT
+
+                        yCFuaqAAMAoGCCqGSM49BAMCA0gAMEUCIQDQgWnEgXLY45qGTqcwBOxvm8O5Qku+
+
+                        VPv3E+rX1J+oIQIgHK7KFPV2qb8D5WKP5LXG9Nla1Pw2cTCy0x7t8+4Kf7c=
+
+                        -----END CERTIFICATE REQUEST-----
+
+                        '
+                      pem: null
+                      created_at: '2024-03-20T19:49:29Z'
+                      updated_at: '2024-03-20T19:49:29Z'
+              schema:
+                $ref: '#/components/schemas/generate_certificate_response'
+            application/xml:
+              examples:
+                generate_certificate:
+                  value: "<certificate>\n\t<token>65ZDETqI5decVMjVMyR5ckhaO9I</token>\n\t<algorithm>ec-prime256v1</algorithm>\n\t<cn>MyApp ApplePay Production Certificate</cn>\n\t<o>YourOrg</o>\n\t<ou>OrgUnit</ou>\n\t<c>United States</c>\n\t<st>NC</st>\n\t<l>Durham</l>\n\t<email_address>security@yourorg.com</email_address>\n\t<public_key>-----BEGIN PUBLIC KEY-----\n\t\tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoQsY700wd1Vz8LzVDmH2ts4rYRRh\n\t\tk751oz+yW/2U2oe29yWrPJA5oLHZw8L7P8qmuyzuoFOjNxRlTypTyCFuag==\n\t\t-----END PUBLIC KEY-----\n\t</public_key>\n\t<public_key_hash>DkI5At7x9GHqoLfgANfHiL7/+S5CzxAmHOe09T6ubNg=</public_key_hash>\n\t<csr>-----BEGIN CERTIFICATE REQUEST-----\n\t\tMIIBSDCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv\n\t\tbiBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ\n\t\tMAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv\n\t\tdXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoQsY700wd1Vz8LzV\n\t\tDmH2ts4rYRRhk751oz+yW/2U2oe29yWrPJA5oLHZw8L7P8qmuyzuoFOjNxRlTypT\n\t\tyCFuaqAAMAoGCCqGSM49BAMCA0gAMEUCIQDQgWnEgXLY45qGTqcwBOxvm8O5Qku+\n\t\tVPv3E+rX1J+oIQIgHK7KFPV2qb8D5WKP5LXG9Nla1Pw2cTCy0x7t8+4Kf7c=\n\t\t-----END CERTIFICATE REQUEST-----\n\t</csr>\n\t<pem />\n\t<created_at>2024-03-20T19:49:29Z</created_at>\n\t<updated_at>2024-03-20T19:49:29Z</updated_at>\n</certificate>"
+              schema:
+                $ref: '#/components/schemas/generate_certificate_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/generate_certificate'
+            examples:
+              Generate certificate w/req fields:
+                summary: Generate certificate w/req fields
+                value:
+                  certificate:
+                    algorithm: ec-prime256v1
+                    cn: MyApp ApplePay Production Certificate
+              Generate certificate w/all fields:
+                summary: Generate certificate w/all fields
+                value:
+                  certificate:
+                    algorithm: ec-prime256v1
+                    cn: MyApp ApplePay Production Certificate
+                    o: YourOrg
+                    ou: OrgUnit
+                    c: United States
+                    st: NC
+                    l: Durham
+                    email_address: security@yourorg.com
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/generate_certificate'
+            examples:
+              Generate certificate w/req fields:
+                summary: Generate certificate w/req fields
+                value:
+                  certificate:
+                    algorithm: ec-prime256v1
+                    cn: MyApp ApplePay Production Certificate
+              Generate certificate w/all fields:
+                summary: Generate certificate w/all fields
+                value:
+                  certificate:
+                    algorithm: ec-prime256v1
+                    cn: MyApp ApplePay Production Certificate
+                    o: YourOrg
+                    ou: OrgUnit
+                    c: United States
+                    st: NC
+                    l: Durham
+                    email_address: security@yourorg.com
+  /certificates/{certificate_token}:
+    parameters:
+    - name: certificate_token
+      in: path
+      description: A unique string generated by Spreedly to identify a certificate.
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Update certificate
+      tags:
+      - certificates
+      security:
+      - basic_auth: []
+      operationId: update-certificates
+      description: Update an existing SSL certificate record with the signed certificate value (in PEM format).
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              examples:
+                update_certificate:
+                  value:
+                    certificate:
+                      token: BHD5mnpizTjP9NhlQqUuIMs8qFF
+                      algorithm: ec-prime256v1
+                      cn: MyApp ApplePay Production Certificate
+                      o: null
+                      ou: null
+                      c: null
+                      st: null
+                      l: null
+                      email_address: security@yourorg.com
+                      public_key: '-----BEGIN PUBLIC KEY-----
+
+                        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEIaAQ+hWjl1Cat3uBKCO61npk84S2
+
+                        j5QHRfO1s5m4VilTSfSwBIawYwLY+orO+uTsNnZ2LWtEDxfRCaLm8Cjoyg==
+
+                        -----END PUBLIC KEY-----
+
+                        '
+                      public_key_hash: /4UKqrtx7AmlRvLatYt9LDt64IYo+G9eaqqS6LFOAdI=
+                      csr: '-----BEGIN CERTIFICATE REQUEST-----
+
+                        MIIBSTCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv
+
+                        biBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ
+
+                        MAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv
+
+                        dXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0fpMDOVsNWh56lzY
+
+                        LLT8AUv77xfxIDEH0EvVcoDIGjO1wHwrUhp/p8kSVXYEt5i+jzE7UHEUNwrD5YtC
+
+                        7i64hKAAMAoGCCqGSM49BAMCA0kAMEYCIQD0qoJM4EKR9DT6AIHNMm7I0Hwzu3rp
+
+                        u7CIFgdchCsNeQIhANCstbvSt7ZwQY4abRS9GiTlFn3vGGjwGdeeXb0RmxGg
+
+                        -----END CERTIFICATE REQUEST-----
+
+                        '
+                      pem: '-----BEGIN CERTIFICATE-----
+
+                        MIIEiTCCBC6gAwIBAgIIFRZ9ouKAzqwwCgYIKoZIzj0EAwIwgYAxNDAyBgNVBAMM
+
+                        K0FwcGxlIFdvcmxkd2lkZSBEZXZlbG9wZXIgUmVsYXRpb25zIENBIC0gRzIxJjAk
+
+                        BgNVBAsMHUFwcGxlIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MRMwEQYDVQQKDApB
+
+                        cHBsZSBJbmMuMQswCQYDVQQGEwJVUzAeFw0xNTAyMTkyMDMzMzBaFw0xNzAzMjAy
+
+                        MDMzMzBaMIG5MTowOAYKCZImiZPyLGQBAQwqbWVyY2hhbnQuY29tLnNlYXRnZWVr
+
+                        LlNwcmVlZGx5QXBwbGVQYXlUZXN0MUAwPgYDVQQDDDdNZXJjaGFudCBJRDogbWVy
+
+                        Y2hhbnQuY29tLnNlYXRnZWVrLlNwcmVlZGx5QXBwbGVQYXlUZXN0MRMwEQYDVQQL
+
+                        DAo5QjNRWTlXQlo1MRcwFQYDVQQKDA5TZWF0R2VlaywgSW5jLjELMAkGA1UEBhMC
+
+                        VVMwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQhoBD6FaOXUJq3e4EoI7rWemTz
+
+                        hLaPlAdF87WzmbhWKVNJ9LAEhrBjAtj6is765Ow2dnYta0QPF9EJoubwKOjKo4IC
+
+                        VTCCAlEwRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzABhitodHRwOi8vb2NzcC5h
+
+                        cHBsZS5jb20vb2NzcDA0LWFwcGxld3dkcmNhMjAxMB0GA1UdDgQWBBQMV4lSAdev
+
+                        m6sv1MVm5yR0gWij+jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIS2hMw6hmJy
+
+                        FlmU6BqjvUjfOt8LMIIBHQYDVR0gBIIBFDCCARAwggEMBgkqhkiG92NkBQEwgf4w
+
+                        gcMGCCsGAQUFBwICMIG2DIGzUmVsaWFuY2Ugb24gdGhpcyBjZXJ0aWZpY2F0ZSBi
+
+                        eSBhbnkgcGFydHkgYXNzdW1lcyBhY2NlcHRhbmNlIG9mIHRoZSB0aGVuIGFwcGxp
+
+                        Y2FibGUgc3RhbmRhcmQgdGVybXMgYW5kIGNvbmRpdGlvbnMgb2YgdXNlLCBjZXJ0
+
+                        aWZpY2F0ZSBwb2xpY3kgYW5kIGNlcnRpZmljYXRpb24gcHJhY3RpY2Ugc3RhdGVt
+
+                        ZW50cy4wNgYIKwYBBQUHAgEWKmh0dHA6Ly93d3cuYXBwbGUuY29tL2NlcnRpZmlj
+
+                        YXRlYXV0aG9yaXR5LzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmFwcGxl
+
+                        LmNvbS9hcHBsZXd3ZHJjYTIuY3JsMA4GA1UdDwEB/wQEAwIDKDBPBgkqhkiG92Nk
+
+                        BiAEQgxAODlDQjI1MDkxOTI0RDY3RjlFMEM2QUVDMzA0MENBMkFGNzA4MEYzRTBG
+
+                        Q0NFMTZBOTY5RDkyMUE0QkM5RTA1RjAKBggqhkjOPQQDAgNJADBGAiEAvKYdzDtD
+
+                        Q87guVNkybbcEY1Y/nXO9Ry+4fVDwXYMET0CIQDEiK1+xSSziPZ/PPQHF8MCWsD0
+
+                        LDW0aLigLHbDgQcrXA==
+
+                        -----END CERTIFICATE-----
+
+                        '
+                      created_at: '2024-06-27T18:16:35Z'
+                      updated_at: '2024-07-27T17:54:23Z'
+              schema:
+                $ref: '#/components/schemas/create_certificate_response'
+            application/xml:
+              examples:
+                update_certificate:
+                  value: "<certificate>\n\t<token>BHD5mnpizTjP9NhlQqUuIMs8qFF</token>\n\t<algorithm>ec-prime256v1</algorithm>\n\t<cn>MyApp ApplePay Production Certificate</cn>\n\t<o />\n\t<ou />\n\t<c />\n\t<st />\n\t<l />\n\t<email_address>security@yourorg.com</email_address>\n\t<public_key>-----BEGIN PUBLIC KEY-----\n\t\tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEIaAQ+hWjl1Cat3uBKCO61npk84S2\n\t\tj5QHRfO1s5m4VilTSfSwBIawYwLY+orO+uTsNnZ2LWtEDxfRCaLm8Cjoyg==\n\t\t-----END PUBLIC KEY-----\n\t</public_key>\n\t<public_key_hash>/4UKqrtx7AmlRvLatYt9LDt64IYo+G9eaqqS6LFOAdI=</public_key_hash>\n\t<csr>-----BEGIN CERTIFICATE REQUEST-----\n\t\tMIIBSTCB7wIBADCBjDEuMCwGA1UEAwwlTXlBcHAgQXBwbGVQYXkgUHJvZHVjdGlv\n\t\tbiBDZXJ0aWZpY2F0ZTEJMAcGA1UECgwAMQkwBwYDVQQLDAAxCTAHBgNVBAYTADEJ\n\t\tMAcGA1UECAwAMQkwBwYDVQQHDAAxIzAhBgkqhkiG9w0BCQEWFHNlY3VyaXR5QHlv\n\t\tdXJvcmcuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE0fpMDOVsNWh56lzY\n\t\tLLT8AUv77xfxIDEH0EvVcoDIGjO1wHwrUhp/p8kSVXYEt5i+jzE7UHEUNwrD5YtC\n\t\t7i64hKAAMAoGCCqGSM49BAMCA0kAMEYCIQD0qoJM4EKR9DT6AIHNMm7I0Hwzu3rp\n\t\tu7CIFgdchCsNeQIhANCstbvSt7ZwQY4abRS9GiTlFn3vGGjwGdeeXb0RmxGg\n\t\t-----END CERTIFICATE REQUEST-----\n\t</csr>\n\t<pem>-----BEGIN CERTIFICATE-----\n\t\tMIIEiTCCBC6gAwIBAgIIFRZ9ouKAzqwwCgYIKoZIzj0EAwIwgYAxNDAyBgNVBAMM\n\t\tK0FwcGxlIFdvcmxkd2lkZSBEZXZlbG9wZXIgUmVsYXRpb25zIENBIC0gRzIxJjAk\n\t\tBgNVBAsMHUFwcGxlIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MRMwEQYDVQQKDApB\n\t\tcHBsZSBJbmMuMQswCQYDVQQGEwJVUzAeFw0xNTAyMTkyMDMzMzBaFw0xNzAzMjAy\n\t\tMDMzMzBaMIG5MTowOAYKCZImiZPyLGQBAQwqbWVyY2hhbnQuY29tLnNlYXRnZWVr\n\t\tLlNwcmVlZGx5QXBwbGVQYXlUZXN0MUAwPgYDVQQDDDdNZXJjaGFudCBJRDogbWVy\n\t\tY2hhbnQuY29tLnNlYXRnZWVrLlNwcmVlZGx5QXBwbGVQYXlUZXN0MRMwEQYDVQQL\n\t\tDAo5QjNRWTlXQlo1MRcwFQYDVQQKDA5TZWF0R2VlaywgSW5jLjELMAkGA1UEBhMC\n\t\tVVMwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQhoBD6FaOXUJq3e4EoI7rWemTz\n\t\thLaPlAdF87WzmbhWKVNJ9LAEhrBjAtj6is765Ow2dnYta0QPF9EJoubwKOjKo4IC\n\t\tVTCCAlEwRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzABhitodHRwOi8vb2NzcC5h\n\t\tcHBsZS5jb20vb2NzcDA0LWFwcGxld3dkcmNhMjAxMB0GA1UdDgQWBBQMV4lSAdev\n\t\tm6sv1MVm5yR0gWij+jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIS2hMw6hmJy\n\t\tFlmU6BqjvUjfOt8LMIIBHQYDVR0gBIIBFDCCARAwggEMBgkqhkiG92NkBQEwgf4w\n\t\tgcMGCCsGAQUFBwICMIG2DIGzUmVsaWFuY2Ugb24gdGhpcyBjZXJ0aWZpY2F0ZSBi\n\t\teSBhbnkgcGFydHkgYXNzdW1lcyBhY2NlcHRhbmNlIG9mIHRoZSB0aGVuIGFwcGxp\n\t\tY2FibGUgc3RhbmRhcmQgdGVybXMgYW5kIGNvbmRpdGlvbnMgb2YgdXNlLCBjZXJ0\n\t\taWZpY2F0ZSBwb2xpY3kgYW5kIGNlcnRpZmljYXRpb24gcHJhY3RpY2Ugc3RhdGVt\n\t\tZW50cy4wNgYIKwYBBQUHAgEWKmh0dHA6Ly93d3cuYXBwbGUuY29tL2NlcnRpZmlj\n\t\tYXRlYXV0aG9yaXR5LzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmFwcGxl\n\t\tLmNvbS9hcHBsZXd3ZHJjYTIuY3JsMA4GA1UdDwEB/wQEAwIDKDBPBgkqhkiG92Nk\n\t\tBiAEQgxAODlDQjI1MDkxOTI0RDY3RjlFMEM2QUVDMzA0MENBMkFGNzA4MEYzRTBG\n\t\tQ0NFMTZBOTY5RDkyMUE0QkM5RTA1RjAKBggqhkjOPQQDAgNJADBGAiEAvKYdzDtD\n\t\tQ87guVNkybbcEY1Y/nXO9Ry+4fVDwXYMET0CIQDEiK1+xSSziPZ/PPQHF8MCWsD0\n\t\tLDW0aLigLHbDgQcrXA==\n\t\t-----END CERTIFICATE-----\n\t</pem>\n\t<created_at>2024-06-27T18:16:35Z</created_at>\n\t<updated_at>2024-07-27T17:54:23Z</updated_at>\n</certificate>"
+              schema:
+                $ref: '#/components/schemas/create_certificate_response'
+        '422':
+          description: Request not processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_certificate'
+            examples:
+              Update certificate:
+                summary: Update certificate
+                value:
+                  certificate:
+                    pem: '-----BEGIN CERTIFICATE-----
+
+                      MIIEiTCCBC6gAwIBAgIIFRZ9ouKAzqwwCgYIKoZIzj0EAwIwgYAxNDAyBgNVBAMM
+
+                      K0FwcGxlIFdvcmxkd2lkZSBEZXZlbG9wZXIgUmVsYXRpb25zIENBIC0gRzIxJjAk
+
+                      BgNVBAsMHUFwcGxlIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MRMwEQYDVQQKDApB
+
+                      cHBsZSBJbmMuMQswCQYDVQQGEwJVUzAeFw0xNTAyMTkyMDMzMzBaFw0xNzAzMjAy
+
+                      MDMzMzBaMIG5MTowOAYKCZImiZPyLGQBAQwqbWVyY2hhbnQuY29tLnNlYXRnZWVr
+
+                      LlNwcmVlZGx5QXBwbGVQYXlUZXN0MUAwPgYDVQQDDDdNZXJjaGFudCBJRDogbWVy
+
+                      Y2hhbnQuY29tLnNlYXRnZWVrLlNwcmVlZGx5QXBwbGVQYXlUZXN0MRMwEQYDVQQL
+
+                      DAo5QjNRWTlXQlo1MRcwFQYDVQQKDA5TZWF0R2VlaywgSW5jLjELMAkGA1UEBhMC
+
+                      VVMwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQhoBD6FaOXUJq3e4EoI7rWemTz
+
+                      hLaPlAdF87WzmbhWKVNJ9LAEhrBjAtj6is765Ow2dnYta0QPF9EJoubwKOjKo4IC
+
+                      VTCCAlEwRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzABhitodHRwOi8vb2NzcC5h
+
+                      cHBsZS5jb20vb2NzcDA0LWFwcGxld3dkcmNhMjAxMB0GA1UdDgQWBBQMV4lSAdev
+
+                      m6sv1MVm5yR0gWij+jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIS2hMw6hmJy
+
+                      FlmU6BqjvUjfOt8LMIIBHQYDVR0gBIIBFDCCARAwggEMBgkqhkiG92NkBQEwgf4w
+
+                      gcMGCCsGAQUFBwICMIG2DIGzUmVsaWFuY2Ugb24gdGhpcyBjZXJ0aWZpY2F0ZSBi
+
+                      eSBhbnkgcGFydHkgYXNzdW1lcyBhY2NlcHRhbmNlIG9mIHRoZSB0aGVuIGFwcGxp
+
+                      Y2FibGUgc3RhbmRhcmQgdGVybXMgYW5kIGNvbmRpdGlvbnMgb2YgdXNlLCBjZXJ0
+
+                      aWZpY2F0ZSBwb2xpY3kgYW5kIGNlcnRpZmljYXRpb24gcHJhY3RpY2Ugc3RhdGVt
+
+                      ZW50cy4wNgYIKwYBBQUHAgEWKmh0dHA6Ly93d3cuYXBwbGUuY29tL2NlcnRpZmlj
+
+                      YXRlYXV0aG9yaXR5LzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmFwcGxl
+
+                      LmNvbS9hcHBsZXd3ZHJjYTIuY3JsMA4GA1UdDwEB/wQEAwIDKDBPBgkqhkiG92Nk
+
+                      BiAEQgxAODlDQjI1MDkxOTI0RDY3RjlFMEM2QUVDMzA0MENBMkFGNzA4MEYzRTBG
+
+                      Q0NFMTZBOTY5RDkyMUE0QkM5RTA1RjAKBggqhkjOPQQDAgNJADBGAiEAvKYdzDtD
+
+                      Q87guVNkybbcEY1Y/nXO9Ry+4fVDwXYMET0CIQDEiK1+xSSziPZ/PPQHF8MCWsD0
+
+                      LDW0aLigLHbDgQcrXA==
+
+                      -----END CERTIFICATE-----
+
+                      '
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/update_certificate'
+            examples:
+              Update certificate:
+                summary: Update certificate
+                value:
+                  certificate:
+                    pem: '-----BEGIN CERTIFICATE-----
+
+                      MIIEiTCCBC6gAwIBAgIIFRZ9ouKAzqwwCgYIKoZIzj0EAwIwgYAxNDAyBgNVBAMM
+
+                      K0FwcGxlIFdvcmxkd2lkZSBEZXZlbG9wZXIgUmVsYXRpb25zIENBIC0gRzIxJjAk
+
+                      BgNVBAsMHUFwcGxlIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MRMwEQYDVQQKDApB
+
+                      cHBsZSBJbmMuMQswCQYDVQQGEwJVUzAeFw0xNTAyMTkyMDMzMzBaFw0xNzAzMjAy
+
+                      MDMzMzBaMIG5MTowOAYKCZImiZPyLGQBAQwqbWVyY2hhbnQuY29tLnNlYXRnZWVr
+
+                      LlNwcmVlZGx5QXBwbGVQYXlUZXN0MUAwPgYDVQQDDDdNZXJjaGFudCBJRDogbWVy
+
+                      Y2hhbnQuY29tLnNlYXRnZWVrLlNwcmVlZGx5QXBwbGVQYXlUZXN0MRMwEQYDVQQL
+
+                      DAo5QjNRWTlXQlo1MRcwFQYDVQQKDA5TZWF0R2VlaywgSW5jLjELMAkGA1UEBhMC
+
+                      VVMwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQhoBD6FaOXUJq3e4EoI7rWemTz
+
+                      hLaPlAdF87WzmbhWKVNJ9LAEhrBjAtj6is765Ow2dnYta0QPF9EJoubwKOjKo4IC
+
+                      VTCCAlEwRwYIKwYBBQUHAQEEOzA5MDcGCCsGAQUFBzABhitodHRwOi8vb2NzcC5h
+
+                      cHBsZS5jb20vb2NzcDA0LWFwcGxld3dkcmNhMjAxMB0GA1UdDgQWBBQMV4lSAdev
+
+                      m6sv1MVm5yR0gWij+jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFIS2hMw6hmJy
+
+                      FlmU6BqjvUjfOt8LMIIBHQYDVR0gBIIBFDCCARAwggEMBgkqhkiG92NkBQEwgf4w
+
+                      gcMGCCsGAQUFBwICMIG2DIGzUmVsaWFuY2Ugb24gdGhpcyBjZXJ0aWZpY2F0ZSBi
+
+                      eSBhbnkgcGFydHkgYXNzdW1lcyBhY2NlcHRhbmNlIG9mIHRoZSB0aGVuIGFwcGxp
+
+                      Y2FibGUgc3RhbmRhcmQgdGVybXMgYW5kIGNvbmRpdGlvbnMgb2YgdXNlLCBjZXJ0
+
+                      aWZpY2F0ZSBwb2xpY3kgYW5kIGNlcnRpZmljYXRpb24gcHJhY3RpY2Ugc3RhdGVt
+
+                      ZW50cy4wNgYIKwYBBQUHAgEWKmh0dHA6Ly93d3cuYXBwbGUuY29tL2NlcnRpZmlj
+
+                      YXRlYXV0aG9yaXR5LzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmFwcGxl
+
+                      LmNvbS9hcHBsZXd3ZHJjYTIuY3JsMA4GA1UdDwEB/wQEAwIDKDBPBgkqhkiG92Nk
+
+                      BiAEQgxAODlDQjI1MDkxOTI0RDY3RjlFMEM2QUVDMzA0MENBMkFGNzA4MEYzRTBG
+
+                      Q0NFMTZBOTY5RDkyMUE0QkM5RTA1RjAKBggqhkjOPQQDAgNJADBGAiEAvKYdzDtD
+
+                      Q87guVNkybbcEY1Y/nXO9Ry+4fVDwXYMET0CIQDEiK1+xSSziPZ/PPQHF8MCWsD0
+
+                      LDW0aLigLHbDgQcrXA==
+
+                      -----END CERTIFICATE-----
+
+                      '
+components:
+  schemas:
+    generate_certificate:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            algorithm:
+              type: string
+              description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are `ec-prime256v1` representing the X9.62/SECG curve over a 256 bit prime field, or `rsa-2048`, which uses a 2048-bit RSA key.
+            cn:
+              type: string
+              description: The certificate common name
+            o:
+              type: string
+              description: The organization
+            ou:
+              type: string
+              description: The organization unit
+            c:
+              type: string
+              description: The country
+            st:
+              type: string
+              description: The state
+            l:
+              type: string
+              description: The locality or city
+            email_address:
+              type: string
+              description: The email address
+          required:
+          - algorithm
+          - cn
+    create_certificate_response:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            token:
+              type: string
+              description: A unique string generated by Spreedly to identify the certificate.
+            algorithm:
+              type: string
+              description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are ec-prime256v1 representing the X9.62/SECG curve over a 256 bit prime field, or rsa-2048, which uses a 2048-bit RSA key.
+            cn:
+              type: string
+              description: The certificate common name
+            o:
+              type: string
+              description: The organization
+            ou:
+              type: string
+              description: The organization unit
+            c:
+              type: string
+              description: The country
+            st:
+              type: string
+              description: The state
+            l:
+              type: string
+              description: The locality or city
+            email_address:
+              type: string
+              description: The email address
+            public_key:
+              type: string
+              description: PEM-formatted public key of the certificate
+            public_key_hash:
+              type: string
+              description: The base64 encoded, SHA256 hash, of the public key
+            csr:
+              type: string
+              description: PEM formatted certificate signing request (CSR)
+            pem:
+              type: string
+              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+            created_at:
+              type: string
+              description: The time the certificate was created
+            updated_at:
+              type: string
+              description: The time the certificate was last updated
+    generate_certificate_response:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            algorithm:
+              type: string
+              description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are ec-prime256v1 representing the X9.62/SECG curve over a 256 bit prime field, or rsa-2048, which uses a 2048-bit RSA key.
+            cn:
+              type: string
+              description: The certificate common name
+            o:
+              type: string
+              description: The organization
+            ou:
+              type: string
+              description: The organization unit
+            c:
+              type: string
+              description: The country
+            st:
+              type: string
+              description: The state
+            l:
+              type: string
+              description: The locality or city
+            email_address:
+              type: string
+              description: The email address
+            public_key:
+              type: string
+              description: PEM-formatted public key of the certificate
+            public_key_hash:
+              type: string
+              description: The base64 encoded, SHA256 hash, of the public key
+            csr:
+              type: string
+              description: PEM formatted certificate signing request (CSR)
+            pem:
+              type: string
+              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+    create_certificate:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            pem:
+              type: string
+              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+            private_key:
+              type: string
+              description: The certificate's RSA or EC private key, in non-password-protected PEM format.
+            level:
+              type: string
+              description: This is an optional parameter for organizational level certificate configuration; the value is set to `environment` by default but you can pass in `organization` for certificates shared across authenticated environments for the same organization.
+          required:
+          - pem
+    list_certificates_response:
+      type: object
+      properties:
+        certificates:
+          type: array
+          items:
+            type: object
+            properties:
+              token:
+                type: string
+                description: A unique string generated by Spreedly to identify the certificate.
+              level:
+                type: string
+                description: Indicates whether the certificate was configured for the organization level or environment level; if `organization` the certificate can be shared across authenticated environments for the same organization.
+              algorithm:
+                type: string
+                description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are ec-prime256v1 representing the X9.62/SECG curve over a 256 bit prime field, or rsa-2048, which uses a 2048-bit RSA key.
+              cn:
+                type: string
+                description: The certificate common name
+              o:
+                type: string
+                description: The organization
+              ou:
+                type: string
+                description: The organization unit
+              c:
+                type: string
+                description: The country
+              st:
+                type: string
+                description: The state
+              l:
+                type: string
+                description: The locality or city
+              email_address:
+                type: string
+                description: The email address
+              public_key:
+                type: string
+                description: PEM-formatted public key of the certificate
+              public_key_hash:
+                type: string
+                description: The base64 encoded, SHA256 hash, of the public key
+              csr:
+                type: string
+                description: PEM formatted certificate signing request (CSR)
+              pem:
+                type: string
+                description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+              created_at:
+                type: string
+                description: The time the certificate was created
+              updated_at:
+                type: string
+                description: The time the certificate was last updated
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    update_certificate:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            pem:
+              type: string
+              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

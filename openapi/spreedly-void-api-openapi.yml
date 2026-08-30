@@ -1,0 +1,191 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Void API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: void
+paths:
+  /transactions/{transaction_token}/void:
+    post:
+      summary: Void a transaction
+      tags:
+      - void
+      security:
+      - basic_auth: []
+      operationId: void-transaction
+      description: 'Cancel an `authorization` transaction or a `capture`/`purchase` transaction that hasn’t yet settled at the merchant account.
+
+
+        This API call can also be used to cancel a `verify` transaction that was part of the Ebanx customer enrollment process. To learn more about this visit [Ebanx Gateway](https://developer.spreedly.com/docs/ebanx-gateway-guide).
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/transaction_token'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/void_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/void_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unsupported_error'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/unsupported_error'
+components:
+  parameters:
+    transaction_token:
+      name: transaction_token
+      description: The token uniquely identifying this transaction (not the created payment method) at Spreedly.
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    void_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            on_test_gateway:
+              type: string
+              description: '`true` if the transaction took place on a test gateway'
+            created_at:
+              type: string
+              description: The time the purchase token was created
+            updated_at:
+              type: string
+              description: The time the purchase token was last updated
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            state:
+              type: string
+              description: The current state of the transaction
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            transaction_type:
+              type: string
+              description: The type of transaction, e.g., Authorization, Capture, Credit
+            order_id:
+              type: string
+              description: The merchant specified order id. If not provided, the Spreedly transaction token will be used.
+            ip:
+              type: string
+              description: The IP address of the end-user customer. If one is not provided, this will default to `127.0.0.1`. To actually send a `nil` value, this parameter must be set to "omit".
+            description:
+              type: string
+              description: A human readable description of the transaction which will be passed to the gateway if it's supported
+            email:
+              type: string
+              description: Override the customer email address associated with the payment method for this transaction
+            merchant_name_descriptor:
+              type: string
+              description: A human readable description of the merchant
+            merchant_location_descriptor:
+              type: string
+              description: A human readable description of the merchant location
+            gateway_specific_fields:
+              type: object
+              description: The list of gateway specific fields that can be specified in supported gateway transactions
+            gateway_specific_response_fields:
+              type: object
+              description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+            gateway_transaction_id:
+              type: string
+              description: The id of the transaction *at the gateway*. To be used when corresponding with the gateway or reconciling transactions
+            gateway_latency_ms:
+              type: string
+              description: The time it took the gateway to respond to Spreedly
+            message_key:
+              type: string
+              description: A machine-parseable string indicating the result of the transaction
+            message:
+              type: string
+              description: A human-readable string indicating the result of the transaction
+            gateway_token:
+              type: string
+              description: The token of the gateway to executed against
+            gateway_type:
+              type: string
+              description: The type (short name) of the gateway
+            response:
+              type: object
+              description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+            shipping_address:
+              type: object
+              description: Override the customer shipping address associated with the payment method for this transaction
+            reference_token:
+              type: object
+              description: The token of the transaction being voided
+    unsupported_error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: Error Key
+              message:
+                type: string
+                description: Error Message
+              ability:
+                type: string
+                description: The transaction the gateway does not support
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Sca Provider API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: sca_provider
+paths:
+  /sca/providers:
+    post:
+      summary: Create an sca provider on the given merchant profile
+      tags:
+      - sca_provider
+      security:
+      - basic_auth: []
+      operationId: create-sca-provider
+      description: 'Create an SCA Provider on the given Merchant Profile. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize) and [purchase](https://developer.spreedly.com/reference/purchase) transactions. At least one card type object must be included in the request. The following card types are supported: `Visa`, `Mastercard`, `American Express`, and `Discover`.'
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sca_provider_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/sca_provider_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sca_provider'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/sca_provider'
+  /sca/providers/{sca_provider_token}:
+    parameters:
+    - name: sca_provider_token
+      in: path
+      description: The token of the SCA Provider
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show sca provider
+      tags:
+      - sca_provider
+      security:
+      - basic_auth: []
+      operationId: show-sca-provider
+      description: Get an SCA Provider with the given token. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize-1) and [purchase](https://developer.spreedly.com/reference/reference-purchase) transactions.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sca_provider_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/sca_provider_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  schemas:
+    sca_provider:
+      type: object
+      properties:
+        merchant_profile_key:
+          type: string
+          description: The token returned upon creating a Merchant Profile
+        type:
+          type: string
+          description: 'The type of SCA Provider being created. Currently only one type is supported: `spreedly` (case sensitive)'
+        sandbox:
+          type: boolean
+          description: If the SCA Provider accounts is to be provisioned in sandbox mode or not. `false` by default.
+        visa:
+          $ref: '#/components/schemas/sca_provider_visa'
+        mastercard:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        amex:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        discover:
+          $ref: '#/components/schemas/sca_provider_card_details'
+      required:
+      - merchant_profile_key
+      - type
+    sca_provider_card_details:
+      type: object
+      description: A nested object containing merchant info per card brand that is to be registered with the 3DS server. See `acquirer_bin`, `merchant_url`, and `merchant_password` below for nested field information
+      properties:
+        acquirer_bin:
+          type: string
+          description: The Acquirer Bank Identification Number (BIN) is identifying BIN for an acquiring bank. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution.
+        merchant_url:
+          type: string
+          description: Fully qualified URL of the merchant’s main website or customer care site that contains a method of contact.
+        merchant_password:
+          type: string
+          description: An old parameter for 3DS v1, unrelated to 3DS2. We support this parameter for those merchants who already have it activated and are migrating to our 3DSS, not for new ones. If you do not know the parameter, don’t take it into account.
+      required:
+      - acquirer_bin
+      - merchant_url
+    sca_provider_visa:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/sca_provider_card_details'
+      - type: object
+        properties:
+          merchant_brand_id:
+            type: string
+            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    sca_provider_response:
+      type: object
+      properties:
+        sca_provider:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token identifying your newly created SCA Provider. Can be used as the `sca_provider_key` url parameter on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as the `sca_provider_token` field on [authorize](https://developer.spreedly.com/reference/authorize-1) and [purchase](https://developer.spreedly.com/reference/purchase) transactions.
+            sandbox:
+              type: boolean
+              description: If the SCA Provider accounts is to be provisioned in sandbox mode or not. `false` by default.
+            created_at:
+              type: string
+              description: The time the sca provider was created
+            updated_at:
+              type: string
+              description: The time the sca provider was last updated
+            type:
+              type: string
+              description: 'The type of SCA Provider being created. Currently only one type is supported: `spreedly` (case sensitive)'
+            visa:
+              $ref: '#/components/schemas/sca_provider_visa'
+            mastercard:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            amex:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            discover:
+              $ref: '#/components/schemas/sca_provider_card_details'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

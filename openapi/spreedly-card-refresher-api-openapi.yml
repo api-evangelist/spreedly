@@ -1,0 +1,553 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Card Refresher API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: card_refresher
+paths:
+  /card_refresher/inquiry:
+    post:
+      summary: Card Refresher Inquiry
+      tags:
+      - card_refresher
+      security:
+      - basic_auth: []
+      operationId: card_refresher_inquiry
+      description: Make an inquiry to a card network (currently Visa) to get any applicable updates for the card.
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inquiry_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/inquiry_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Not Processable
+          content:
+            Ineligible card for inquiry:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.card_not_eligible_for_card_refresher_inquiry
+                    message: This card is not eligible for Card Refresher Inquiry transactions. Please confirm that the associated Organization is enrolled in Advanced Vault and Account Updater, and the associated Environment is enrolled in Advanced Vault.
+                application/xml:
+                  value: "<errors>\n  <key>errors.card_not_eligible_for_card_refresher_inquiry</key>\n  <message>This card is not eligible for Card Refresher Inquiry transactions. Please confirm that the associated Organization is enrolled in Advanced Vault and Account Updater, and the associated Environment is enrolled in Advanced Vault.</message>\n</errors>\n"
+            Merchant is not registered in region:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.missing_merchant_registration_for_region
+                    message: Merchant is not registered for Card Refresher Inquiry transactions in this region. Please verify that registration is active for this region.
+                application/xml:
+                  value: "<errors>\n  <key>errors.missing_merchant_registration_for_region</key>\n  <message>Merchant is not registered for Card Refresher Inquiry transactions in this region. Please verify that registration is active for this region.</message>\n</errors>\n"
+            Unsupported inquiry region:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.unsupported_inquiry_region
+                    message: The specified region is not supported for Card Refresher Inquiry transactions.
+                application/xml:
+                  value: "<errors>\n  <key>errors.unsupported_inquiry_region</key>\n  <message>The specified region is not supported for Card Refresher Inquiry transactions.</message>\n</errors>\n"
+            Missing region parameter:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.region_required
+                    message: You must specify a 'region' parameter.
+                application/xml:
+                  value: "<errors>\n  <key>errors.region_required</key>\n  <message>You must specify a 'region' parameter.</message>\n</errors>\n"
+            Missing payment_method_token parameter:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.payment_method_token_required
+                    message: You must specify a valid 'payment_method_token' parameter.
+                application/xml:
+                  value: "<errors>\n  <key>errors.payment_method_token</key>\n  <message>You must specify a 'payment_method_token' parameter.</message>\n</errors>\n"
+            Unsupported payment method type:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.invalid_inquiry_payment_method_type
+                    message: The payment method is not supported for Card Refresher Inquiry transactions.
+                application/xml:
+                  value: "<errors>\n  <key>errors.invalid_inquiry_payment_method_type</key>\n  <message>You must specify a 'payment_method_token' parameter.</message>\n</errors>\n"
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/card_refresher_inquiry_request'
+            examples:
+              Visa AU Inquiry:
+                summary: Inquiry for Visa Payment Method
+                value:
+                  card_refresher_inquiry:
+                    region: NA
+                    payment_method_token: ''
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/card_refresher_inquiry_request'
+            examples:
+              Visa AU Inquiry:
+                summary: Inquiry for Visa Payment Method
+                value:
+                  card_refresher_inquiry:
+                    region: NA
+                    payment_method_token: ''
+  /card_refresher/inquiry/{token}:
+    get:
+      summary: Show inquiry
+      tags:
+      - card_refresher
+      security:
+      - basic_auth: []
+      operationId: show-inquiry
+      description: Get an inquiry with the given token.
+      parameters:
+      - name: token
+        in: path
+        description: The token of the inquiry
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inquiry_event_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/inquiry_event_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /card_refresher/inquiries:
+    get:
+      summary: List inquiries
+      tags:
+      - card_refresher
+      security:
+      - basic_auth: []
+      operationId: list-inquiries
+      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all inquiries in the environment
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of inquiries to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_inquiries_event_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_inquiries_event_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  schemas:
+    payment_method:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the payment method in the Spreedly vault
+        created_at:
+          type: string
+          description: The time the payment method token was created
+        updated_at:
+          type: string
+          description: The time the payment method token was last updated
+        email:
+          type: string
+          description: The email address of the customer associated with this credit card
+        storage_state:
+          type: string
+          description: The `storage_state` (retained, redacted, cached, used) of the payment method
+        test:
+          type: boolean
+          description: '`true` if this payment method is a test payment method and cannot be used against real gateways or receivers'
+        metadata:
+          type: object
+          description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+        callback_url:
+          type: string
+          description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+        last_four_digits:
+          type: string
+          description: The last four digits of the credit card number. This can be displayed to the user.
+        first_six_digits:
+          type: string
+          description: The first six digits of the credit card number. This can be displayed to the user.
+        card_type:
+          type: string
+          description: The [type](https://developer.spreedly.com/docs/supported-payment-methods), or brand, of the card. Please see the `card_type_mapping` function below for more detail.
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        month:
+          type: string
+          description: The expiration month
+        year:
+          type: string
+          description: The expiration year
+        address1:
+          type: string
+          description: The first line of the billing address
+        address2:
+          type: string
+          description: The second line of the billing address
+        city:
+          type: string
+          description: The city of the billing address
+        state:
+          type: string
+          description: The state of the billing address
+        zip:
+          type: string
+          description: The zip code of the billing address
+        country:
+          type: string
+          description: The country code of the billing address
+        phone_number:
+          type: string
+          description: The phone number of the billing address
+        company:
+          type: string
+          description: The company of the cardholder
+        full_name:
+          type: string
+          description: The full name of the cardholder.
+        eligible_for_card_updater:
+          type: string
+          description: '`true` if this payment method should be included in Account Updater'
+        shipping_address1:
+          type: string
+          description: The first line of the shipping address
+        shipping_address2:
+          type: string
+          description: The second line of the shipping address
+        shipping_city:
+          type: string
+          description: The city of the shipping address
+        shipping_state:
+          type: string
+          description: The state of the shipping address
+        shipping_zip:
+          type: string
+          description: The zip code of the shipping address
+        shipping_country:
+          type: string
+          description: The country code of the shipping address
+        issuer_identification_number:
+          type: string
+          description: The numbers of the PAN required to identify the card issuer.
+        click_to_pay:
+          type: string
+          description: '`true` if the card was tokenized using Click to Pay'
+        managed:
+          type: string
+          description: The value indicating the payment method's management status.
+        payment_method_type:
+          type: string
+          description: The type of this payment method, e.g., `credit_card`, `bank_account`, `apple_pay`, `google_pay`, `third_party_token`, etc…
+        errors:
+          type: string
+          description: If the payment method is invalid (missing required fields, etc…), there will be associated error messages here
+        fingerprint:
+          type: string
+          description: An identifying string that will match all cards in the environment with the same PAN
+        verification_value:
+          type: string
+          description: The obscured verification value (CVV), e.g., XXX or XXXX
+        number:
+          type: string
+          description: The obscured credit card number, e.g., XXXX-XXXX-XXXX-4444
+        bin_metadata:
+          type: object
+          description: BIN metadata is available in the response if the card is enrolled in Advanced Vault. See [BIN metadata](https://developer.spreedly.com/docs/bin-metadata) for more information.
+          properties:
+            card_brand:
+              type: string
+            card_category:
+              type: string
+            card_type:
+              type: string
+            issuing_bank:
+              type: string
+            issuing_country_iso_number:
+              type: string
+            issuing_country_iso_a2_code:
+              type: string
+            issuing_country_iso_a3_code:
+              type: string
+            issuing_country_iso_name:
+              type: string
+            issuing_bank_phone_number:
+              type: string
+            issuing_bank_website:
+              type: string
+            bin_type:
+              type: string
+            regulated:
+              type: string
+            max_pan_length:
+              type: string
+            message:
+              type: string
+        subscribed_to_mastercard_abu:
+          type: boolean
+          example: false
+          description: '`true` if this payment method is subscribed to Mastercard ABU updating service'
+        last_successfully_used:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    list_inquiries_event_response:
+      type: object
+      properties:
+        inquiries:
+          type: array
+          items:
+            $ref: '#/components/schemas/inquiry_event_response'
+    inquiry_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            message:
+              type: string
+              description: A human-readable string indicating the result of the transaction
+            state:
+              type: string
+              description: The current state of the transaction
+            transaction_type:
+              type: string
+              description: The type of transaction; contains "Inquiry" for a Card Refresh Inquiry transaction
+            created_at:
+              type: string
+              description: The time the transaction was created
+            updated_at:
+              type: string
+              description: The time the transaction was last updated
+            merchant_id:
+              type: string
+              description: The id associated with the merchant registration used in the inquiry
+            region:
+              type: string
+              description: The region associated with the inquiry
+            inquiry_status:
+              type: string
+              description: 'The status of the inquiry. Possible values are: `succeeded`, `error`, and `rejected`'
+            payment_method_token:
+              type: string
+              description: The token of the payment method used in the inquiry
+            card_refresh_transaction:
+              $ref: '#/components/schemas/card_refresh_transaction_response'
+    card_refresh_transaction_response:
+      type: object
+      description: The transaction associated with a refresh action for a payment method
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        created_at:
+          type: string
+          description: The time the transaction token was created
+        updated_at:
+          type: string
+          description: The time the transaction was last updated
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        transaction_type:
+          type: string
+          description: The type of transaction, e.g., ReplacePaymentMethod, ContactCardHolder, NoUpdate
+        state:
+          type: string
+          description: The current state of the transaction
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        environment_key:
+          type: string
+          description: The environment key associated with the transaction
+        region:
+          type: string
+          description: When available, the region associated with the refresh transaction
+        updating_service:
+          type: string
+          description: The updating service used for the refresh transaction, e.g. `worldpay`, `mastercard_abu`, or `visa_au`
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+    card_refresher_inquiry_request:
+      type: object
+      properties:
+        card_refresher_inquiry:
+          type: object
+          properties:
+            region:
+              type: string
+              description: 'The onboarded region where the payment method is processed. Valid values are: `NA`, `EU`, and `LATAM`'
+            payment_method_token:
+              type: string
+              description: 'The token of the payment method to be inquired for update. Currently must have a `card_type` of `visa`, `master`, or `discover`. Note: if `master` or `discover` are used, you must also include the updating_service.'
+            updating_service:
+              type: string
+              description: 'Optional. The updating service to use for the inquiry. Valid values are: `visa_au`. If not provided, the service will be inferred based on the payment method''s card type. Note: only `visa` is supported in inferred mode at this time.'
+          required:
+          - payment_method_token
+          - region
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    inquiry_event_response:
+      type: object
+      properties:
+        inquiry:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token uniquely identifying this event at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the event request was successfully executed, `false` otherwise'
+            message:
+              type: string
+              description: A human-readable string indicating the result of the event
+            state:
+              type: string
+              description: The current state of the event
+            transaction_type:
+              type: string
+              description: The type of transaction; contains "Inquiry" for a Card Refresh Inquiry event
+            created_at:
+              type: string
+              description: The time the event was created
+            updated_at:
+              type: string
+              description: The time the event was last updated
+            merchant_id:
+              type: string
+              description: The id associated with the merchant registration used in the inquiry
+            region:
+              type: string
+              description: The region associated with the inquiry
+            inquiry_status:
+              type: string
+              description: 'The status of the inquiry. Possible values are: `succeeded`, `error`, and `rejected`'
+            payment_method_token:
+              type: string
+              description: The token of the payment method used in the inquiry
+            card_refresh_event:
+              $ref: '#/components/schemas/card_refresh_transaction_response'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

@@ -1,0 +1,309 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Protection Events API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: protection_events
+paths:
+  /protection/events.{format}:
+    parameters:
+    - $ref: '#/components/parameters/format'
+    get:
+      summary: List protection events
+      tags:
+      - protection_events
+      security:
+      - basic_auth: []
+      operationId: list-protection-events
+      description: Retrieve an ordered and paginated list of all protection events in the environment.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: The token of the item to start from (e.g., the last token received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of events to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: The state of the protection check. Possible values are `pending`, `succeeded`, and `failed`.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_protection_events_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_protection_events_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /protection/events/{event_token}.json:
+    parameters:
+    - name: event_token
+      in: path
+      description: The token of the event to retrieve
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show protection check
+      tags:
+      - protection_events
+      security:
+      - basic_auth: []
+      operationId: show-protection-check
+      description: Get a protection check event with the given token.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/protection_event_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/protection_event_response'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  schemas:
+    protection_event_properties:
+      type: object
+      description: When a Fraud Check is attempted with customer credentials, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
+      properties:
+        updated_at:
+          type: string
+          description: The time the fraud check was last updated
+        created_at:
+          type: string
+          description: The time the fraud check was created
+        fraud_control_vendor_key:
+          type: string
+          description: The token of the Fraud Control Vendor used for this check
+        vendor_transaction_id:
+          type: string
+          description: The transaction identifier in the vendor's system
+        order_id:
+          type: string
+          description: The order identifier in the vendor's system
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider used for this check
+        amount:
+          type: number
+          description: The transaction amount checked
+        currency_code:
+          type: string
+          description: The currency of the funds in ISO format (e.g., USD)
+        ip:
+          type: string
+          description: The IP address associated with the transaction
+        email:
+          type: string
+          description: The email address associated with the transaction
+        callback_url:
+          type: string
+          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
+        test_scenario:
+          type: string
+          description: The test scenario used
+        acquiring_bank_fraud_rate:
+          type: string
+          description: The threshold for bank fraud rate used for exemption requests
+        exemption_type:
+          type: string
+          description: The type of exemption requested (if applicable)
+        warning:
+          type: string
+          description: Any warning messages from the fraud check
+        managed_order_token:
+          type: string
+          description: The token of the fraud check returned by the fraud check provider
+        fraud_decision:
+          type: string
+          description: The fraud decision outcome (e.g., approve, decline, review)
+        fraud_recommendation:
+          type: string
+          description: Additional recommendation information from the fraud provider
+        fraud_decision_reason:
+          type: string
+          description: Reason for the fraud decision
+        vendor_response:
+          type: object
+          description: Detailed response from the fraud protection vendor
+          properties:
+            forterDecision:
+              type: string
+              description: The decision returned by Forter
+            recommendation:
+              type: string
+              description: Recommended action from the vendor
+            verificationMethod:
+              type: object
+              description: Methods used to verify the transaction
+            decisionReason:
+              type: string
+              description: Reason for the vendor's decision
+            merchantPolicyId:
+              type: string
+              description: Merchant policy identifier used to make the decision
+            orderId:
+              type: string
+              description: Order identifier in the vendor's system
+            linkToEventInDashboard:
+              type: string
+              description: URL to view the transaction details in the vendor's dashboard
+        token:
+          type: string
+          description: The token uniquely identifying the transaction at Spreedly. This token can be passed into an `authorize` or `purchase` transaction via the `sca_authentication_token` field to automatically fill its `payment_method_token` and Third Party 3DS2 fields.
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        state:
+          type: string
+          description: The current state of the authentication. Valid values are `succeeded`, `failed`, and `pending`
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        transaction_type:
+          type: string
+          description: The type of transaction; contains “Sca::Authentication” for a Spreedly 3DS Global authentication
+        gateway_transaction_key:
+          type: string
+          description: The Spreedly transaction token of the parent gateway transaction
+        sca_provider_key:
+          type: string
+          description: The SCA Provider that was used to create the authentication
+        acs_transaction_id:
+          type: string
+          description: The unique ID of the transaction given by the ACS server (3DS2 only)
+        three_ds_server_trans_id:
+          type: string
+          description: The unique ID of the transaction given by the 3DS Server (3DS2 only)
+        directory_server_transaction_id:
+          type: string
+          description: The unique ID of the transaction given by the directory server (3DS2 only)
+        xid:
+          type: string
+          description: The transaction identifier given by the 3DS Server
+        three_ds_version:
+          type: string
+          description: The version of 3DS that was used to authenticate the transaction
+        flow_performed:
+          type: string
+          description: An enumerated field that denotes what flow was most recently performed. Valid values are `frictionless`, `device_fingerprint`, `challenge`, `app_challenge`, and `not_authenticated`.
+        ecommerce_indicator:
+          type: string
+          description: Contains the ecommerce indicator (ECI) returned by the 3DS Server
+        directory_response_status:
+          type: string
+          description: The transaction status given by the directory server in the initial response. This field’s value corresponds to the `transStatus` enumeration in the EMV 3-D Secure Protocol. Valid values can be `Y`, `N`, `U`, `A`, `C`, or `R`. Please see the EMV 3-D Secure Protocol spec for more information.
+        authentication_response_status:
+          type: string
+          description: The most recent transaction status given received by the 3DS Server. This field’s value corresponds to the `transStatus` enumeration in the EMV 3-D Secure Protocol. Valid values can be `Y`, `N`, `U`, `A`, `C`, or `R`. Please see the EMV 3-D Secure Protocol spec for more information.
+        authentication_value:
+          type: string
+          description: The authentication value returned by the 3DS Server for successful authentications
+        trans_status_reason:
+          type: string
+          description: Provides information on why the `authentication_response_status` field has the specific value. This field’s value corresponds to the `transStatusReason` enumeration in the EMV 3-D Secure Protocol. Please see EMV 3-D Secure Protocol spec for more information.
+        daf:
+          type: boolean
+          description: Boolean field to indicate if the authentication request utilized Visa’s Digital Authentication Framework.
+        payment_method_key:
+          type: string
+          description: The token of the payment method being authenticated. This is the same as the `payment_method_token` field in the `sca_authentication` transaction request.
+    list_protection_events_response:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/protection_event_properties'
+    protection_event_response:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/protection_event_properties'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+  parameters:
+    format:
+      name: format
+      description: The format of the request. Default JSON for testing in our documentation.
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - json
+        - xml
+        example: json
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

@@ -1,0 +1,712 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Capture API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: capture
+paths:
+  /transactions/{transaction_token}/capture:
+    post:
+      summary: Capture full or partial transaction
+      tags:
+      - capture
+      security:
+      - basic_auth: []
+      operationId: capture-transaction
+      description: Capture funds previously reserved via an authorize. By specifying an amount, you can capture a partial amount. If you omit the amount parameter, the full amount will be captured.
+      parameters:
+      - name: transaction_token
+        in: path
+        description: The token identifying the original authorize transaction.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transaction_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/transaction_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/capture'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/capture'
+components:
+  schemas:
+    payment_method:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the payment method in the Spreedly vault
+        created_at:
+          type: string
+          description: The time the payment method token was created
+        updated_at:
+          type: string
+          description: The time the payment method token was last updated
+        email:
+          type: string
+          description: The email address of the customer associated with this credit card
+        storage_state:
+          type: string
+          description: The `storage_state` (retained, redacted, cached, used) of the payment method
+        test:
+          type: boolean
+          description: '`true` if this payment method is a test payment method and cannot be used against real gateways or receivers'
+        metadata:
+          type: object
+          description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+        callback_url:
+          type: string
+          description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+        last_four_digits:
+          type: string
+          description: The last four digits of the credit card number. This can be displayed to the user.
+        first_six_digits:
+          type: string
+          description: The first six digits of the credit card number. This can be displayed to the user.
+        card_type:
+          type: string
+          description: The [type](https://developer.spreedly.com/docs/supported-payment-methods), or brand, of the card. Please see the `card_type_mapping` function below for more detail.
+        first_name:
+          type: string
+          description: The first name of the cardholder
+        last_name:
+          type: string
+          description: The last name of the cardholder
+        month:
+          type: string
+          description: The expiration month
+        year:
+          type: string
+          description: The expiration year
+        address1:
+          type: string
+          description: The first line of the billing address
+        address2:
+          type: string
+          description: The second line of the billing address
+        city:
+          type: string
+          description: The city of the billing address
+        state:
+          type: string
+          description: The state of the billing address
+        zip:
+          type: string
+          description: The zip code of the billing address
+        country:
+          type: string
+          description: The country code of the billing address
+        phone_number:
+          type: string
+          description: The phone number of the billing address
+        company:
+          type: string
+          description: The company of the cardholder
+        full_name:
+          type: string
+          description: The full name of the cardholder.
+        eligible_for_card_updater:
+          type: string
+          description: '`true` if this payment method should be included in Account Updater'
+        shipping_address1:
+          type: string
+          description: The first line of the shipping address
+        shipping_address2:
+          type: string
+          description: The second line of the shipping address
+        shipping_city:
+          type: string
+          description: The city of the shipping address
+        shipping_state:
+          type: string
+          description: The state of the shipping address
+        shipping_zip:
+          type: string
+          description: The zip code of the shipping address
+        shipping_country:
+          type: string
+          description: The country code of the shipping address
+        issuer_identification_number:
+          type: string
+          description: The numbers of the PAN required to identify the card issuer.
+        click_to_pay:
+          type: string
+          description: '`true` if the card was tokenized using Click to Pay'
+        managed:
+          type: string
+          description: The value indicating the payment method's management status.
+        payment_method_type:
+          type: string
+          description: The type of this payment method, e.g., `credit_card`, `bank_account`, `apple_pay`, `google_pay`, `third_party_token`, etc…
+        errors:
+          type: string
+          description: If the payment method is invalid (missing required fields, etc…), there will be associated error messages here
+        fingerprint:
+          type: string
+          description: An identifying string that will match all cards in the environment with the same PAN
+        verification_value:
+          type: string
+          description: The obscured verification value (CVV), e.g., XXX or XXXX
+        number:
+          type: string
+          description: The obscured credit card number, e.g., XXXX-XXXX-XXXX-4444
+        bin_metadata:
+          type: object
+          description: BIN metadata is available in the response if the card is enrolled in Advanced Vault. See [BIN metadata](https://developer.spreedly.com/docs/bin-metadata) for more information.
+          properties:
+            card_brand:
+              type: string
+            card_category:
+              type: string
+            card_type:
+              type: string
+            issuing_bank:
+              type: string
+            issuing_country_iso_number:
+              type: string
+            issuing_country_iso_a2_code:
+              type: string
+            issuing_country_iso_a3_code:
+              type: string
+            issuing_country_iso_name:
+              type: string
+            issuing_bank_phone_number:
+              type: string
+            issuing_bank_website:
+              type: string
+            bin_type:
+              type: string
+            regulated:
+              type: string
+            max_pan_length:
+              type: string
+            message:
+              type: string
+        subscribed_to_mastercard_abu:
+          type: boolean
+          example: false
+          description: '`true` if this payment method is subscribed to Mastercard ABU updating service'
+        last_successfully_used:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    transaction_response:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/purchase_parameters'
+    protection_parameters:
+      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
+      type: object
+      properties:
+        test_scenario:
+          type: object
+          description: The protection test scenario
+          properties:
+            scenario:
+              type: string
+              description: The test scenario to run
+              enum:
+              - protect_approved
+              - protect_sca_recommended_challenge
+              - protect_sca_recommended_authenticated
+              - protect_sca_recommended_not_authenticated
+              - protect_declined
+              default: protect_approved
+        fraud_token:
+          type: string
+          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
+        forter_mobile_uid:
+          type: string
+          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
+        user_agent:
+          type: string
+          description: Customer's User agent
+        cart_items:
+          type: array
+          description: A list of all items purchased and shipping details
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Item name
+                maxLength: 500
+              quantity:
+                type: number
+                description: Item quantity
+              type:
+                type: string
+                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
+                enum:
+                - TANGIBLE
+                - NON_TANGIBLE
+                default: TANGIBLE
+              price:
+                type: string
+                description: Final amount due for purchase, after all discounts and promotions
+            required:
+            - name
+            - quantity
+            - type
+            - price
+        delivery_type:
+          type: string
+          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
+          enum:
+          - PHYSICAL
+          - DIGITAL
+          default: PHYSICAL
+        delivery_method:
+          type: string
+          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
+          maxLength: 50
+        customer_account_id:
+          type: string
+          description: Customer's account UID in merchant's site (leave empty if guest)
+        customer_account_type:
+          type: string
+          description: Customer account type
+          enum:
+          - GUEST
+          - PRIVATE
+          - BUSINESS
+          - VIP
+          - MERCHANT_OPERATED
+          - TRIAL
+          - MERCHANT_EMPLOYEE
+          - PREMIUM_PAID
+          - SMALL_BUSINESS
+          - AGENT
+          - BUSINESS_PRIVATE
+          - BUSINESS_PREMIUM_PAID
+          default: BUSINESS
+        customer_account_creation_date:
+          type: number
+          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
+        billing_name:
+          type: string
+          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_first_name:
+          type: string
+          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_last_name:
+          type: string
+          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        email:
+          type: string
+          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_country:
+          type: string
+          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address1:
+          type: string
+          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address2:
+          type: string
+          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_city:
+          type: string
+          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_zip:
+          type: string
+          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_state:
+          type: string
+          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_phone_number:
+          type: string
+          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_name:
+          type: string
+          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_first_name:
+          type: string
+          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_last_name:
+          type: string
+          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_email:
+          type: string
+          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_country:
+          type: string
+          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address1:
+          type: string
+          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address2:
+          type: string
+          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_city:
+          type: string
+          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_zip:
+          type: string
+          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_state:
+          type: string
+          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_phone_number:
+          type: string
+          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+      required:
+      - delivery_method
+      - delivery_type
+      - cart_items
+    payment_snapshot:
+      type: object
+      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
+      properties:
+        gateway_tokens:
+          type: array
+          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
+          items:
+            type: string
+        attempts:
+          type: integer
+          description: Number of times the transaction has been attempted.
+        messages:
+          type: object
+          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
+        mode:
+          type: string
+          description: The Recover mode used, either `standard` or `outage_only`.
+        custom_error_used:
+          type: boolean
+          description: '`true` if the transaction used a custom error in the recovery decision process.'
+        override_default_error_codes:
+          type: boolean
+          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
+        created_at:
+          type: string
+          description: The time the payment_snapshot was created.
+        updated_at:
+          type: string
+          description: The time the payment_snapshot was updated.
+        payment_token:
+          type: string
+          description: The token corresponding to the Payment object, containing all information about the Recover chain.
+        previous_transaction_tokens:
+          type: array
+          description: List of all previous transactions associated with the Recover attempt.
+          items:
+            type: string
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
+    transaction_core_parameters:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        gateway_transaction_id:
+          type: string
+          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
+        retain_on_success:
+          type: boolean
+          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+        payment_method_added:
+          type: string
+          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+        response:
+          type: object
+          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+        merchant_profile_key:
+          type: string
+          description: The token of the Merchant Profile associated with the gateway used for the transaction
+        sub_merchant_key:
+          type: string
+          description: The token of the sub-merchant associated with the transaction.
+        gateway_specific_response_fields:
+          type: object
+          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+        transaction_metadata:
+          type: object
+          description: The hash of key/value pairs that was included in the transaction request body.
+        sca_authentication:
+          type: string
+          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
+        payment_snapshot:
+          $ref: '#/components/schemas/payment_snapshot'
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider that was used for this transaction.
+        protection_parameters:
+          $ref: '#/components/schemas/protection_parameters'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    purchase_parameters:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/transaction_core_parameters'
+      - type: object
+        properties:
+          order_id:
+            type: string
+            description: The merchant specified order id. If not provided, the Spreedly transaction token will be used.
+          ip:
+            type: string
+            description: The IP address of the end-user customer. If one is not provided, this will default to `127.0.0.1`. To actually send a `nil` value, this parameter must be set to "omit".
+          description:
+            type: string
+            description: A human readable description of the transaction which will be passed to the gateway if it's supported
+          email:
+            type: string
+            description: Override the customer email address associated with the payment method for this transaction
+          merchant_name_descriptor:
+            type: string
+            description: A human readable description of the merchant
+          merchant_location_descriptor:
+            type: string
+            description: A human readable description of the merchant location
+          merchant_profile_key:
+            type: string
+            description: The token of the Merchant Profile associated with the gateway used for the transaction
+          gateway_specific_fields:
+            $ref: '#/components/schemas/gateway_specific_fields'
+          gateway_specific_response_fields:
+            type: object
+            description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+          gateway_transaction_id:
+            type: string
+            description: The id of the transaction *at the gateway*. To be used when corresponding with the gateway or reconciling transactions
+          sub_merchant_key:
+            type: string
+            description: The token of the sub-merchant associated with the transaction.
+          gateway_latency_ms:
+            type: string
+            description: The time it took the gateway to respond to Spreedly
+          warning:
+            type: string
+            description: Provides a human readable warning message if passed back by the gateway
+          application_id:
+            type: string
+            description: Customer provided application_id
+          amount:
+            type: integer
+            description: The amount to request, as an integer. E.g., `1000` for $10.00.
+          local_amount:
+            type: string
+            description: The amount to request, as an integer. E.g., `1000` for $10.00.
+          currency_code:
+            type: string
+            description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+          retain_on_success:
+            type: boolean
+            description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+          payment_method_added:
+            type: string
+            description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+          stored_credential_initiator:
+            type: string
+            description: Who is initiating this request, `merchant` or `cardholder`
+          stored_credential_reason_type:
+            type: string
+            description: What kind of transaction is the payment method being used for. e.g. `recurring`, `unscheduled`, or `installment`
+          response:
+            type: object
+            description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+          shipping_address:
+            type: object
+            description: Override the customer shipping address associated with the payment method for this transaction
+          api_urls:
+            type: array
+            description: An array of objects describing related APIs
+          attempt_3dsecure:
+            type: string
+            description: '`true` if 3dsecure transaction was attempted'
+          payment_method:
+            type: object
+            description: The payment method used in this transaction
+          workflow_key:
+            type: string
+            description: The key of the Spreedly workflow to use for this transaction. Spreedly will use the environment's default workflow_key if no value is provided. Only available via composer on the /transactions resource.
+          order_data:
+            type: object
+            description: Optional fields related to the order that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          customer_data:
+            type: object
+            description: Optional fields related to the cardholder that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          risk_data:
+            type: object
+            description: Optional fields related to risk data that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          merchant_metadata:
+            type: object
+            description: Optional fields related to the merchant that are to be passed to the gateway if the gateway supports it. Please see our [normalized request guide](https://developer.spreedly.com/docs/normalized-request-and-response-fields) for more info. Only available via composer on the /transactions resource.
+          gateway_response:
+            type: object
+            description: A hash containing normalized fields from various gateways. Please see our [normalized response field documentation](https://developer.spreedly.com/docs/normalized-request-and-response-fields#response-fields) for more info. Only available via composer on the /transactions resource.
+          pan_retry:
+            type: boolean
+            description: '`true` if the transaction is a retry that uses PAN after a failed attempt with a network token. Only available via composer on the /transactions resource.'
+          payment_snapshot:
+            $ref: '#/components/schemas/payment_snapshot'
+          protection_provider_key:
+            type: string
+            description: The token of the Protection Provider that was used for this transaction.
+          protection_parameters:
+            $ref: '#/components/schemas/protection_parameters'
+          protect_fraud_check:
+            $ref: '#/components/schemas/protect_fraud_check_response'
+    protect_fraud_check_response:
+      type: object
+      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
+      properties:
+        updated_at:
+          type: string
+          description: The time the fraud check was last updated
+        created_at:
+          type: string
+          description: The time the fraud check was created
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider used for this check
+        succeeded:
+          type: boolean
+          description: Whether the fraud check request was successfully executed
+        state:
+          type: string
+          description: The current state of the fraud check
+        token:
+          type: string
+          description: The token uniquely identifying this fraud check at Spreedly
+        message:
+          type: string
+          description: A human-readable message describing the result (if applicable)
+        amount:
+          type: number
+          description: The transaction amount checked
+        currency_code:
+          type: string
+          description: The currency of the funds in ISO format (e.g., USD)
+        ip:
+          type: string
+          description: The IP address associated with the transaction
+        email:
+          type: string
+          description: The email address associated with the transaction
+        transaction_type:
+          type: string
+          description: The type of transaction
+        gateway_transaction_key:
+          type: string
+          description: The Spreedly transaction token of the parent gateway transaction
+        callback_url:
+          type: string
+          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
+        test_scenario:
+          type: string
+          description: The test scenario used
+        acquiring_bank_fraud_rate:
+          type: string
+          description: The threshold for bank fraud rate used for exemption requests
+        exemption_type:
+          type: string
+          description: The type of exemption requested (if applicable)
+        warning:
+          type: string
+          description: Any warning messages from the fraud check
+        managed_order_token:
+          type: string
+          description: The token of the fraud check returned by the fraud check provider
+        fraud_decision:
+          type: string
+          description: The fraud decision outcome (e.g., approve, decline, review)
+        fraud_recommendation:
+          type: string
+          description: Additional recommendation information from the fraud provider
+        fraud_decision_reason:
+          type: string
+          description: Reason for the fraud decision
+        vendor_response:
+          type: object
+          description: Detailed response from the fraud protection vendor
+          properties:
+            forterDecision:
+              type: string
+              description: The decision returned by Forter
+            recommendation:
+              type: string
+              description: Recommended action from the vendor
+            verificationMethod:
+              type: object
+              description: Methods used to verify the transaction
+            decisionReason:
+              type: string
+              description: Reason for the vendor's decision
+            merchantPolicyId:
+              type: string
+              description: Merchant policy identifier used to make the decision
+            orderId:
+              type: string
+              description: Order identifier in the vendor's system
+            linkToEventInDashboard:
+              type: string
+              description: URL to view the transaction details in the vendor's dashboard
+    capture:
+      type: object
+      properties:
+        transaction:
+          type: object
+          description: Root request element
+          properties:
+            amount:
+              type: integer
+              description: The amount to capture, as an integer. E.g., 1000 for $10.00. If not provided, the full amount of the original authorize will be captured.
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

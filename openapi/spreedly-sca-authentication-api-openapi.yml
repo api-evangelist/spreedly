@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Sca Authentication API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: sca_authentication
+paths:
+  /sca/providers/{sca_provider_key}/authenticate:
+    parameters:
+    - name: sca_provider_key
+      in: path
+      description: The token returned by the sca providers [endpoint](https://developer.spreedly.com/docs/3ds-solutions#creating-an-sca-provider)
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Authenticate a given payment method
+      tags:
+      - sca_authentication
+      security:
+      - basic_auth: []
+      operationId: authenticate
+      description: 'Authenticate a given payment method and amount against provided SCA Provider Key (specified in the request URL)
+
+
+        Notable response elements can be found in the table below. All other response elements are used by our `Spreedly.ThreeDS.Lifecycle` helpers and exposed for debugging purposes. We recommend that our merchants not use any fields that are not listed in the table below.
+
+        '
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authenticate_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/authenticate_response'
+        '401':
+          description: Unauthorized
+          content:
+            Not authorized request:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.access_denied
+                    message: Unable to authenticate using the given environment_key and access_token.  Please check your credentials.
+                application/xml:
+                  value: "            <errors>\n                <error key=\"errors.access_denied\">Unable to authenticate using the given environment_key and access_token.  Please check your credentials.</error>\n            </errors>\n"
+        '404':
+          description: Not Found
+          content:
+            Token Not Found:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.sca_provider_not_found
+                    message: Unable to find the sca_provider given.
+                application/xml:
+                  value: "              <errors>\n                <error key=\"errors.sca_provider_not_found\">Unable to find the sca_provider given.</error>\n              </errors>\n"
+        '422':
+          description: Unprocessable Entity
+          content:
+            Unprocessable Entity:
+              examples:
+                application/json:
+                  value:
+                  - key: errors.payment_method_or_payment_method_token_required
+                    message: You must specify a valid 'payment_method' or valid 'payment_method_token' parameter.
+                application/xml:
+                  value: "              <errors>\n                  <error key=\"errors.payment_method_or_payment_method_token_required\">You must specify a valid 'payment_method' or valid 'payment_method_token' parameter.</error>\n              </errors>\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/authenticate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/authenticate'
+components:
+  schemas:
+    authenticate_response:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/authenticate_properties'
+    authenticate:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            payment_method_token:
+              type: string
+              description: The token of the payment method to use
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+            amount:
+              type: integer
+              description: The amount to request, as an integer. E.g., `1000` for $10.00.
+            test_scenario:
+              type: object
+              properties:
+                scenario:
+                  type: string
+                  description: The tested scenario.
+              description: Additional fields to indicate valid 3DS2 test flow options. Please refer to our [3DS2 Global Testing Guide](https://developer.spreedly.com/docs/testing-your-3ds2-global-integration) to learn more about testing your 3DS2 Global integration with out Test SCA Provider.
+            browser_info:
+              type: string
+              description: Please refer to our [Spreedly 3DS2 Global Integration Guide for Web](https://developer.spreedly.com/docs/3ds-solutions), to learn how to include our `Lifecycle.js` library and gather the browser info data using `Spreedly.ThreeDS.serialize` method.
+            force_daf:
+              type: boolean
+              description: Boolean field that can be used to indicate if a transaction should use Visa’s DAF. For more information please refer to our [3DS2 Global DAF guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#visa-daf)
+            exemption_type:
+              type: string
+              description: Type of exemption request to reduce likelihood of a transaction being challenged. The two exemptions currently supported are `low_value` and `transaction_risk_analysis_exemption`. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
+            acquiring_bank_fraud_rate:
+              type: string
+              description: Additional field required if requesting a `transaction_risk_analysis_exemption` that details threshold for bank fraud rate. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
+            three_ds_requestor_challenge_ind:
+              type: string
+              description: Indicates whether a challenge is being requested for a 3DS2 Global transaction.
+          required:
+          - payment_method_token
+          - browser_info
+    authenticate_properties:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying the transaction at Spreedly. This token can be passed into an `authorize` or `purchase` transaction via the `sca_authentication_token` field to automatically fill its `payment_method_token` and Third Party 3DS2 fields.
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        state:
+          type: string
+          description: The current state of the authentication. Valid values are `succeeded`, `failed`, and `pending`
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        transaction_type:
+          type: string
+          description: The type of transaction; contains “Sca::Authentication” for a Spreedly 3DS Global authentication
+        gateway_transaction_key:
+          type: string
+          description: The Spreedly transaction token of the parent gateway transaction
+        sca_provider_key:
+          type: string
+          description: The SCA Provider that was used to create the authentication
+        acs_transaction_id:
+          type: string
+          description: The unique ID of the transaction given by the ACS server (3DS2 only)
+        three_ds_server_trans_id:
+          type: string
+          description: The unique ID of the transaction given by the 3DS Server (3DS2 only)
+        directory_server_transaction_id:
+          type: string
+          description: The unique ID of the transaction given by the directory server (3DS2 only)
+        xid:
+          type: string
+          description: The transaction identifier given by the 3DS Server
+        three_ds_version:
+          type: string
+          description: The version of 3DS that was used to authenticate the transaction
+        flow_performed:
+          type: string
+          description: An enumerated field that denotes what flow was most recently performed. Valid values are `frictionless`, `device_fingerprint`, `challenge`, `app_challenge`, and `not_authenticated`.
+        ecommerce_indicator:
+          type: string
+          description: Contains the ecommerce indicator (ECI) returned by the 3DS Server
+        directory_response_status:
+          type: string
+          description: The transaction status given by the directory server in the initial response. This field’s value corresponds to the `transStatus` enumeration in the EMV 3-D Secure Protocol. Valid values can be `Y`, `N`, `U`, `A`, `C`, or `R`. Please see the EMV 3-D Secure Protocol spec for more information.
+        authentication_response_status:
+          type: string
+          description: The most recent transaction status given received by the 3DS Server. This field’s value corresponds to the `transStatus` enumeration in the EMV 3-D Secure Protocol. Valid values can be `Y`, `N`, `U`, `A`, `C`, or `R`. Please see the EMV 3-D Secure Protocol spec for more information.
+        authentication_value:
+          type: string
+          description: The authentication value returned by the 3DS Server for successful authentications
+        trans_status_reason:
+          type: string
+          description: Provides information on why the `authentication_response_status` field has the specific value. This field’s value corresponds to the `transStatusReason` enumeration in the EMV 3-D Secure Protocol. Please see EMV 3-D Secure Protocol spec for more information.
+        daf:
+          type: boolean
+          description: Boolean field to indicate if the authentication request utilized Visa’s Digital Authentication Framework.
+        managed_order_token:
+          type: string
+          description: The token value provided by the protection provider running the authentication.
+        payment_method_key:
+          type: string
+          description: The token of the payment method being authenticated. This is the same as the `payment_method_token` field in the `sca_authentication` transaction request.
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

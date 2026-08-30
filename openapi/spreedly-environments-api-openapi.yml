@@ -1,0 +1,351 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Environments API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: environments
+paths:
+  /environments/{environment_key}/regenerate_signing_secret:
+    parameters:
+    - name: environment_key
+      in: path
+      description: The key of the environment to execute against
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Regenerate signing secret
+      tags:
+      - environments
+      security:
+      - basic_auth: []
+      operationId: regenerate-signing-secret
+      description: Regenerate environment signing secret. Once this is regenerated, the old signing secret will no longer be valid and you must immediately update your application with the new signing secret. This call should be authenticated with the key of the environment that you are trying to update and an Organization Access Secret.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/regenerate_environment_signing_secret_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/regenerate_environment_signing_secret_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /environments:
+    get:
+      summary: List environments
+      tags:
+      - environments
+      security:
+      - basic_auth: []
+      operationId: list-environments
+      description: Retrieve an ordered and paginated list of all environments in an organization. This call should be authenticated with an environment key from the organization and an Organization Access Secret.
+      parameters:
+      - name: order
+        in: query
+        description: The order of the returned list. Default is `asc`, which returns the oldest records first. To list newer records first, use `desc`.
+        schema:
+          type: string
+      - name: since_token
+        in: query
+        description: Token refers to the key of the environment to start from (e.g., the last environment_key received in the previous list if iterating through records)
+        schema:
+          type: string
+      - name: count
+        in: query
+        description: The number of environments to return. By default returns 20, maximum allowed is 100.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_environments_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/list_environments_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    post:
+      summary: Create an environment
+      tags:
+      - environments
+      security:
+      - basic_auth: []
+      operationId: create-environments
+      description: Create an environment in your organization. You will need to create one environment and access secret manually at app.spreedly.com for authentication. After that you can authenticate the API call using that environment key and an Organization Access Secret.
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/environment_create'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/environment_create'
+  /environments/{environment_key}:
+    parameters:
+    - name: environment_key
+      in: path
+      description: The key of the environment to execute against
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show environment
+      tags:
+      - environments
+      security:
+      - basic_auth: []
+      operationId: show-environments
+      description: Get an environment with the given key. This call should be authenticated with the key of the environment that you are trying to show and an Organization Access Secret.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+    put:
+      summary: Update environment
+      tags:
+      - environments
+      security:
+      - basic_auth: []
+      operationId: update-environments
+      description: Update an existing environment. This call should be authenticated with the key of the environment that you are trying to update and an Organization Access Secret.
+      parameters: []
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/environment_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/environment_update'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/environment_update'
+components:
+  schemas:
+    regenerate_environment_signing_secret_response:
+      type: object
+      properties:
+        environment:
+          $ref: '#/components/schemas/environment_properties'
+    environment_update:
+      type: object
+      properties:
+        environment:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 'The human readable name of the environment. There is a 100 character limit and it cannot contain the following characters: ``\ | ` # $ % { } ; " < >``'
+            callback_url:
+              type: string
+              description: 'The url where Spreedly will attempt delivery of account updater transaction results. Transaction results are posted in JSON format. (default: null)'
+            allow_direct_api_method_creation:
+              type: boolean
+              description: 'If the environment allows payment method creation from anywhere, or only from Spreedly Express or Iframe (default: true).'
+            au_enabled:
+              type: boolean
+              description: 'If the environment should have cards sent to Account Updater or not (default: false).'
+            payment_method_management_enabled:
+              type: boolean
+              description: If an environment is enabled to manage payment methods with Advanced Vaulting.
+            smart_routing_enabled:
+              type: boolean
+              description: 'If an environment has smart routing enabled or not (default: false).'
+            default_gateway_token:
+              type: string
+              description: 'The default gateway to send transactions if smart routing is enabled (default: null).'
+            iframe_enhanced_security_enabled:
+              type: boolean
+              description: If the environment is enabled to pass enhanced security fields to iFrame init.
+    environment_response:
+      type: object
+      properties:
+        environment:
+          $ref: '#/components/schemas/environment_properties'
+    environment_properties:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key identifying the environment at Spreedly.
+        signing_secret:
+          type: string
+          description: The secret used to sign callbacks that are made back into your application.
+        organization_key:
+          type: string
+          description: The organization that the environment belongs to.
+        callback_url:
+          type: string
+          description: The url where Spreedly will attempt delivery of account updater transaction results. Transaction results are posted in JSON format.
+        smart_routing_enabled:
+          type: boolean
+          description: If the environment has smart routing enabled or not.
+        allow_direct_api_payment_method_creation:
+          type: boolean
+          description: If the environment allows payment method creation from anywhere, or only from Spreedly Express or Iframe.
+        name:
+          type: string
+          description: The human readable name of the environment.
+        default_gateway_token:
+          type: string
+          description: The default gateway to send transactions if smart routing is enabled.
+        payment_method_management_enabled:
+          type: boolean
+          description: If an environment is enabled to manage payment methods with Advanced Vaulting.
+        au_enabled:
+          type: boolean
+          description: If the environment has account updater enabled.
+        retry:
+          type: boolean
+          description: If the environment has retry enabled.
+        iframe_enhanced_security_enabled:
+          type: boolean
+          description: If the environment is enabled to pass enhanced security fields to iFrame init.
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    environment_create:
+      type: object
+      properties:
+        environment:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 'The human readable name of the environment. There is a 100 character limit and it cannot contain the following characters: ``\ | ` # $ % { } ; " < >``'
+            callback_url:
+              type: string
+              description: 'The url where Spreedly will attempt delivery of account updater transaction results. Transaction results are posted in JSON format. (default: null)'
+            allow_direct_api_method_creation:
+              type: boolean
+              description: 'If the environment allows payment method creation from anywhere, or only from Spreedly Express or Iframe (default: true).'
+            au_enabled:
+              type: boolean
+              description: 'If the environment should have cards sent to Account Updater or not (default: false).'
+            payment_method_management_enabled:
+              type: boolean
+              description: If an environment is enabled to manage payment methods with Advanced Vaulting.
+            iframe_enhanced_security_enabled:
+              type: boolean
+              description: If the environment is enabled to pass enhanced security fields to iFrame init.
+          required:
+          - name
+    list_environments_response:
+      type: object
+      properties:
+        environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/environment_properties'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

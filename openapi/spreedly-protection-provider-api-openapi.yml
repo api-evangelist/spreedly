@@ -1,0 +1,222 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Protection Provider API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: protection_provider
+paths:
+  /protection/providers:
+    post:
+      summary: Create a protection provider on the given merchant profile
+      tags:
+      - protection_provider
+      security:
+      - basic_auth: []
+      operationId: create-protection-provider
+      description: 'Create a Protection Provider on the given Merchant Profile. A Protection Provider can be used as part of [authorize](https://developer.spreedly.com/reference/authorize), [purchase](https://developer.spreedly.com/reference/purchase), and [verify](https://developer.spreedly.com/reference/verify) transactions. **At least one card type object must be included in the request.** The following card types are supported: `Visa`, `Mastercard`, `American Express`, `Discover`, `Diners`, `JCB`, `Dankort`, `Union Pay`, and `Cartes Bancaires`.'
+      parameters: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/protection_provider_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/protection_provider_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/protection_provider'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/protection_provider'
+  /protection/providers/{protection_provider_token}:
+    parameters:
+    - name: protection_provider_token
+      in: path
+      description: The token of the Protection Provider
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show protection provider
+      tags:
+      - protection_provider
+      security:
+      - basic_auth: []
+      operationId: show-protection-provider
+      description: Get a Protection Provider with the given token. A Protection Provider can be used as part of [authorize](https://developer.spreedly.com/reference/authorize), [purchase](https://developer.spreedly.com/reference/purchase), and [verify](https://developer.spreedly.com/reference/verify) transactions.
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/protection_provider_response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/protection_provider_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  schemas:
+    sca_provider_card_details:
+      type: object
+      description: A nested object containing merchant info per card brand that is to be registered with the 3DS server. See `acquirer_bin`, `merchant_url`, and `merchant_password` below for nested field information
+      properties:
+        acquirer_bin:
+          type: string
+          description: The Acquirer Bank Identification Number (BIN) is identifying BIN for an acquiring bank. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution.
+        merchant_url:
+          type: string
+          description: Fully qualified URL of the merchant’s main website or customer care site that contains a method of contact.
+        merchant_password:
+          type: string
+          description: An old parameter for 3DS v1, unrelated to 3DS2. We support this parameter for those merchants who already have it activated and are migrating to our 3DSS, not for new ones. If you do not know the parameter, don’t take it into account.
+      required:
+      - acquirer_bin
+      - merchant_url
+    sca_provider_visa:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/sca_provider_card_details'
+      - type: object
+        properties:
+          merchant_brand_id:
+            type: string
+            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
+    protection_provider:
+      type: object
+      properties:
+        merchant_profile_key:
+          type: string
+          description: The token returned upon creating a Merchant Profile
+        type:
+          type: string
+          description: 'The type of Protection Provider being created. Currently two types are supported: `spreedly` or `test` (case sensitive)'
+        three_ds_enabled:
+          type: boolean
+          description: Enable 3DS2 Global for this Protection Provider. See [Protect documentation](https://developer.spreedly.com/docs/protect) for more details.
+        visa:
+          $ref: '#/components/schemas/sca_provider_visa'
+        mastercard:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        amex:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        discover:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        diners:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        jcb:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        dankort:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        union_pay:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        cartes_bancaires:
+          $ref: '#/components/schemas/sca_provider_card_details'
+      required:
+      - merchant_profile_key
+      - type
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    protection_provider_response:
+      type: object
+      properties:
+        protection_provider:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token identifying your newly created Protection Provider. Can be used as the `protection_provider_token` field on [authorize](https://developer.spreedly.com/reference/authorize-1) and [purchase](https://developer.spreedly.com/reference/purchase) transactions.
+            three_ds_enabled:
+              type: boolean
+              description: If 3DS is enabledfor this Protection Provider.
+            created_at:
+              type: string
+              description: The time the protection provider was created
+            updated_at:
+              type: string
+              description: The time the protection provider was last updated
+            type:
+              type: string
+              description: 'The type of Protection Provider being created. Currently two types are supported: `spreedly` or `test` (case sensitive)'
+            visa:
+              $ref: '#/components/schemas/sca_provider_visa'
+            mastercard:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            amex:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            discover:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            diners:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            jcb:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            dankort:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            union_pay:
+              $ref: '#/components/schemas/sca_provider_card_details'
+            cartes_bancaires:
+              $ref: '#/components/schemas/sca_provider_card_details'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false

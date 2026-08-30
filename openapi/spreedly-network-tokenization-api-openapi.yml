@@ -1,0 +1,290 @@
+openapi: 3.2.0
+info:
+  title: Spreedly API V1 Network Tokenization API
+  version: v1
+  description: An OpenAPI specification file for V1 of the Spreedly Core Transactional API
+servers:
+- url: https://core.spreedly.com/v1
+tags:
+- name: network_tokenization
+paths:
+  /network_tokenization/card_metadata.{format}?payment_method_token={payment_method_token}:
+    parameters:
+    - $ref: '#/components/parameters/format'
+    - name: payment_method_token
+      in: path
+      description: The token of the NT provisioned payment method
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show card metadata for a Network Token
+      tags:
+      - network_tokenization
+      security:
+      - basic_auth: []
+      operationId: network-tokenization-card-metadata
+      description: 'Retrieve metadata for a card that has been tokenized at a network.
+
+
+        The content of the `card_metadata` object is determined and can be changed by the card network at any time. Because of this, the keys in the response are potentially variable and should not be considered idempotent.
+
+        '
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              examples:
+                get_card_metadata:
+                  value:
+                    card_metadata:
+                      backgroundColor: '0x7aff54'
+                      foregroundColor: '0x7aff54'
+                      labelColor: '0x7aff54'
+                      contactEmail: test1@visa.com
+                      contactNumber: 1-800-432-4357
+                      contactName: test contact
+                      privacyPolicyURL: https://www.freeprivacypolicy.com/
+                      termsAndConditionsURL: https://termsconditions.com/
+                      termsAndConditionsID: fa66dcacb71f426c80ed4b3c5e109cbf
+                      shortDescription: My Test Issuer
+                      longDescription: My Test Issuer
+                      cardData:
+                      - guid: 4428da983173468a8435f056e4984997
+                        contentType: cardSymbol
+                        content:
+                        - mimeType: image/png
+                          width: '100'
+                          height: '100'
+                      issuerFlags:
+                        deviceBinding: true
+                        cardholderVerification: true
+                        trustedBeneficiaryEnrollment: true
+                        delegatedAuthenticationSupported: true
+                        oboDeviceBinding: true
+              schema:
+                $ref: '#/components/schemas/card_metadata_response'
+            application/xml:
+              examples:
+                get_card_metadata:
+                  value: "<card_metadata>\n\t\t<backgroundColor>0x7aff54</backgroundColor>\n\t\t<foregroundColor>0x7aff54</foregroundColor>\n\t\t<labelColor>0x7aff54</labelColor>\n\t\t<contactEmail>test1@visa.com</contactEmail>\n\t\t<contactNumber>1-800-432-4357</contactNumber>\n\t\t<contactName>test contact</contactName>\n\t\t<privacyPolicyURL>https://www.freeprivacypolicy.com/</privacyPolicyURL>\n\t\t<termsAndConditionsURL>https://termsconditions.com/</termsAndConditionsURL>\n\t\t<termsAndConditionsID>fa66dcacb71f426c80ed4b3c5e109cbf</termsAndConditionsID>\n\t\t<shortDescription>My Test Issuer</shortDescription>\n\t\t<longDescription>My Test Issuer</longDescription>\n\t\t<cardData>\n\t\t\t<guid>4428da983173468a8435f056e4984997</guid>\n\t\t\t<contentType>cardSymbol</contentType>\n\t\t\t<content>\n\t\t\t\t<mimeType>image/png</mimeType>\n\t\t\t\t<width>100</width>\n\t\t\t\t<height>100</height>\n\t\t\t</content>\n\t\t</cardData>\n\t\t<issuerFlags>\n\t\t\t<deviceBinding>true</deviceBinding>\n\t\t\t<cardholderVerification>true</cardholderVerification>\n\t\t\t<trustedBeneficiaryEnrollment>true</trustedBeneficiaryEnrollment>\n\t\t\t<delegatedAuthenticationSupported>true</delegatedAuthenticationSupported>\n\t\t\t<oboDeviceBinding>true</oboDeviceBinding>\n\t\t</issuerFlags>\n\t</card_metadata>"
+              schema:
+                $ref: '#/components/schemas/card_metadata_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+  /network_tokenization/token_status.{format}?payment_method_token={payment_method_token}:
+    parameters:
+    - $ref: '#/components/parameters/format'
+    - name: payment_method_token
+      in: path
+      description: The token of the NT provisioned payment method
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show status for a Network Token
+      tags:
+      - network_tokenization
+      security:
+      - basic_auth: []
+      operationId: network-tokenization-status
+      description: 'Retrieve the status of a card that has been tokenized at a network.
+
+
+        This endpoint provides the current status of a network token, either active or inactive.
+
+        '
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              examples:
+                get_token_status:
+                  value:
+                    token_status: ACTIVE
+              schema:
+                $ref: '#/components/schemas/token_status_response'
+            application/xml:
+              examples:
+                get_token_status:
+                  value: "<token_status>\n\tACTIVE\n</token_status>"
+              schema:
+                $ref: '#/components/schemas/token_status_response'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/errors'
+components:
+  parameters:
+    format:
+      name: format
+      description: The format of the request. Default JSON for testing in our documentation.
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - json
+        - xml
+        example: json
+  schemas:
+    token_status_response:
+      type: object
+      properties:
+        token_status:
+          type: string
+          description: The status of a Network Token
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    card_metadata_response:
+      type: object
+      properties:
+        card_metadata:
+          type: object
+          properties:
+            backgroundColor:
+              type: string
+              description: Hex color code for the background
+            foregroundColor:
+              type: string
+              description: Hex color code for the foreground
+            labelColor:
+              type: string
+              description: Hex color code for the label
+            contactEmail:
+              type: string
+              description: Card contact email
+            contactNumber:
+              type: string
+              description: Card contact number
+            contactName:
+              type: string
+              description: Card contact name
+            privacyPolicyURL:
+              type: string
+              description: The URL that links to the privacy policy of the card
+            termsAndConditionsURL:
+              type: string
+              description: The URL that links to the terms and conditions of the card
+            termsAndConditionsID:
+              type: string
+              description: The ID of the terms and conditions
+            shortDescription:
+              type: string
+              description: A short description
+            longDescription:
+              type: string
+              description: A long description
+            cardData:
+              type: array
+              items:
+                type: object
+                properties:
+                  guid:
+                    type: string
+                    description: The ID of the content item
+                  contentType:
+                    type: string
+                    description: The content item's type
+                  content:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        mimeType:
+                          type: string
+                          description: The mime type of the content item
+                        width:
+                          type: string
+                          description: The width of the content item
+                        height:
+                          type: string
+                          description: The height of the content item
+            unsupportedPresentationTypes:
+              type: array
+              items:
+                type: string
+            issuerFlags:
+              type: object
+              properties:
+                deviceBinding:
+                  type: boolean
+                cardholderVerification:
+                  type: boolean
+                trustedBeneficiaryEnrollment:
+                  type: boolean
+                delegatedAuthenticationSupported:
+                  type: boolean
+                oboDeviceBinding:
+                  type: boolean
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+      description: "Unless otherwise noted, all calls to the Spreedly API use [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) over HTTPS.\n            Use the [environment key](https://developer.spreedly.com/docs/the-spreedly-app#environment-key) of the Spreedly environment you wish to execute against as the HTTP basic user, and one of your organization's [access secrets](https://developer.spreedly.com/docs/the-spreedly-app#access-secrets) as the HTTP basic password."
+x-explorer-enabled: false
