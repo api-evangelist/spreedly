@@ -61,7 +61,8 @@ apis:
   description: The access_secrets API from Spreedly — 2 operation(s) for access_secrets.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - access_secrets
   properties:
   - type: OpenAPI
@@ -90,6 +91,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Authorize
+  tags_raw:
   - authorize
   properties:
   - type: OpenAPI
@@ -118,6 +121,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Capture
+  tags_raw:
   - capture
   properties:
   - type: OpenAPI
@@ -145,7 +150,8 @@ apis:
   description: The card_refresher API from Spreedly — 3 operation(s) for card_refresher.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - card_refresher
   properties:
   - type: OpenAPI
@@ -174,6 +180,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Certificates
+  tags_raw:
   - certificates
   properties:
   - type: OpenAPI
@@ -202,6 +210,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Claim
+  tags_raw:
   - claim
   properties:
   - type: OpenAPI
@@ -230,6 +240,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Composer
+  tags_raw:
   - composer
   properties:
   - type: OpenAPI
@@ -258,6 +270,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Credit
+  tags_raw:
   - credit
   properties:
   - type: OpenAPI
@@ -286,6 +300,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Environments
+  tags_raw:
   - environments
   properties:
   - type: OpenAPI
@@ -314,6 +330,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Event
+  tags_raw:
   - events
   properties:
   - type: OpenAPI
@@ -342,6 +360,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Gateways
+  tags_raw:
   - gateways
   properties:
   - type: OpenAPI
@@ -369,7 +389,8 @@ apis:
   description: The general_credit API from Spreedly — 1 operation(s) for general_credit.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - general_credit
   properties:
   - type: OpenAPI
@@ -398,6 +419,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Merchant Profiles
+  tags_raw:
   - merchant_profiles
   properties:
   - type: OpenAPI
@@ -426,6 +449,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Network Tokenization
+  tags_raw:
   - network_tokenization
   properties:
   - type: OpenAPI
@@ -454,6 +479,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Payment Methods
+  tags_raw:
   - payment_methods
   properties:
   - type: OpenAPI
@@ -482,6 +509,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Payments
+  tags_raw:
   - payments
   properties:
   - type: OpenAPI
@@ -509,7 +538,8 @@ apis:
   description: The protection_events API from Spreedly — 2 operation(s) for protection_events.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - protection_events
   properties:
   - type: OpenAPI
@@ -537,7 +567,8 @@ apis:
   description: The protection_provider API from Spreedly — 2 operation(s) for protection_provider.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - protection_provider
   properties:
   - type: OpenAPI
@@ -566,6 +597,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Purchase
+  tags_raw:
   - purchase
   properties:
   - type: OpenAPI
@@ -594,6 +627,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Receivers
+  tags_raw:
   - receivers
   properties:
   - type: OpenAPI
@@ -621,7 +656,8 @@ apis:
   description: The sca_authentication API from Spreedly — 1 operation(s) for sca_authentication.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - sca_authentication
   properties:
   - type: OpenAPI
@@ -649,7 +685,8 @@ apis:
   description: The sca_provider API from Spreedly — 2 operation(s) for sca_provider.
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
-  tags:
+  tags: []
+  tags_raw:
   - sca_provider
   properties:
   - type: OpenAPI
@@ -678,6 +715,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Sub-Merchants
+  tags_raw:
   - sub_merchants
   properties:
   - type: OpenAPI
@@ -706,6 +745,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Transaction
+  tags_raw:
   - transactions
   properties:
   - type: OpenAPI
@@ -734,6 +775,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Verify
+  tags_raw:
   - verify
   properties:
   - type: OpenAPI
@@ -762,6 +805,8 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
+  - Void
+  tags_raw:
   - void
   properties:
   - type: OpenAPI
