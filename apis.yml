@@ -314,7 +314,7 @@ apis:
   humanURL: https://developer.spreedly.com/reference/api-introduction
   baseURL: https://core.spreedly.com/v1
   tags:
-  - Environments
+  - Environment
   tags_raw:
   - environments
   properties:
