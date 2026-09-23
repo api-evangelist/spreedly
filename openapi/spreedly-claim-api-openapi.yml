@@ -6,7 +6,7 @@ info:
 servers:
 - url: https://core.spreedly.com/v1
 tags:
-- name: claim
+- name: Claim
 paths:
   /protection/{transaction_token}/claims:
     parameters:
@@ -19,11 +19,10 @@ paths:
     post:
       summary: Forward a claim to the protection provider
       tags:
-      - claim
+      - Claim
       security:
       - basic_auth: []
       operationId: forward-claim
-      description: Forward a claim to the protection provider
       parameters: []
       responses:
         '200':
@@ -114,6 +113,18 @@ paths:
                     type: CHARGEBACK
 components:
   schemas:
+    claim_response:
+      type: object
+      properties:
+        claim:
+          type: object
+          properties:
+            message:
+              type: string
+              description: A human-readable message describing the result (if applicable)
+            status:
+              type: string
+              description: The status of the claim
     errors:
       type: array
       items:
@@ -131,18 +142,6 @@ components:
         required:
         - key
         - message
-    claim_response:
-      type: object
-      properties:
-        claim:
-          type: object
-          properties:
-            message:
-              type: string
-              description: A human-readable message describing the result (if applicable)
-            status:
-              type: string
-              description: The status of the claim
     claim:
       type: object
       properties:

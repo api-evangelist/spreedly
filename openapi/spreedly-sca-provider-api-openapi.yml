@@ -16,7 +16,7 @@ paths:
       security:
       - basic_auth: []
       operationId: create-sca-provider
-      description: 'Create an SCA Provider on the given Merchant Profile. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize) and [purchase](https://developer.spreedly.com/reference/purchase) transactions. At least one card type object must be included in the request. The following card types are supported: `Visa`, `Mastercard`, `American Express`, and `Discover`.'
+      description: 'Create an SCA Provider on the given Merchant Profile. An SCA Provider can be used to run 3DS2 Global authentications on the authenticate endpoint or as part of authorize and purchase transactions. At least one card type object must be included in the request. The following card types are supported: `Visa`, `Mastercard`, `American Express`, and `Discover`.'
       parameters: []
       responses:
         '201':
@@ -69,7 +69,7 @@ paths:
       security:
       - basic_auth: []
       operationId: show-sca-provider
-      description: Get an SCA Provider with the given token. An SCA Provider can be used to run [3DS2 Global](https://developer.spreedly.com/docs/3ds-solutions) authentications on the [authenticate](https://developer.spreedly.com/reference/authenticate) endpoint or as part of [authorize](https://developer.spreedly.com/reference/authorize-1) and [purchase](https://developer.spreedly.com/reference/reference-purchase) transactions.
+      description: Get an SCA Provider with the given token. An SCA Provider can be used to run 3DS2 Global authentications on the authenticate endpoint or as part of authorize and purchase transactions.
       responses:
         '200':
           description: Successful
@@ -100,6 +100,39 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    sca_provider_card_details:
+      type: object
+      description: A nested object containing merchant info per card brand that is to be registered with the 3DS server. See `acquirer_bin`, `merchant_url`, and `merchant_password` below for nested field information
+      properties:
+        acquirer_bin:
+          type: string
+          description: The Acquirer Bank Identification Number (BIN) is identifying BIN for an acquiring bank. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution.
+        merchant_url:
+          type: string
+          description: Fully qualified URL of the merchant’s main website or customer care site that contains a method of contact.
+        merchant_password:
+          type: string
+          description: An old parameter for 3DS v1, unrelated to 3DS2. We support this parameter for those merchants who already have it activated and are migrating to our 3DSS, not for new ones. If you do not know the parameter, don’t take it into account.
+      required:
+      - acquirer_bin
+      - merchant_url
     sca_provider:
       type: object
       properties:
@@ -123,48 +156,6 @@ components:
       required:
       - merchant_profile_key
       - type
-    sca_provider_card_details:
-      type: object
-      description: A nested object containing merchant info per card brand that is to be registered with the 3DS server. See `acquirer_bin`, `merchant_url`, and `merchant_password` below for nested field information
-      properties:
-        acquirer_bin:
-          type: string
-          description: The Acquirer Bank Identification Number (BIN) is identifying BIN for an acquiring bank. The BIN is used to submit authorization requests and ensure that payments are routed to the correct institution.
-        merchant_url:
-          type: string
-          description: Fully qualified URL of the merchant’s main website or customer care site that contains a method of contact.
-        merchant_password:
-          type: string
-          description: An old parameter for 3DS v1, unrelated to 3DS2. We support this parameter for those merchants who already have it activated and are migrating to our 3DSS, not for new ones. If you do not know the parameter, don’t take it into account.
-      required:
-      - acquirer_bin
-      - merchant_url
-    sca_provider_visa:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/sca_provider_card_details'
-      - type: object
-        properties:
-          merchant_brand_id:
-            type: string
-            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     sca_provider_response:
       type: object
       properties:
@@ -194,6 +185,15 @@ components:
               $ref: '#/components/schemas/sca_provider_card_details'
             discover:
               $ref: '#/components/schemas/sca_provider_card_details'
+    sca_provider_visa:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/sca_provider_card_details'
+      - type: object
+        properties:
+          merchant_brand_id:
+            type: string
+            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
   securitySchemes:
     basic_auth:
       type: http

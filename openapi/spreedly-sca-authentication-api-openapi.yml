@@ -26,9 +26,7 @@ paths:
       description: 'Authenticate a given payment method and amount against provided SCA Provider Key (specified in the request URL)
 
 
-        Notable response elements can be found in the table below. All other response elements are used by our `Spreedly.ThreeDS.Lifecycle` helpers and exposed for debugging purposes. We recommend that our merchants not use any fields that are not listed in the table below.
-
-        '
+        Notable response elements can be found in the table below. All other response elements are used by our `Spreedly.ThreeDS.Lifecycle` helpers and exposed for debugging purposes. We recommend that our merchants not use any fields that are not listed in the table below.'
       parameters: []
       responses:
         '201':
@@ -83,11 +81,6 @@ paths:
               $ref: '#/components/schemas/authenticate'
 components:
   schemas:
-    authenticate_response:
-      type: object
-      properties:
-        transaction:
-          $ref: '#/components/schemas/authenticate_properties'
     authenticate:
       type: object
       properties:
@@ -194,6 +187,11 @@ components:
         payment_method_key:
           type: string
           description: The token of the payment method being authenticated. This is the same as the `payment_method_token` field in the `sca_authentication` transaction request.
+    authenticate_response:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/authenticate_properties'
   securitySchemes:
     basic_auth:
       type: http

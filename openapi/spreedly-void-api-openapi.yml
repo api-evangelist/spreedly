@@ -6,22 +6,20 @@ info:
 servers:
 - url: https://core.spreedly.com/v1
 tags:
-- name: void
+- name: Void
 paths:
   /transactions/{transaction_token}/void:
     post:
       summary: Void a transaction
       tags:
-      - void
+      - Void
       security:
       - basic_auth: []
       operationId: void-transaction
       description: 'Cancel an `authorization` transaction or a `capture`/`purchase` transaction that hasn’t yet settled at the merchant account.
 
 
-        This API call can also be used to cancel a `verify` transaction that was part of the Ebanx customer enrollment process. To learn more about this visit [Ebanx Gateway](https://developer.spreedly.com/docs/ebanx-gateway-guide).
-
-        '
+        This API call can also be used to cancel a `verify` transaction that was part of the Ebanx customer enrollment process. To learn more about this visit Ebanx Gateway.'
       parameters:
       - $ref: '#/components/parameters/transaction_token'
       responses:
@@ -62,15 +60,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/unsupported_error'
 components:
-  parameters:
-    transaction_token:
-      name: transaction_token
-      description: The token uniquely identifying this transaction (not the created payment method) at Spreedly.
-      in: path
-      required: true
-      schema:
-        type: string
   schemas:
+    unsupported_error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: Error Key
+              message:
+                type: string
+                description: Error Message
+              ability:
+                type: string
+                description: The transaction the gateway does not support
     void_response:
       type: object
       properties:
@@ -149,23 +156,6 @@ components:
             reference_token:
               type: object
               description: The token of the transaction being voided
-    unsupported_error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: Error Key
-              message:
-                type: string
-                description: Error Message
-              ability:
-                type: string
-                description: The transaction the gateway does not support
     errors:
       type: array
       items:
@@ -183,6 +173,14 @@ components:
         required:
         - key
         - message
+  parameters:
+    transaction_token:
+      name: transaction_token
+      description: The token uniquely identifying this transaction (not the created payment method) at Spreedly.
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     basic_auth:
       type: http

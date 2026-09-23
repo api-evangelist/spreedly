@@ -6,17 +6,17 @@ info:
 servers:
 - url: https://core.spreedly.com/v1
 tags:
-- name: certificates
+- name: Certificates
 paths:
   /certificates:
     get:
       summary: List certificates
       tags:
-      - certificates
+      - Certificates
       security:
       - basic_auth: []
       operationId: list-certificates
-      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all certificates in the authenticated environment.
+      description: Retrieve an ordered and paginated list of all certificates in the authenticated environment.
       parameters:
       - name: order
         in: query
@@ -141,11 +141,11 @@ paths:
     post:
       summary: Create a certificate
       tags:
-      - certificates
+      - Certificates
       security:
       - basic_auth: []
       operationId: create-certificates
-      description: Add a certificate to the authenticated environment for use in [secure payment method tokenization](https://developer.spreedly.com/docs/iframe-api-lifecycle#security-requirements), payment method distribution functions such as [XML digital signatures](https://developer.spreedly.com/reference/order-and-pagination), or to utilize [Apple Pay](https://developer.spreedly.com/docs/apple-pay#generate-certificate).
+      description: Add a certificate to the authenticated environment for use in secure payment method tokenization, payment method distribution functions such as XML digital signatures, or to utilize Apple Pay.
       parameters: []
       responses:
         '201':
@@ -471,7 +471,7 @@ paths:
     post:
       summary: Generate a certificate
       tags:
-      - certificates
+      - Certificates
       security:
       - basic_auth: []
       operationId: generate-certificates
@@ -601,7 +601,7 @@ paths:
     put:
       summary: Update certificate
       tags:
-      - certificates
+      - Certificates
       security:
       - basic_auth: []
       operationId: update-certificates
@@ -858,39 +858,23 @@ paths:
                       '
 components:
   schemas:
-    generate_certificate:
-      type: object
-      properties:
-        certificate:
-          type: object
-          properties:
-            algorithm:
-              type: string
-              description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are `ec-prime256v1` representing the X9.62/SECG curve over a 256 bit prime field, or `rsa-2048`, which uses a 2048-bit RSA key.
-            cn:
-              type: string
-              description: The certificate common name
-            o:
-              type: string
-              description: The organization
-            ou:
-              type: string
-              description: The organization unit
-            c:
-              type: string
-              description: The country
-            st:
-              type: string
-              description: The state
-            l:
-              type: string
-              description: The locality or city
-            email_address:
-              type: string
-              description: The email address
-          required:
-          - algorithm
-          - cn
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     create_certificate_response:
       type: object
       properties:
@@ -984,6 +968,15 @@ components:
             pem:
               type: string
               description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+    update_certificate:
+      type: object
+      properties:
+        certificate:
+          type: object
+          properties:
+            pem:
+              type: string
+              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
     create_certificate:
       type: object
       properties:
@@ -1057,32 +1050,39 @@ components:
               updated_at:
                 type: string
                 description: The time the certificate was last updated
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    update_certificate:
+    generate_certificate:
       type: object
       properties:
         certificate:
           type: object
           properties:
-            pem:
+            algorithm:
               type: string
-              description: The signed certificate in PEM format. This value will be empty on initial certificate generation.
+              description: The encryption algorithm to use when creating the key pair. Currently, the only supported options are `ec-prime256v1` representing the X9.62/SECG curve over a 256 bit prime field, or `rsa-2048`, which uses a 2048-bit RSA key.
+            cn:
+              type: string
+              description: The certificate common name
+            o:
+              type: string
+              description: The organization
+            ou:
+              type: string
+              description: The organization unit
+            c:
+              type: string
+              description: The country
+            st:
+              type: string
+              description: The state
+            l:
+              type: string
+              description: The locality or city
+            email_address:
+              type: string
+              description: The email address
+          required:
+          - algorithm
+          - cn
   securitySchemes:
     basic_auth:
       type: http

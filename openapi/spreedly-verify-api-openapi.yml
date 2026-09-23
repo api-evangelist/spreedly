@@ -6,22 +6,20 @@ info:
 servers:
 - url: https://core.spreedly.com/v1
 tags:
-- name: verify
+- name: Verify
 paths:
   /gateways/{gateway_token}/verify:
     post:
       summary: Verify a payment method
       tags:
-      - verify
+      - Verify
       security:
       - basic_auth: []
       operationId: verify-payment-method
-      description: 'Determine if a credit card is a [chargeable card and available for purchases](https://developer.spreedly.com/docs/using-payment-methods#verifying-a-card). The `retain_on_success` request parameter will automatically retain the card if it’s successfully verified.
+      description: 'Determine if a credit card is a chargeable card and available for purchases. The `retain_on_success` request parameter will automatically retain the card if it’s successfully verified.
 
 
-        Also used by Ebanx Gateway customers as part of the enrollment process for Mercado Pago recurring payments. To learn more about this visit [Ebanx Gateway](https://developer.spreedly.com/docs/ebanx-gateway-guide).
-
-        '
+        Also used by Ebanx Gateway customers as part of the enrollment process for Mercado Pago recurring payments. To learn more about this visit Ebanx Gateway.'
       parameters:
       - $ref: '#/components/parameters/gateway_token'
       responses:
@@ -600,6 +598,69 @@ paths:
                     attempt_network_token: true
 components:
   schemas:
+    network_tokenization:
+      type: object
+      description: The network tokenization details for the transaction
+      properties:
+        provisioned:
+          type: boolean
+          default: false
+          description: Indicates if the network tokenization was successfully provisioned
+        token_status:
+          type: string
+          description: The status of the network token
+        token_reference:
+          type: string
+          description: The unique reference key for the network token
+        token_first_six_digits:
+          type: string
+          description: The first six digits of the network token's DPAN
+        token_last_four_digits:
+          type: string
+          description: The last four digits of the network token's DPAN
+        token_created_at:
+          type: string
+          description: The timestamp when the network token was created
+        token_updated_at:
+          type: string
+          description: The timestamp when the network token was last updated
+        attempted:
+          type: boolean
+          default: false
+          description: Indicates if the transaction attempted to use a network token
+        errors:
+          type: array
+          description: An array of errors that occurred during the network tokenization process
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: The error key
+              message:
+                type: string
+                description: The error message
+              action:
+                type: string
+                description: The action taken which lead to the error
+                required: false
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     payment_method:
       type: object
       properties:
@@ -761,52 +822,6 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    network_tokenization:
-      type: object
-      description: The network tokenization details for the transaction
-      properties:
-        provisioned:
-          type: boolean
-          default: false
-          description: Indicates if the network tokenization was successfully provisioned
-        token_status:
-          type: string
-          description: The status of the network token
-        token_reference:
-          type: string
-          description: The unique reference key for the network token
-        token_first_six_digits:
-          type: string
-          description: The first six digits of the network token's DPAN
-        token_last_four_digits:
-          type: string
-          description: The last four digits of the network token's DPAN
-        token_created_at:
-          type: string
-          description: The timestamp when the network token was created
-        token_updated_at:
-          type: string
-          description: The timestamp when the network token was last updated
-        attempted:
-          type: boolean
-          default: false
-          description: Indicates if the transaction attempted to use a network token
-        errors:
-          type: array
-          description: An array of errors that occurred during the network tokenization process
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: The error key
-              message:
-                type: string
-                description: The error message
-              action:
-                type: string
-                description: The action taken which lead to the error
-                required: false
     verify_response:
       type: object
       properties:
@@ -904,31 +919,51 @@ components:
               $ref: '#/components/schemas/protect_fraud_check_response'
             network_tokenization:
               $ref: '#/components/schemas/network_tokenization'
-    provision_network_token:
-      type: boolean
-      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
-    gateway_specific_fields:
-      type: array
-      description: The list of gateway specific fields that can be specified in supported gateway transactions
-      items:
-        type: string
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
+    verify:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            payment_method_token:
+              type: string
+              description: The token of the payment method to verify
+            attempt_network_token:
+              type: boolean
+              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
+            provision_network_token:
+              $ref: '#/components/schemas/provision_network_token'
+            retain_on_success:
+              type: boolean
+              description: If the card is verified, retain it so it can be used for future transactions
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g. `USD` for US dollars.
+            ip:
+              type: string
+              description: If the gateway requires an allowed IP address
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
+            sca_authentication_token:
+              type: string
+              description: The token received in response body of SCA Authenticate endpoints when performing an SCA Authentication on a specified payment method. See [instructions to obtain](https://developer.spreedly.com/docs/3ds-solutions#how-to-utilize-your-sca-provider-key)
+            sca_provider_key:
+              type: string
+              description: '[SCA Provider](https://developer.spreedly.com/reference/create-sca-provider) token that performs a Spreedly 3DS2 Global authentication before attempting the gateway transaction. Please see our [Spreedly 3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) for more info.'
+            sca_authentication_parameters:
+              type: string
+              description: Additional fields that are accepted by the SCA Authentication, including a `test_scenario` object to indicate valid 3DS2 test flow options and an `exemption_type` field to request an exemption. Please refer to our [3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) to learn more.
+            gateway_specific_fields:
+              type: object
+              description: Unique optional fields that a gateway may require for certain customized options. To send a GSF it should be nested under `gateway_specific_fields` and under the gateway's name, i.e. `gateway_type`. Please refer to [using a payment method](https://developer.spreedly.com/docs/using-payment-methods#gateway-specific-fields) for more info.
+            protection_provider_key:
+              type: string
+              description: The token of the [Protection Provider](https://developer.spreedly.com/reference/create-protection-provider). Triggers a protection check.
+            protection_parameters:
+              $ref: '#/components/schemas/protection_parameters'
+          required:
+          - payment_method_token
     protection_parameters:
       description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
       type: object
@@ -1088,51 +1123,14 @@ components:
       - delivery_method
       - delivery_type
       - cart_items
-    verify:
-      type: object
-      properties:
-        transaction:
-          type: object
-          properties:
-            payment_method_token:
-              type: string
-              description: The token of the payment method to verify
-            attempt_network_token:
-              type: boolean
-              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
-            provision_network_token:
-              $ref: '#/components/schemas/provision_network_token'
-            retain_on_success:
-              type: boolean
-              description: If the card is verified, retain it so it can be used for future transactions
-            currency_code:
-              type: string
-              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g. `USD` for US dollars.
-            ip:
-              type: string
-              description: If the gateway requires an allowed IP address
-            sub_merchant_key:
-              type: string
-              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
-            sca_authentication_token:
-              type: string
-              description: The token received in response body of SCA Authenticate endpoints when performing an SCA Authentication on a specified payment method. See [instructions to obtain](https://developer.spreedly.com/docs/3ds-solutions#how-to-utilize-your-sca-provider-key)
-            sca_provider_key:
-              type: string
-              description: '[SCA Provider](https://developer.spreedly.com/reference/create-sca-provider) token that performs a Spreedly 3DS2 Global authentication before attempting the gateway transaction. Please see our [Spreedly 3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) for more info.'
-            sca_authentication_parameters:
-              type: string
-              description: Additional fields that are accepted by the SCA Authentication, including a `test_scenario` object to indicate valid 3DS2 test flow options and an `exemption_type` field to request an exemption. Please refer to our [3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) to learn more.
-            gateway_specific_fields:
-              type: object
-              description: Unique optional fields that a gateway may require for certain customized options. To send a GSF it should be nested under `gateway_specific_fields` and under the gateway's name, i.e. `gateway_type`. Please refer to [using a payment method](https://developer.spreedly.com/docs/using-payment-methods#gateway-specific-fields) for more info.
-            protection_provider_key:
-              type: string
-              description: The token of the [Protection Provider](https://developer.spreedly.com/reference/create-protection-provider). Triggers a protection check.
-            protection_parameters:
-              $ref: '#/components/schemas/protection_parameters'
-          required:
-          - payment_method_token
+    provision_network_token:
+      type: boolean
+      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
     protect_fraud_check_response:
       type: object
       description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).

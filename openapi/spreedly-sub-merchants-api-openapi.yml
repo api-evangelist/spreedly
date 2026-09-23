@@ -201,6 +201,127 @@ paths:
               $ref: '#/components/schemas/sub_merchant_update'
 components:
   schemas:
+    sub_merchant_create:
+      type: object
+      properties:
+        sub_merchant:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the sub_merchant
+            environment_key:
+              type: string
+              description: The key of the environment that the sub_merchant should be associated with
+            merchant_url:
+              type: string
+              description: The merchant’s website url.
+            merchant_email:
+              type: string
+              description: The email address associated with the merchant
+            ein:
+              type: string
+              description: The employer identification number associated with the merchant
+            merchant_defined_uid:
+              type: string
+              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
+            merchant_data:
+              allOf:
+              - $ref: '#/components/schemas/merchant_data_request_properties'
+            address:
+              type: object
+              description: The address associated with the merchant
+              properties:
+                address1:
+                  type: string
+                  description: The first line of the merchant’s address
+                address2:
+                  type: string
+                  description: The second line of the merchant’s address
+                city:
+                  type: string
+                  description: The city of the merchant’s address
+                state:
+                  type: string
+                  description: The state of the merchant’s address
+                zip:
+                  type: string
+                  description: The zip code of the merchant’s address
+                country:
+                  type: string
+                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+          required:
+          - name
+          - environment_key
+    sub_merchant_update:
+      type: object
+      properties:
+        sub_merchant:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the sub_merchant
+            merchant_url:
+              type: string
+              description: The merchant’s website url.
+            merchant_email:
+              type: string
+              description: The email address associated with the merchant
+            ein:
+              type: string
+              description: The employer identification number associated with the merchant
+            merchant_defined_uid:
+              type: string
+              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
+            merchant_data:
+              allOf:
+              - $ref: '#/components/schemas/merchant_data_request_properties'
+            address:
+              type: object
+              description: The address associated with the merchant
+              properties:
+                address1:
+                  type: string
+                  description: The first line of the merchant’s address
+                address2:
+                  type: string
+                  description: The second line of the merchant’s address
+                city:
+                  type: string
+                  description: The city of the merchant’s address
+                state:
+                  type: string
+                  description: The state of the merchant’s address
+                zip:
+                  type: string
+                  description: The zip code of the merchant’s address
+                country:
+                  type: string
+                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
+            metadata:
+              type: object
+              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     list_sub_merchants_response:
       type: object
       properties:
@@ -289,84 +410,6 @@ components:
         updated_at:
           type: string
           description: The datetime that the sub_merchant was last updated
-    sub_merchant_response:
-      type: object
-      properties:
-        sub_merchant:
-          type: object
-          $ref: '#/components/schemas/sub_merchant_properties'
-    sub_merchant_create:
-      type: object
-      properties:
-        sub_merchant:
-          type: object
-          properties:
-            name:
-              type: string
-              description: The human readable name of the sub_merchant
-            environment_key:
-              type: string
-              description: The key of the environment that the sub_merchant should be associated with
-            merchant_url:
-              type: string
-              description: The merchant’s website url.
-            merchant_email:
-              type: string
-              description: The email address associated with the merchant
-            ein:
-              type: string
-              description: The employer identification number associated with the merchant
-            merchant_defined_uid:
-              type: string
-              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
-            merchant_data:
-              allOf:
-              - $ref: '#/components/schemas/merchant_data_request_properties'
-            address:
-              type: object
-              description: The address associated with the merchant
-              properties:
-                address1:
-                  type: string
-                  description: The first line of the merchant’s address
-                address2:
-                  type: string
-                  description: The second line of the merchant’s address
-                city:
-                  type: string
-                  description: The city of the merchant’s address
-                state:
-                  type: string
-                  description: The state of the merchant’s address
-                zip:
-                  type: string
-                  description: The zip code of the merchant’s address
-                country:
-                  type: string
-                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
-            metadata:
-              type: object
-              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
-          required:
-          - name
-          - environment_key
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     merchant_data_request_properties:
       type: array
       description: An array of objects to store more information about the merchant
@@ -390,55 +433,12 @@ components:
             description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
         required:
         - acquirer_merchant_id
-    sub_merchant_update:
+    sub_merchant_response:
       type: object
       properties:
         sub_merchant:
           type: object
-          properties:
-            name:
-              type: string
-              description: The human readable name of the sub_merchant
-            merchant_url:
-              type: string
-              description: The merchant’s website url.
-            merchant_email:
-              type: string
-              description: The email address associated with the merchant
-            ein:
-              type: string
-              description: The employer identification number associated with the merchant
-            merchant_defined_uid:
-              type: string
-              description: A string value that can be set on the sub_merchant to help identify the sub_merchant in systems external to Spreedly.
-            merchant_data:
-              allOf:
-              - $ref: '#/components/schemas/merchant_data_request_properties'
-            address:
-              type: object
-              description: The address associated with the merchant
-              properties:
-                address1:
-                  type: string
-                  description: The first line of the merchant’s address
-                address2:
-                  type: string
-                  description: The second line of the merchant’s address
-                city:
-                  type: string
-                  description: The city of the merchant’s address
-                state:
-                  type: string
-                  description: The state of the merchant’s address
-                zip:
-                  type: string
-                  description: The zip code of the merchant’s address
-                country:
-                  type: string
-                  description: The Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format of the merchant’s address
-            metadata:
-              type: object
-              description: metadata key-value pairs (limit 25). Keys are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types
+          $ref: '#/components/schemas/sub_merchant_properties'
   securitySchemes:
     basic_auth:
       type: http

@@ -1,0 +1,32 @@
+# Front Door AI Index — spreedly — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: spreedly
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.spreedly.com
+  final_host: www.spreedly.com
+  ownership: own
+  owner: spreedly
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 34
+  host_score: 34
+  density: 23.78
+  words: 1430
+  tiers:
+    agentic: 14
+    core: 8
+    model: 12
+  ambiguous: 11
+  top_terms:
+    agentic: 12
+    AI: 8
+    intelligence: 7
+    ChatGPT: 6
+    Gemini: 6
+    agent: 3
+    AI agent: 2
+    smart: 1

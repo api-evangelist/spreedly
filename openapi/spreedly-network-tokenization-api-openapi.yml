@@ -6,7 +6,7 @@ info:
 servers:
 - url: https://core.spreedly.com/v1
 tags:
-- name: network_tokenization
+- name: Network Tokenization
 paths:
   /network_tokenization/card_metadata.{format}?payment_method_token={payment_method_token}:
     parameters:
@@ -20,16 +20,14 @@ paths:
     get:
       summary: Show card metadata for a Network Token
       tags:
-      - network_tokenization
+      - Network Tokenization
       security:
       - basic_auth: []
       operationId: network-tokenization-card-metadata
       description: 'Retrieve metadata for a card that has been tokenized at a network.
 
 
-        The content of the `card_metadata` object is determined and can be changed by the card network at any time. Because of this, the keys in the response are potentially variable and should not be considered idempotent.
-
-        '
+        The content of the `card_metadata` object is determined and can be changed by the card network at any time. Because of this, the keys in the response are potentially variable and should not be considered idempotent.'
       responses:
         '200':
           description: Successful
@@ -110,16 +108,14 @@ paths:
     get:
       summary: Show status for a Network Token
       tags:
-      - network_tokenization
+      - Network Tokenization
       security:
       - basic_auth: []
       operationId: network-tokenization-status
       description: 'Retrieve the status of a card that has been tokenized at a network.
 
 
-        This endpoint provides the current status of a network token, either active or inactive.
-
-        '
+        This endpoint provides the current status of a network token, either active or inactive.'
       responses:
         '200':
           description: Successful
@@ -165,42 +161,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/errors'
 components:
-  parameters:
-    format:
-      name: format
-      description: The format of the request. Default JSON for testing in our documentation.
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-        - json
-        - xml
-        example: json
   schemas:
-    token_status_response:
-      type: object
-      properties:
-        token_status:
-          type: string
-          description: The status of a Network Token
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     card_metadata_response:
       type: object
       properties:
@@ -282,6 +243,41 @@ components:
                   type: boolean
                 oboDeviceBinding:
                   type: boolean
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    token_status_response:
+      type: object
+      properties:
+        token_status:
+          type: string
+          description: The status of a Network Token
+  parameters:
+    format:
+      name: format
+      description: The format of the request. Default JSON for testing in our documentation.
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - json
+        - xml
+        example: json
   securitySchemes:
     basic_auth:
       type: http

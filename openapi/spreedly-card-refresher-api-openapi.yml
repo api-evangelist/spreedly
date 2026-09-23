@@ -177,7 +177,7 @@ paths:
       security:
       - basic_auth: []
       operationId: list-inquiries
-      description: Retrieve an [ordered and paginated](https://developer.spreedly.com/reference/order-and-pagination) list of all inquiries in the environment
+      description: Retrieve an ordered and paginated list of all inquiries in the environment
       parameters:
       - name: order
         in: query
@@ -224,6 +224,59 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    card_refresh_transaction_response:
+      type: object
+      description: The transaction associated with a refresh action for a payment method
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        created_at:
+          type: string
+          description: The time the transaction token was created
+        updated_at:
+          type: string
+          description: The time the transaction was last updated
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        transaction_type:
+          type: string
+          description: The type of transaction, e.g., ReplacePaymentMethod, ContactCardHolder, NoUpdate
+        state:
+          type: string
+          description: The current state of the transaction
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        environment_key:
+          type: string
+          description: The environment key associated with the transaction
+        region:
+          type: string
+          description: When available, the region associated with the refresh transaction
+        updating_service:
+          type: string
+          description: The updating service used for the refresh transaction, e.g. `worldpay`, `mastercard_abu`, or `visa_au`
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     payment_method:
       type: object
       properties:
@@ -385,6 +438,24 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    card_refresher_inquiry_request:
+      type: object
+      properties:
+        card_refresher_inquiry:
+          type: object
+          properties:
+            region:
+              type: string
+              description: 'The onboarded region where the payment method is processed. Valid values are: `NA`, `EU`, and `LATAM`'
+            payment_method_token:
+              type: string
+              description: 'The token of the payment method to be inquired for update. Currently must have a `card_type` of `visa`, `master`, or `discover`. Note: if `master` or `discover` are used, you must also include the updating_service.'
+            updating_service:
+              type: string
+              description: 'Optional. The updating service to use for the inquiry. Valid values are: `visa_au`. If not provided, the service will be inferred based on the payment method''s card type. Note: only `visa` is supported in inferred mode at this time.'
+          required:
+          - payment_method_token
+          - region
     list_inquiries_event_response:
       type: object
       properties:
@@ -433,77 +504,6 @@ components:
               description: The token of the payment method used in the inquiry
             card_refresh_transaction:
               $ref: '#/components/schemas/card_refresh_transaction_response'
-    card_refresh_transaction_response:
-      type: object
-      description: The transaction associated with a refresh action for a payment method
-      properties:
-        token:
-          type: string
-          description: The token uniquely identifying this transaction at Spreedly
-        created_at:
-          type: string
-          description: The time the transaction token was created
-        updated_at:
-          type: string
-          description: The time the transaction was last updated
-        succeeded:
-          type: boolean
-          description: '`true` if the transaction request was successfully executed, `false` otherwise'
-        transaction_type:
-          type: string
-          description: The type of transaction, e.g., ReplacePaymentMethod, ContactCardHolder, NoUpdate
-        state:
-          type: string
-          description: The current state of the transaction
-        message:
-          type: string
-          description: A human-readable string indicating the result of the transaction
-        environment_key:
-          type: string
-          description: The environment key associated with the transaction
-        region:
-          type: string
-          description: When available, the region associated with the refresh transaction
-        updating_service:
-          type: string
-          description: The updating service used for the refresh transaction, e.g. `worldpay`, `mastercard_abu`, or `visa_au`
-        payment_method:
-          $ref: '#/components/schemas/payment_method'
-    card_refresher_inquiry_request:
-      type: object
-      properties:
-        card_refresher_inquiry:
-          type: object
-          properties:
-            region:
-              type: string
-              description: 'The onboarded region where the payment method is processed. Valid values are: `NA`, `EU`, and `LATAM`'
-            payment_method_token:
-              type: string
-              description: 'The token of the payment method to be inquired for update. Currently must have a `card_type` of `visa`, `master`, or `discover`. Note: if `master` or `discover` are used, you must also include the updating_service.'
-            updating_service:
-              type: string
-              description: 'Optional. The updating service to use for the inquiry. Valid values are: `visa_au`. If not provided, the service will be inferred based on the payment method''s card type. Note: only `visa` is supported in inferred mode at this time.'
-          required:
-          - payment_method_token
-          - region
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     inquiry_event_response:
       type: object
       properties:

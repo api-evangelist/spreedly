@@ -114,6 +114,23 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     protection_event_properties:
       type: object
       description: When a Fraud Check is attempted with customer credentials, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
@@ -272,23 +289,6 @@ components:
       properties:
         event:
           $ref: '#/components/schemas/protection_event_properties'
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
   parameters:
     format:
       name: format
