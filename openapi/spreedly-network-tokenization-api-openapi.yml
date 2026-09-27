@@ -243,6 +243,12 @@ components:
                   type: boolean
                 oboDeviceBinding:
                   type: boolean
+    token_status_response:
+      type: object
+      properties:
+        token_status:
+          type: string
+          description: The status of a Network Token
     errors:
       type: array
       items:
@@ -260,12 +266,6 @@ components:
         required:
         - key
         - message
-    token_status_response:
-      type: object
-      properties:
-        token_status:
-          type: string
-          description: The status of a Network Token
   parameters:
     format:
       name: format

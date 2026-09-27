@@ -71,13 +71,67 @@ paths:
                     currency_code: USD
 components:
   schemas:
-    transactions_response:
+    transaction_core_parameters:
       type: object
       properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/purchase_parameters'
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        gateway_transaction_id:
+          type: string
+          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
+        retain_on_success:
+          type: boolean
+          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+        payment_method_added:
+          type: string
+          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+        response:
+          type: object
+          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+        merchant_profile_key:
+          type: string
+          description: The token of the Merchant Profile associated with the gateway used for the transaction
+        sub_merchant_key:
+          type: string
+          description: The token of the sub-merchant associated with the transaction.
+        gateway_specific_response_fields:
+          type: object
+          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+        transaction_metadata:
+          type: object
+          description: The hash of key/value pairs that was included in the transaction request body.
+        sca_authentication:
+          type: string
+          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
+        payment_snapshot:
+          $ref: '#/components/schemas/payment_snapshot'
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider that was used for this transaction.
+        protection_parameters:
+          $ref: '#/components/schemas/protection_parameters'
+    credit_partial_request:
+      type: object
+      description: Credit partial amount
+      properties:
+        transaction:
+          type: object
+          properties:
+            amount:
+              type: integer
+              description: The amount to refund, as an integer. E.g., `1000`` for $10.00. If not provided, the full amount of the original purchase will be refunded.
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
     purchase_parameters:
       type: object
       allOf:
@@ -191,182 +245,18 @@ components:
             $ref: '#/components/schemas/protection_parameters'
           protect_fraud_check:
             $ref: '#/components/schemas/protect_fraud_check_response'
-    protection_parameters:
-      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
+    transactions_response:
       type: object
       properties:
-        test_scenario:
-          type: object
-          description: The protection test scenario
-          properties:
-            scenario:
-              type: string
-              description: The test scenario to run
-              enum:
-              - protect_approved
-              - protect_sca_recommended_challenge
-              - protect_sca_recommended_authenticated
-              - protect_sca_recommended_not_authenticated
-              - protect_declined
-              default: protect_approved
-        fraud_token:
-          type: string
-          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
-        forter_mobile_uid:
-          type: string
-          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
-        user_agent:
-          type: string
-          description: Customer's User agent
-        cart_items:
+        transactions:
           type: array
-          description: A list of all items purchased and shipping details
           items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Item name
-                maxLength: 500
-              quantity:
-                type: number
-                description: Item quantity
-              type:
-                type: string
-                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
-                enum:
-                - TANGIBLE
-                - NON_TANGIBLE
-                default: TANGIBLE
-              price:
-                type: string
-                description: Final amount due for purchase, after all discounts and promotions
-            required:
-            - name
-            - quantity
-            - type
-            - price
-        delivery_type:
-          type: string
-          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
-          enum:
-          - PHYSICAL
-          - DIGITAL
-          default: PHYSICAL
-        delivery_method:
-          type: string
-          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
-          maxLength: 50
-        customer_account_id:
-          type: string
-          description: Customer's account UID in merchant's site (leave empty if guest)
-        customer_account_type:
-          type: string
-          description: Customer account type
-          enum:
-          - GUEST
-          - PRIVATE
-          - BUSINESS
-          - VIP
-          - MERCHANT_OPERATED
-          - TRIAL
-          - MERCHANT_EMPLOYEE
-          - PREMIUM_PAID
-          - SMALL_BUSINESS
-          - AGENT
-          - BUSINESS_PRIVATE
-          - BUSINESS_PREMIUM_PAID
-          default: BUSINESS
-        customer_account_creation_date:
-          type: number
-          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
-        billing_name:
-          type: string
-          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_first_name:
-          type: string
-          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_last_name:
-          type: string
-          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        email:
-          type: string
-          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_country:
-          type: string
-          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_address1:
-          type: string
-          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_address2:
-          type: string
-          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_city:
-          type: string
-          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_zip:
-          type: string
-          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_state:
-          type: string
-          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_phone_number:
-          type: string
-          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_name:
-          type: string
-          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_first_name:
-          type: string
-          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_last_name:
-          type: string
-          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_email:
-          type: string
-          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_country:
-          type: string
-          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_address1:
-          type: string
-          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_address2:
-          type: string
-          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_city:
-          type: string
-          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_zip:
-          type: string
-          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_state:
-          type: string
-          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_phone_number:
-          type: string
-          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-      required:
-      - delivery_method
-      - delivery_type
-      - cart_items
-    errors:
+            $ref: '#/components/schemas/purchase_parameters'
+    gateway_specific_fields:
       type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
       items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
+        type: string
     payment_method:
       type: object
       properties:
@@ -528,54 +418,23 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    transaction_core_parameters:
-      type: object
-      properties:
-        token:
-          type: string
-          description: The token uniquely identifying this transaction at Spreedly
-        succeeded:
-          type: boolean
-          description: '`true` if the transaction request was successfully executed, `false` otherwise'
-        message:
-          type: string
-          description: A human-readable string indicating the result of the transaction
-        gateway_transaction_id:
-          type: string
-          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
-        retain_on_success:
-          type: boolean
-          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
-        payment_method_added:
-          type: string
-          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
-        response:
-          type: object
-          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
-        payment_method:
-          $ref: '#/components/schemas/payment_method'
-        merchant_profile_key:
-          type: string
-          description: The token of the Merchant Profile associated with the gateway used for the transaction
-        sub_merchant_key:
-          type: string
-          description: The token of the sub-merchant associated with the transaction.
-        gateway_specific_response_fields:
-          type: object
-          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
-        transaction_metadata:
-          type: object
-          description: The hash of key/value pairs that was included in the transaction request body.
-        sca_authentication:
-          type: string
-          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
-        payment_snapshot:
-          $ref: '#/components/schemas/payment_snapshot'
-        protection_provider_key:
-          type: string
-          description: The token of the Protection Provider that was used for this transaction.
-        protection_parameters:
-          $ref: '#/components/schemas/protection_parameters'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     payment_snapshot:
       type: object
       description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
@@ -709,24 +568,165 @@ components:
             linkToEventInDashboard:
               type: string
               description: URL to view the transaction details in the vendor's dashboard
-    credit_partial_request:
+    protection_parameters:
+      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
       type: object
-      description: Credit partial amount
       properties:
-        transaction:
+        test_scenario:
           type: object
+          description: The protection test scenario
           properties:
-            amount:
-              type: integer
-              description: The amount to refund, as an integer. E.g., `1000`` for $10.00. If not provided, the full amount of the original purchase will be refunded.
-            currency_code:
+            scenario:
               type: string
-              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
-    gateway_specific_fields:
-      type: array
-      description: The list of gateway specific fields that can be specified in supported gateway transactions
-      items:
-        type: string
+              description: The test scenario to run
+              enum:
+              - protect_approved
+              - protect_sca_recommended_challenge
+              - protect_sca_recommended_authenticated
+              - protect_sca_recommended_not_authenticated
+              - protect_declined
+              default: protect_approved
+        fraud_token:
+          type: string
+          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
+        forter_mobile_uid:
+          type: string
+          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
+        user_agent:
+          type: string
+          description: Customer's User agent
+        cart_items:
+          type: array
+          description: A list of all items purchased and shipping details
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Item name
+                maxLength: 500
+              quantity:
+                type: number
+                description: Item quantity
+              type:
+                type: string
+                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
+                enum:
+                - TANGIBLE
+                - NON_TANGIBLE
+                default: TANGIBLE
+              price:
+                type: string
+                description: Final amount due for purchase, after all discounts and promotions
+            required:
+            - name
+            - quantity
+            - type
+            - price
+        delivery_type:
+          type: string
+          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
+          enum:
+          - PHYSICAL
+          - DIGITAL
+          default: PHYSICAL
+        delivery_method:
+          type: string
+          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
+          maxLength: 50
+        customer_account_id:
+          type: string
+          description: Customer's account UID in merchant's site (leave empty if guest)
+        customer_account_type:
+          type: string
+          description: Customer account type
+          enum:
+          - GUEST
+          - PRIVATE
+          - BUSINESS
+          - VIP
+          - MERCHANT_OPERATED
+          - TRIAL
+          - MERCHANT_EMPLOYEE
+          - PREMIUM_PAID
+          - SMALL_BUSINESS
+          - AGENT
+          - BUSINESS_PRIVATE
+          - BUSINESS_PREMIUM_PAID
+          default: BUSINESS
+        customer_account_creation_date:
+          type: number
+          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
+        billing_name:
+          type: string
+          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_first_name:
+          type: string
+          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_last_name:
+          type: string
+          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        email:
+          type: string
+          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_country:
+          type: string
+          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address1:
+          type: string
+          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address2:
+          type: string
+          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_city:
+          type: string
+          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_zip:
+          type: string
+          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_state:
+          type: string
+          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_phone_number:
+          type: string
+          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_name:
+          type: string
+          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_first_name:
+          type: string
+          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_last_name:
+          type: string
+          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_email:
+          type: string
+          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_country:
+          type: string
+          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address1:
+          type: string
+          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address2:
+          type: string
+          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_city:
+          type: string
+          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_zip:
+          type: string
+          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_state:
+          type: string
+          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_phone_number:
+          type: string
+          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+      required:
+      - delivery_method
+      - delivery_type
+      - cart_items
   parameters:
     transaction_token:
       name: transaction_token

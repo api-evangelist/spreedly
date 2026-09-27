@@ -78,6 +78,23 @@ components:
               ability:
                 type: string
                 description: The transaction the gateway does not support
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     void_response:
       type: object
       properties:
@@ -156,23 +173,6 @@ components:
             reference_token:
               type: object
               description: The token of the transaction being voided
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
   parameters:
     transaction_token:
       name: transaction_token

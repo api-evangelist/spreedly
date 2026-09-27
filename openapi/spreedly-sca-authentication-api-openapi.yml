@@ -81,46 +81,6 @@ paths:
               $ref: '#/components/schemas/authenticate'
 components:
   schemas:
-    authenticate:
-      type: object
-      properties:
-        transaction:
-          type: object
-          properties:
-            payment_method_token:
-              type: string
-              description: The token of the payment method to use
-            currency_code:
-              type: string
-              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
-            amount:
-              type: integer
-              description: The amount to request, as an integer. E.g., `1000` for $10.00.
-            test_scenario:
-              type: object
-              properties:
-                scenario:
-                  type: string
-                  description: The tested scenario.
-              description: Additional fields to indicate valid 3DS2 test flow options. Please refer to our [3DS2 Global Testing Guide](https://developer.spreedly.com/docs/testing-your-3ds2-global-integration) to learn more about testing your 3DS2 Global integration with out Test SCA Provider.
-            browser_info:
-              type: string
-              description: Please refer to our [Spreedly 3DS2 Global Integration Guide for Web](https://developer.spreedly.com/docs/3ds-solutions), to learn how to include our `Lifecycle.js` library and gather the browser info data using `Spreedly.ThreeDS.serialize` method.
-            force_daf:
-              type: boolean
-              description: Boolean field that can be used to indicate if a transaction should use Visa’s DAF. For more information please refer to our [3DS2 Global DAF guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#visa-daf)
-            exemption_type:
-              type: string
-              description: Type of exemption request to reduce likelihood of a transaction being challenged. The two exemptions currently supported are `low_value` and `transaction_risk_analysis_exemption`. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
-            acquiring_bank_fraud_rate:
-              type: string
-              description: Additional field required if requesting a `transaction_risk_analysis_exemption` that details threshold for bank fraud rate. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
-            three_ds_requestor_challenge_ind:
-              type: string
-              description: Indicates whether a challenge is being requested for a 3DS2 Global transaction.
-          required:
-          - payment_method_token
-          - browser_info
     authenticate_properties:
       type: object
       properties:
@@ -192,6 +152,46 @@ components:
       properties:
         transaction:
           $ref: '#/components/schemas/authenticate_properties'
+    authenticate:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            payment_method_token:
+              type: string
+              description: The token of the payment method to use
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+            amount:
+              type: integer
+              description: The amount to request, as an integer. E.g., `1000` for $10.00.
+            test_scenario:
+              type: object
+              properties:
+                scenario:
+                  type: string
+                  description: The tested scenario.
+              description: Additional fields to indicate valid 3DS2 test flow options. Please refer to our [3DS2 Global Testing Guide](https://developer.spreedly.com/docs/testing-your-3ds2-global-integration) to learn more about testing your 3DS2 Global integration with out Test SCA Provider.
+            browser_info:
+              type: string
+              description: Please refer to our [Spreedly 3DS2 Global Integration Guide for Web](https://developer.spreedly.com/docs/3ds-solutions), to learn how to include our `Lifecycle.js` library and gather the browser info data using `Spreedly.ThreeDS.serialize` method.
+            force_daf:
+              type: boolean
+              description: Boolean field that can be used to indicate if a transaction should use Visa’s DAF. For more information please refer to our [3DS2 Global DAF guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#visa-daf)
+            exemption_type:
+              type: string
+              description: Type of exemption request to reduce likelihood of a transaction being challenged. The two exemptions currently supported are `low_value` and `transaction_risk_analysis_exemption`. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
+            acquiring_bank_fraud_rate:
+              type: string
+              description: Additional field required if requesting a `transaction_risk_analysis_exemption` that details threshold for bank fraud rate. See our [exemption guide](https://developer.spreedly.com/docs/spreedly-3ds2-global-guide#requesting-exemptions) to learn more
+            three_ds_requestor_challenge_ind:
+              type: string
+              description: Indicates whether a challenge is being requested for a 3DS2 Global transaction.
+          required:
+          - payment_method_token
+          - browser_info
   securitySchemes:
     basic_auth:
       type: http

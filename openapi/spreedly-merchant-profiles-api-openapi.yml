@@ -206,6 +206,61 @@ paths:
               $ref: '#/components/schemas/merchant_profile_update'
 components:
   schemas:
+    merchant_profile_response:
+      type: object
+      properties:
+        merchant_profile:
+          $ref: '#/components/schemas/merchant_profile_properties'
+    merchant_profile_card_details:
+      type: object
+      properties:
+        acquirer_merchant_id:
+          type: string
+          description: The MID is a unique code that ensures the funds make it from the cardholder’s bank account to your bank account when a transaction is processed. It is passed with other transaction information and is used to help with transaction reconciliation. You receive a MID when you open a merchant account with an acquiring bank. A merchant can have multiple MIDs based on the different sales channels they have.
+        mcc:
+          type: string
+          description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
+        merchant_name:
+          type: string
+          description: Assigned by the acquiring bank; please contact them
+        country_code:
+          type: string
+          description: Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format.
+      required:
+      - acquirer_merchant_id
+      - mcc
+      - merchant_name
+      - country_code
+    merchant_profile_create:
+      type: object
+      properties:
+        merchant_profile:
+          type: object
+          properties:
+            description:
+              type: string
+              description: A custom description that the merchant can assign to characterize the merchant profile.
+            sub_merchant_key:
+              type: string
+              description: The token of the Sub-merchant associated with the Merchant Profile if one exists.
+            visa:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            mastercard:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            amex:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            discover:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            diners:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            jcb:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            dankort:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            union_pay:
+              $ref: '#/components/schemas/merchant_profile_card_details'
+            cartes_bancaires:
+              $ref: '#/components/schemas/merchant_profile_card_details'
     merchant_profile_properties:
       type: object
       properties:
@@ -246,6 +301,15 @@ components:
               $ref: '#/components/schemas/merchant_profile_card_details'
             cartes_bancaires:
               $ref: '#/components/schemas/merchant_profile_card_details'
+    merchant_profile_update:
+      type: object
+      properties:
+        merchant_profile:
+          type: object
+          properties:
+            description:
+              type: string
+              description: A custom description that the merchant can assign to characterize the merchant profile.
     errors:
       type: array
       items:
@@ -263,35 +327,6 @@ components:
         required:
         - key
         - message
-    merchant_profile_card_details:
-      type: object
-      properties:
-        acquirer_merchant_id:
-          type: string
-          description: The MID is a unique code that ensures the funds make it from the cardholder’s bank account to your bank account when a transaction is processed. It is passed with other transaction information and is used to help with transaction reconciliation. You receive a MID when you open a merchant account with an acquiring bank. A merchant can have multiple MIDs based on the different sales channels they have.
-        mcc:
-          type: string
-          description: The MCC is a 4-digit code that classifies the type of goods or services that the business sells. Depending on its various lines of business, a merchant could have multiple MCCs. It is mandatory and usually used during the ACS risk analysis (not to be displayed anywhere). Certain MCCs are deemed riskier than others by the issuer, and thus tend to require a stronger challenge during the authentication.
-        merchant_name:
-          type: string
-          description: Assigned by the acquiring bank; please contact them
-        country_code:
-          type: string
-          description: Country Code in [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_numeric#Current_codes) numeric format.
-      required:
-      - acquirer_merchant_id
-      - mcc
-      - merchant_name
-      - country_code
-    merchant_profile_update:
-      type: object
-      properties:
-        merchant_profile:
-          type: object
-          properties:
-            description:
-              type: string
-              description: A custom description that the merchant can assign to characterize the merchant profile.
     list_merchant_profiles_response:
       type: object
       properties:
@@ -300,41 +335,6 @@ components:
           items:
             type: object
             $ref: '#/components/schemas/merchant_profile_properties'
-    merchant_profile_response:
-      type: object
-      properties:
-        merchant_profile:
-          $ref: '#/components/schemas/merchant_profile_properties'
-    merchant_profile_create:
-      type: object
-      properties:
-        merchant_profile:
-          type: object
-          properties:
-            description:
-              type: string
-              description: A custom description that the merchant can assign to characterize the merchant profile.
-            sub_merchant_key:
-              type: string
-              description: The token of the Sub-merchant associated with the Merchant Profile if one exists.
-            visa:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            mastercard:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            amex:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            discover:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            diners:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            jcb:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            dankort:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            union_pay:
-              $ref: '#/components/schemas/merchant_profile_card_details'
-            cartes_bancaires:
-              $ref: '#/components/schemas/merchant_profile_card_details'
   securitySchemes:
     basic_auth:
       type: http

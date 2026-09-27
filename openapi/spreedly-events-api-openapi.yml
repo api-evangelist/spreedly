@@ -112,14 +112,6 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
-    list_events_response:
-      type: object
-      properties:
-        events:
-          type: array
-          description: Root element
-          items:
-            $ref: '#/components/schemas/event_response'
     event_response:
       type: object
       properties:
@@ -161,6 +153,14 @@ components:
         required:
         - key
         - message
+    list_events_response:
+      type: object
+      properties:
+        events:
+          type: array
+          description: Root element
+          items:
+            $ref: '#/components/schemas/event_response'
   securitySchemes:
     basic_auth:
       type: http
