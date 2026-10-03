@@ -100,55 +100,6 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    sca_provider_visa:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/sca_provider_card_details'
-      - type: object
-        properties:
-          merchant_brand_id:
-            type: string
-            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
-    sca_provider:
-      type: object
-      properties:
-        merchant_profile_key:
-          type: string
-          description: The token returned upon creating a Merchant Profile
-        type:
-          type: string
-          description: 'The type of SCA Provider being created. Currently only one type is supported: `spreedly` (case sensitive)'
-        sandbox:
-          type: boolean
-          description: If the SCA Provider accounts is to be provisioned in sandbox mode or not. `false` by default.
-        visa:
-          $ref: '#/components/schemas/sca_provider_visa'
-        mastercard:
-          $ref: '#/components/schemas/sca_provider_card_details'
-        amex:
-          $ref: '#/components/schemas/sca_provider_card_details'
-        discover:
-          $ref: '#/components/schemas/sca_provider_card_details'
-      required:
-      - merchant_profile_key
-      - type
     sca_provider_response:
       type: object
       properties:
@@ -194,6 +145,55 @@ components:
       required:
       - acquirer_bin
       - merchant_url
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    sca_provider:
+      type: object
+      properties:
+        merchant_profile_key:
+          type: string
+          description: The token returned upon creating a Merchant Profile
+        type:
+          type: string
+          description: 'The type of SCA Provider being created. Currently only one type is supported: `spreedly` (case sensitive)'
+        sandbox:
+          type: boolean
+          description: If the SCA Provider accounts is to be provisioned in sandbox mode or not. `false` by default.
+        visa:
+          $ref: '#/components/schemas/sca_provider_visa'
+        mastercard:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        amex:
+          $ref: '#/components/schemas/sca_provider_card_details'
+        discover:
+          $ref: '#/components/schemas/sca_provider_card_details'
+      required:
+      - merchant_profile_key
+      - type
+    sca_provider_visa:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/sca_provider_card_details'
+      - type: object
+        properties:
+          merchant_brand_id:
+            type: string
+            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
   securitySchemes:
     basic_auth:
       type: http

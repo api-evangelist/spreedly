@@ -113,18 +113,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errors'
 components:
-  parameters:
-    format:
-      name: format
-      description: The format of the request. Default JSON for testing in our documentation.
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-        - json
-        - xml
-        example: json
   schemas:
     list_protection_events_response:
       type: object
@@ -133,6 +121,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/protection_event_properties'
+    protection_event_response:
+      type: object
+      properties:
+        event:
+          $ref: '#/components/schemas/protection_event_properties'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     protection_event_properties:
       type: object
       description: When a Fraud Check is attempted with customer credentials, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
@@ -279,28 +289,18 @@ components:
         payment_method_key:
           type: string
           description: The token of the payment method being authenticated. This is the same as the `payment_method_token` field in the `sca_authentication` transaction request.
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    protection_event_response:
-      type: object
-      properties:
-        event:
-          $ref: '#/components/schemas/protection_event_properties'
+  parameters:
+    format:
+      name: format
+      description: The format of the request. Default JSON for testing in our documentation.
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - json
+        - xml
+        example: json
   securitySchemes:
     basic_auth:
       type: http

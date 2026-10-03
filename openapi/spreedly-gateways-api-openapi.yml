@@ -401,6 +401,44 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    payment_snapshot:
+      type: object
+      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
+      properties:
+        gateway_tokens:
+          type: array
+          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
+          items:
+            type: string
+        attempts:
+          type: integer
+          description: Number of times the transaction has been attempted.
+        messages:
+          type: object
+          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
+        mode:
+          type: string
+          description: The Recover mode used, either `standard` or `outage_only`.
+        custom_error_used:
+          type: boolean
+          description: '`true` if the transaction used a custom error in the recovery decision process.'
+        override_default_error_codes:
+          type: boolean
+          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
+        created_at:
+          type: string
+          description: The time the payment_snapshot was created.
+        updated_at:
+          type: string
+          description: The time the payment_snapshot was updated.
+        payment_token:
+          type: string
+          description: The token corresponding to the Payment object, containing all information about the Recover chain.
+        previous_transaction_tokens:
+          type: array
+          description: List of all previous transactions associated with the Recover attempt.
+          items:
+            type: string
     transaction_core_parameters:
       type: object
       properties:
@@ -449,6 +487,174 @@ components:
           description: The token of the Protection Provider that was used for this transaction.
         protection_parameters:
           $ref: '#/components/schemas/protection_parameters'
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
+    gateways_options_response:
+      type: object
+      properties:
+        gateways:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The human readable name of the gateway
+            gateway_type:
+              type: string
+              description: The type (short name) of the gateway. Use this value when provisioning a gateway.
+            auth_modes:
+              type: array
+              description: A list of authorization modes for the gateway. An auth mode is basically a list of credentials required for this gateway (some gateways support various ways of entering credentials).
+              items:
+                type: object
+            gateway_settings:
+              type: array
+              description: The non-credential fields that can be specified at the gateway level, and included in all transactions
+              items:
+                type: object
+            characteristics:
+              type: array
+              description: A list of operations (such as purchase, capture etc…) that the gateway supports
+              items:
+                type: string
+            payment_methods:
+              type: array
+              description: A list of payment methods (such as credit_card, apple_pay, google_pay, etc…) that the gateway supports
+              items:
+                type: string
+            gateway_specific_fields:
+              $ref: '#/components/schemas/gateway_specific_fields'
+            supported_countries:
+              type: array
+              description: The list of countries this gateway supports
+              items:
+                type: string
+            supported_cardtypes:
+              type: array
+              description: The list of credit card brands this gateway supports
+              items:
+                type: string
+            regions:
+              type: array
+              description: The list of geographic regions this gateway supports (determined by the supported_countries)
+              items:
+                type: string
+            homepage:
+              type: string
+              description: The homepage associated with the gateway
+            display_api_url:
+              type: string
+              description: The live endpoint for the gateway type
+            company_name:
+              type: string
+              description: The company name associated with the gateway
+    gateway:
+      type: object
+      properties:
+        gateway:
+          type: object
+          additionalProperties:
+            description: The merchant credentials required for this type of gateway. Stripe has login, but your gateway type will most likely require a different set of credentials. Please reference the [gateway's documentation](https://developer.spreedly.com/docs/supported-gateways) to determine the appropriate credential(s) to pass here. The only gateway type that does not require such credentials is the Spreedly `test` gateway.
+            type: string
+          properties:
+            gateway_type:
+              type: string
+              description: The type (short name) of the gateway. Use this value when provisioning a gateway. You can find the list of supported gateways and their respective gateway types [on this page](https://developer.spreedly.com/docs/supported-gateways)
+            description:
+              type: string
+              description: A description of the gateway. Useful to differentiate between multiple gateways of the same type provisioned within your system.
+            merchant_profile_key:
+              type: string
+              description: The token for an existing Merchant Profile in your environment. Useful to organize gateways in an environment with multiple merchants, or to associate merchant data with gateway transactions.
+            sub_merchant_key:
+              type: string
+              description: The token for an existing Sub-merchant in your environment. Useful for tagging the transactions through this gateway with the sub-merchant who transacts through the gateway.
+            sandbox:
+              type: boolean
+              description: '**true** or **false**. Useful to test out a gateway''s sandbox mode, this is recommended in situations where the gateway integration is difficult and where you don''t want to execute real transactions.'
+          required:
+          - gateway_type
+    transactions_response:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/purchase_parameters'
+    gateway_properties:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token identifying the provisioned gateway at Spreedly
+        name:
+          type: string
+          description: The human readable name of the gateway
+        gateway_type:
+          type: string
+          description: The type (short name) of the gateway. Use this value when provisioning a gateway
+        description:
+          type: string
+          description: The description of the provisioned gateway
+        merchant_profile_key:
+          type: string
+          description: The token of the Merchant Profile associated with the provisioned gateway
+        sub_merchant_key:
+          type: string
+          description: The token of the Sub-merchant associated with the provisioned gateway
+        state:
+          type: string
+          description: The storage state of the gateway (retained, redacted, etc…)
+        sandbox:
+          type: boolean
+          description: If the gateway was created in sandbox mode or not
+        redacted:
+          type: boolean
+          description: If this gateway is redacted or not
+        credentials:
+          type: array
+          description: The non-sensitive credentials used for this gateway
+        gateway_settings:
+          type: object
+          description: The non-credential fields that can be specified at the gateway level, and included in all transactions
+        characteristics:
+          type: array
+          description: A list of operations (such as purchase, capture etc…) that the gateway supports
+        payment_methods:
+          type: array
+          description: A list of payment methods (such as credit_card, apple_pay, google_pay, etc…) that the gateway supports
+        gateway_specific_fields:
+          $ref: '#/components/schemas/gateway_specific_fields'
+        created_at:
+          type: string
+          description: The time the gateway was created
+        updated_at:
+          type: string
+          description: The time the gateway was last updated
+    gateway_response:
+      type: object
+      properties:
+        gateway:
+          $ref: '#/components/schemas/gateway_properties'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     purchase_parameters:
       type: object
       allOf:
@@ -562,106 +768,6 @@ components:
             $ref: '#/components/schemas/protection_parameters'
           protect_fraud_check:
             $ref: '#/components/schemas/protect_fraud_check_response'
-    transactions_response:
-      type: object
-      properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/purchase_parameters'
-    gateway_properties:
-      type: object
-      properties:
-        token:
-          type: string
-          description: The token identifying the provisioned gateway at Spreedly
-        name:
-          type: string
-          description: The human readable name of the gateway
-        gateway_type:
-          type: string
-          description: The type (short name) of the gateway. Use this value when provisioning a gateway
-        description:
-          type: string
-          description: The description of the provisioned gateway
-        merchant_profile_key:
-          type: string
-          description: The token of the Merchant Profile associated with the provisioned gateway
-        sub_merchant_key:
-          type: string
-          description: The token of the Sub-merchant associated with the provisioned gateway
-        state:
-          type: string
-          description: The storage state of the gateway (retained, redacted, etc…)
-        sandbox:
-          type: boolean
-          description: If the gateway was created in sandbox mode or not
-        redacted:
-          type: boolean
-          description: If this gateway is redacted or not
-        credentials:
-          type: array
-          description: The non-sensitive credentials used for this gateway
-        gateway_settings:
-          type: object
-          description: The non-credential fields that can be specified at the gateway level, and included in all transactions
-        characteristics:
-          type: array
-          description: A list of operations (such as purchase, capture etc…) that the gateway supports
-        payment_methods:
-          type: array
-          description: A list of payment methods (such as credit_card, apple_pay, google_pay, etc…) that the gateway supports
-        gateway_specific_fields:
-          $ref: '#/components/schemas/gateway_specific_fields'
-        created_at:
-          type: string
-          description: The time the gateway was created
-        updated_at:
-          type: string
-          description: The time the gateway was last updated
-    payment_snapshot:
-      type: object
-      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
-      properties:
-        gateway_tokens:
-          type: array
-          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
-          items:
-            type: string
-        attempts:
-          type: integer
-          description: Number of times the transaction has been attempted.
-        messages:
-          type: object
-          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
-        mode:
-          type: string
-          description: The Recover mode used, either `standard` or `outage_only`.
-        custom_error_used:
-          type: boolean
-          description: '`true` if the transaction used a custom error in the recovery decision process.'
-        override_default_error_codes:
-          type: boolean
-          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
-        created_at:
-          type: string
-          description: The time the payment_snapshot was created.
-        updated_at:
-          type: string
-          description: The time the payment_snapshot was updated.
-        payment_token:
-          type: string
-          description: The token corresponding to the Payment object, containing all information about the Recover chain.
-        previous_transaction_tokens:
-          type: array
-          description: List of all previous transactions associated with the Recover attempt.
-          items:
-            type: string
-    gateway_specific_fields:
-      type: array
-      description: The list of gateway specific fields that can be specified in supported gateway transactions
-      items:
-        type: string
     protect_fraud_check_response:
       type: object
       description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
@@ -757,6 +863,24 @@ components:
             linkToEventInDashboard:
               type: string
               description: URL to view the transaction details in the vendor's dashboard
+    gateway_update:
+      type: object
+      properties:
+        gateway:
+          type: object
+          properties:
+            credentials:
+              type: string
+              description: Gateway specific credential field(s). The merchant credentials required for this type of gateway. Stripe has login, but your gateway type will most likely require a different set of credentials. Please reference the [gateway's documentation](https://developer.spreedly.com/docs/supported-gateways) to determine the appropriate credential(s) to pass here.
+            description:
+              type: string
+              description: A description of the gateway. Useful to differentiate between multiple gateways of the same type provisioned within your system.
+            merchant_profile_key:
+              type: string
+              description: The token for an existing Merchant Profile in your environment. Useful to organize gateways in an environment with multiple merchants, or to associate merchant data with gateway transactions.
+            sub_merchant_key:
+              type: string
+              description: The token for an existing Sub-merchant in your environment. Useful for tagging the transactions through this gateway with the sub-merchant who transacts through the gateway.
     payment_method:
       type: object
       properties:
@@ -918,130 +1042,6 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    gateway_response:
-      type: object
-      properties:
-        gateway:
-          $ref: '#/components/schemas/gateway_properties'
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    gateways_options_response:
-      type: object
-      properties:
-        gateways:
-          type: object
-          properties:
-            name:
-              type: string
-              description: The human readable name of the gateway
-            gateway_type:
-              type: string
-              description: The type (short name) of the gateway. Use this value when provisioning a gateway.
-            auth_modes:
-              type: array
-              description: A list of authorization modes for the gateway. An auth mode is basically a list of credentials required for this gateway (some gateways support various ways of entering credentials).
-              items:
-                type: object
-            gateway_settings:
-              type: array
-              description: The non-credential fields that can be specified at the gateway level, and included in all transactions
-              items:
-                type: object
-            characteristics:
-              type: array
-              description: A list of operations (such as purchase, capture etc…) that the gateway supports
-              items:
-                type: string
-            payment_methods:
-              type: array
-              description: A list of payment methods (such as credit_card, apple_pay, google_pay, etc…) that the gateway supports
-              items:
-                type: string
-            gateway_specific_fields:
-              $ref: '#/components/schemas/gateway_specific_fields'
-            supported_countries:
-              type: array
-              description: The list of countries this gateway supports
-              items:
-                type: string
-            supported_cardtypes:
-              type: array
-              description: The list of credit card brands this gateway supports
-              items:
-                type: string
-            regions:
-              type: array
-              description: The list of geographic regions this gateway supports (determined by the supported_countries)
-              items:
-                type: string
-            homepage:
-              type: string
-              description: The homepage associated with the gateway
-            display_api_url:
-              type: string
-              description: The live endpoint for the gateway type
-            company_name:
-              type: string
-              description: The company name associated with the gateway
-    gateway_update:
-      type: object
-      properties:
-        gateway:
-          type: object
-          properties:
-            credentials:
-              type: string
-              description: Gateway specific credential field(s). The merchant credentials required for this type of gateway. Stripe has login, but your gateway type will most likely require a different set of credentials. Please reference the [gateway's documentation](https://developer.spreedly.com/docs/supported-gateways) to determine the appropriate credential(s) to pass here.
-            description:
-              type: string
-              description: A description of the gateway. Useful to differentiate between multiple gateways of the same type provisioned within your system.
-            merchant_profile_key:
-              type: string
-              description: The token for an existing Merchant Profile in your environment. Useful to organize gateways in an environment with multiple merchants, or to associate merchant data with gateway transactions.
-            sub_merchant_key:
-              type: string
-              description: The token for an existing Sub-merchant in your environment. Useful for tagging the transactions through this gateway with the sub-merchant who transacts through the gateway.
-    gateway:
-      type: object
-      properties:
-        gateway:
-          type: object
-          additionalProperties:
-            description: The merchant credentials required for this type of gateway. Stripe has login, but your gateway type will most likely require a different set of credentials. Please reference the [gateway's documentation](https://developer.spreedly.com/docs/supported-gateways) to determine the appropriate credential(s) to pass here. The only gateway type that does not require such credentials is the Spreedly `test` gateway.
-            type: string
-          properties:
-            gateway_type:
-              type: string
-              description: The type (short name) of the gateway. Use this value when provisioning a gateway. You can find the list of supported gateways and their respective gateway types [on this page](https://developer.spreedly.com/docs/supported-gateways)
-            description:
-              type: string
-              description: A description of the gateway. Useful to differentiate between multiple gateways of the same type provisioned within your system.
-            merchant_profile_key:
-              type: string
-              description: The token for an existing Merchant Profile in your environment. Useful to organize gateways in an environment with multiple merchants, or to associate merchant data with gateway transactions.
-            sub_merchant_key:
-              type: string
-              description: The token for an existing Sub-merchant in your environment. Useful for tagging the transactions through this gateway with the sub-merchant who transacts through the gateway.
-            sandbox:
-              type: boolean
-              description: '**true** or **false**. Useful to test out a gateway''s sandbox mode, this is recommended in situations where the gateway integration is difficult and where you don''t want to execute real transactions.'
-          required:
-          - gateway_type
     list_gateways_response:
       type: object
       properties:

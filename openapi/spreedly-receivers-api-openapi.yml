@@ -393,6 +393,143 @@ paths:
               $ref: '#/components/schemas/export_properties'
 components:
   schemas:
+    export_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          allOf:
+          - type: object
+            properties:
+              token:
+                type: string
+                description: The token of this transaction
+              transaction_type:
+                type: string
+                description: The type of transaction, e.g., ExportPaymentMethods, Capture, Credit
+              state:
+                type: string
+                description: The state of this transaction. The state will be “pending” until the transaction has completed processing. Once processed, the state can be either “succeeded” or “failed”
+              created_at:
+                type: string
+                description: The time the transaction was created
+              updated_at:
+                type: string
+                description: The time the transaction was last updated
+              succeeded:
+                type: boolean
+                description: Shows if the transaction completed with a non error status. While the transaction is pending, this value will be false.
+              message:
+                type: string
+                description: A brief description of the results of the transaction.
+              payment_methods_submitted:
+                type: array
+                description: The payment method tokens in the original export request
+              payment_method_data:
+                type: object
+                description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
+              payment_methods_included:
+                type: array
+                description: The payment method tokens included in the export to the receiver. This value is null while the transaction is pending. Once the transaction is processed, this value will be an array of payment method tokens.
+              encode_response:
+                type: boolean
+                description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
+              callback_url:
+                type: string
+                description: The url where Spreedly attempted delivery of transaction results. Transaction results are posted in JSON format.
+              url:
+                type: string
+                description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
+              payment_methods_excluded:
+                type: object
+                description: The payment methods that were not included in the export to the receiver. The value is null while the transaction is pending. Once the transaction is processed, this value will be a hash with key/value pairs. The keys are payment method tokens, the values are the reason the payment method was not included in the export to the receiver.
+              response:
+                type: string
+                description: The response status returned from the receiver. The response is null while the transaction is pending.
+          - type: object
+            description: The receiver the payment method was exported to
+            properties:
+              receiver:
+                $ref: '#/components/schemas/receiver_properties'
+    list_created_receivers_response:
+      type: object
+      properties:
+        receivers:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/receiver_properties'
+    http_receiver:
+      type: object
+      properties:
+        receiver:
+          type: object
+          properties:
+            receiver_type:
+              type: string
+              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
+            hostnames:
+              type: string
+              description: The allowed list of hostnames to which payment methods can be delivered
+            credentials:
+              type: array
+              description: Sensitive values that should be securely stored and made available to the request template at time of delivery
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the credential. This will be the name of the variable in the delivery request template.
+                  value:
+                    type: string
+                    description: The value of the credential. This will be the value substituted in for the credential variable in the delivery request template.
+                  safe:
+                    type: boolean
+                    description: _Default:_ `false`. Set to `true` if the credential is not a sensitive value (e.g., a user name). Otherwise it is assumed to be a sensitive value and will not be echoed back in API responses.
+          required:
+          - receiver_type
+    deliver:
+      type: object
+      properties:
+        delivery:
+          type: object
+          properties:
+            continue_caching:
+              type: boolean
+              description: An option to keep the cvv cached for a few minutes. Otherwise cvv is deleted immediately.
+            payment_method_token:
+              type: string
+              description: The token of the payment method to send to the receiver and whose values will be applied to the delivery template.
+            attempt_network_token:
+              type: boolean
+              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
+            url:
+              type: string
+              description: The full qualified URL to send the payment method. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The URL string can include distribution variable placeholders, e.g., `https://prod.receiver.com/path/book?user={{user_name}}`.
+            request_method:
+              type: string
+              description: An option to specify the HTTP method to use when contacting the receiver. Acceptable values are `PUT`, `PATCH`, and `POST`. If omitted, the default value is `POST`.
+            headers:
+              type: string
+              description: 'The request headers to be sent to the receiver as a [colon-delimited, new-line separated, string](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#General_format). `Host` and `Content-Length` can be omitted as they are automatically generated by Spreedly. Headers can include distribution variable placeholders, e.g., `User: {{ user_name }}`.'
+            body:
+              type: string
+              description: The request body that will get sent to the receiver. The body can include distribution variable placeholders, e.g., `<cardNumber>{{ credit_card_number }}</cardNumber>`.
+            encode_response:
+              type: boolean
+              description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
+          required:
+          - payment_method_token
+          - url
+          - body
+    receiver_response:
+      type: object
+      properties:
+        receiver:
+          $ref: '#/components/schemas/receiver_properties'
     deliver_response:
       type: object
       properties:
@@ -454,11 +591,6 @@ components:
             properties:
               payment_method:
                 $ref: '#/components/schemas/payment_method'
-    receiver_response:
-      type: object
-      properties:
-        receiver:
-          $ref: '#/components/schemas/receiver_properties'
     receiver_properties:
       type: object
       properties:
@@ -489,158 +621,23 @@ components:
         sub_merchant_key:
           type: string
           description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current receiver. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
-    list_supported_receivers_response:
-      type: object
-      properties:
-        receivers:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The human readable name of the receiver
-              receiver_type:
-                type: string
-                description: The type (short name) of the receiver. Use this value when provisioning a receiver.
-              hostnames:
-                type: string
-                description: The urls used to interact with the receiver
-              company_name:
-                type: string
-                description: The name of the company providing the receiver
-    export_response:
-      type: object
-      properties:
-        transaction:
-          type: object
-          allOf:
-          - type: object
-            properties:
-              token:
-                type: string
-                description: The token of this transaction
-              transaction_type:
-                type: string
-                description: The type of transaction, e.g., ExportPaymentMethods, Capture, Credit
-              state:
-                type: string
-                description: The state of this transaction. The state will be “pending” until the transaction has completed processing. Once processed, the state can be either “succeeded” or “failed”
-              created_at:
-                type: string
-                description: The time the transaction was created
-              updated_at:
-                type: string
-                description: The time the transaction was last updated
-              succeeded:
-                type: boolean
-                description: Shows if the transaction completed with a non error status. While the transaction is pending, this value will be false.
-              message:
-                type: string
-                description: A brief description of the results of the transaction.
-              payment_methods_submitted:
-                type: array
-                description: The payment method tokens in the original export request
-              payment_method_data:
-                type: object
-                description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
-              payment_methods_included:
-                type: array
-                description: The payment method tokens included in the export to the receiver. This value is null while the transaction is pending. Once the transaction is processed, this value will be an array of payment method tokens.
-              encode_response:
-                type: boolean
-                description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
-              callback_url:
-                type: string
-                description: The url where Spreedly attempted delivery of transaction results. Transaction results are posted in JSON format.
-              url:
-                type: string
-                description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
-              payment_methods_excluded:
-                type: object
-                description: The payment methods that were not included in the export to the receiver. The value is null while the transaction is pending. Once the transaction is processed, this value will be a hash with key/value pairs. The keys are payment method tokens, the values are the reason the payment method was not included in the export to the receiver.
-              response:
-                type: string
-                description: The response status returned from the receiver. The response is null while the transaction is pending.
-          - type: object
-            description: The receiver the payment method was exported to
-            properties:
-              receiver:
-                $ref: '#/components/schemas/receiver_properties'
-    deliver:
-      type: object
-      properties:
-        delivery:
-          type: object
-          properties:
-            continue_caching:
-              type: boolean
-              description: An option to keep the cvv cached for a few minutes. Otherwise cvv is deleted immediately.
-            payment_method_token:
-              type: string
-              description: The token of the payment method to send to the receiver and whose values will be applied to the delivery template.
-            attempt_network_token:
-              type: boolean
-              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
-            url:
-              type: string
-              description: The full qualified URL to send the payment method. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The URL string can include distribution variable placeholders, e.g., `https://prod.receiver.com/path/book?user={{user_name}}`.
-            request_method:
-              type: string
-              description: An option to specify the HTTP method to use when contacting the receiver. Acceptable values are `PUT`, `PATCH`, and `POST`. If omitted, the default value is `POST`.
-            headers:
-              type: string
-              description: 'The request headers to be sent to the receiver as a [colon-delimited, new-line separated, string](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#General_format). `Host` and `Content-Length` can be omitted as they are automatically generated by Spreedly. Headers can include distribution variable placeholders, e.g., `User: {{ user_name }}`.'
-            body:
-              type: string
-              description: The request body that will get sent to the receiver. The body can include distribution variable placeholders, e.g., `<cardNumber>{{ credit_card_number }}</cardNumber>`.
-            encode_response:
-              type: boolean
-              description: _Default:_ `false`. If `true`, the `response_body` value in the delivery transaction response will be base64 encoded. This is useful if there are characters in the response known to cause encoding or other formatting issues.
-            sub_merchant_key:
-              type: string
-              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
-          required:
-          - payment_method_token
-          - url
-          - body
-    list_created_receivers_response:
-      type: object
-      properties:
-        receivers:
-          type: array
-          items:
-            type: object
-            $ref: '#/components/schemas/receiver_properties'
-    http_receiver:
-      type: object
-      properties:
-        receiver:
-          type: object
-          properties:
-            receiver_type:
-              type: string
-              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
-            hostnames:
-              type: string
-              description: The allowed list of hostnames to which payment methods can be delivered
-            credentials:
-              type: array
-              description: Sensitive values that should be securely stored and made available to the request template at time of delivery
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: The name of the credential. This will be the name of the variable in the delivery request template.
-                  value:
-                    type: string
-                    description: The value of the credential. This will be the value substituted in for the credential variable in the delivery request template.
-                  safe:
-                    type: boolean
-                    description: _Default:_ `false`. Set to `true` if the credential is not a sensitive value (e.g., a user name). Otherwise it is assumed to be a sensitive value and will not be echoed back in API responses.
-          required:
-          - receiver_type
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     receiver_update:
       type: object
       properties:
@@ -664,6 +661,61 @@ components:
                     description: _Default:_ `false`. Set to `true` if the credential is not a sensitive value (e.g., a user name). Otherwise it is assumed to be a sensitive value and will not be echoed back in API responses.
           required:
           - credentials
+    sftp_receiver:
+      type: object
+      properties:
+        receiver:
+          type: object
+          properties:
+            receiver_type:
+              type: string
+              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
+            protocol:
+              type: object
+              description: A hash of protocol values, currently only used for the SFTP protocol. e.g. `sftp://user:password@127.0.0.0`
+              properties:
+                user:
+                  type: string
+                  description: The user value
+                password:
+                  type: string
+                  description: The password value
+            hostnames:
+              type: string
+              description: Allowed list of hosts that the receiver can send payments to. Supports a comma sepaerated list of hostnames if multiple are required. Hostnames should include the protocol and domain, but not the path, e.g., `sftp://testing.receiver.com`. If provided for a `test` receiver, we will validate the delivery URL against the list of hostnames when simulating delivery to the receiver. Production receivers can omit hostnames as their values are hard-coded.
+          required:
+          - receiver_type
+          - protocol
+    export_properties:
+      type: object
+      properties:
+        export:
+          type: object
+          properties:
+            payment_method_tokens:
+              type: array
+              description: An array of payment method tokens to include in the export
+              items:
+                type: string
+            payment_method_data:
+              type: object
+              description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
+            url:
+              type: string
+              description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
+            body:
+              type: string
+              description: The request body that will get sent to the receiver e.g., `{{#payment_methods}}<cardNumber>{{ credit_card_number }}</cardNumber>{{/payment_methods}}`.
+            callback_url:
+              type: string
+              description: The url where Spreedly will attempt delivery of transaction results. Transaction results are posted in JSON format.
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
+      required:
+      - payment_method_tokens
+      - url
+      - body
     payment_method:
       type: object
       properties:
@@ -825,78 +877,26 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    sftp_receiver:
+    list_supported_receivers_response:
       type: object
       properties:
-        receiver:
-          type: object
-          properties:
-            receiver_type:
-              type: string
-              description: The type of receiver to provision. Can be `test` for a test receiver, or any one of the other supported production receiver types.
-            protocol:
-              type: object
-              description: A hash of protocol values, currently only used for the SFTP protocol. e.g. `sftp://user:password@127.0.0.0`
-              properties:
-                user:
-                  type: string
-                  description: The user value
-                password:
-                  type: string
-                  description: The password value
-            hostnames:
-              type: string
-              description: Allowed list of hosts that the receiver can send payments to. Supports a comma sepaerated list of hostnames if multiple are required. Hostnames should include the protocol and domain, but not the path, e.g., `sftp://testing.receiver.com`. If provided for a `test` receiver, we will validate the delivery URL against the list of hostnames when simulating delivery to the receiver. Production receivers can omit hostnames as their values are hard-coded.
-          required:
-          - receiver_type
-          - protocol
-    export_properties:
-      type: object
-      properties:
-        export:
-          type: object
-          properties:
-            payment_method_tokens:
-              type: array
-              description: An array of payment method tokens to include in the export
-              items:
+        receivers:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
                 type: string
-            payment_method_data:
-              type: object
-              description: A hash of key/value pairs. For each pair, the key is a payment_method_token and the value is a hash of information specific to the associated payment method. This payment method specific information is made available to the request template at time of export.
-            url:
-              type: string
-              description: The fully qualified URL for the SFTP server. The URL must have the same hostname as one of the allowed hostnames for the target receiver. The path of the url will be used as the file name, e.g., `sftp://prod.receiver.com/path/to/file.txt`.
-            body:
-              type: string
-              description: The request body that will get sent to the receiver e.g., `{{#payment_methods}}<cardNumber>{{ credit_card_number }}</cardNumber>{{/payment_methods}}`.
-            callback_url:
-              type: string
-              description: The url where Spreedly will attempt delivery of transaction results. Transaction results are posted in JSON format.
-            sub_merchant_key:
-              type: string
-              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`.
-      required:
-      - payment_method_tokens
-      - url
-      - body
+                description: The human readable name of the receiver
+              receiver_type:
+                type: string
+                description: The type (short name) of the receiver. Use this value when provisioning a receiver.
+              hostnames:
+                type: string
+                description: The urls used to interact with the receiver
+              company_name:
+                type: string
+                description: The name of the company providing the receiver
   securitySchemes:
     basic_auth:
       type: http
