@@ -1,0 +1,48 @@
+slug: spreedly
+provider: Spreedly
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: Payment Methods
+  spec_file: spreedly-payment-methods-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.75
+  evidence: POST /payment_methods — "Create payment method"; PUT /payment_methods/{payment_method_token}/retain
+    — "Retain payment method"; PUT .../redact — "Redact payment method"
+  reason: Full lifecycle of stored, tokenised payment instruments (cards, bank accounts, Apple Pay, Google
+    Pay) including retention and redaction — a direct match to BC-4250.40's "payment-method management".
+- tag: Purchase
+  spec_file: spreedly-purchase-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.72
+  evidence: POST /gateways/{gateway_token}/purchase — "Create a purchase transaction"; schemas purchase_request,
+    payment_method, credit_card
+  reason: The operations authorise and capture card payments against a gateway. In this frame the only
+    capability covering payment authorisation and collection against stored payment methods is Payment
+    Collection & Dunning; it is a payments-orchestration surface rather than subscription billing per
+    se, hence moderate confidence.
+- tag: Transactions
+  spec_file: spreedly-transactions-api-openapi.yml
+  capability_id: BC-4250.40
+  capability_id_l1: BC-4250
+  capability_name: Payment Collection & Dunning
+  confidence: 0.7
+  evidence: '"Show transaction", "Complete transaction", "Confirm transaction", schemas purchase_response,
+    payment_snapshot'
+  reason: Lifecycle management of payment transactions (complete, confirm, transcript) is payment collection
+    execution. No generic payments capability exists in this frame, so the closest honest fit is Payment
+    Collection & Dunning; the record-keeping/transcript aspect adds some ambiguity.
