@@ -130,6 +130,18 @@ components:
         required:
         - key
         - message
+    claim_response:
+      type: object
+      properties:
+        claim:
+          type: object
+          properties:
+            message:
+              type: string
+              description: A human-readable message describing the result (if applicable)
+            status:
+              type: string
+              description: The status of the claim
     claim:
       type: object
       properties:
@@ -227,18 +239,6 @@ components:
       - reason_description
       - reason_type
       - status
-    claim_response:
-      type: object
-      properties:
-        claim:
-          type: object
-          properties:
-            message:
-              type: string
-              description: A human-readable message describing the result (if applicable)
-            status:
-              type: string
-              description: The status of the claim
   securitySchemes:
     basic_auth:
       type: http

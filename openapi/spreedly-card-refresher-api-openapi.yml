@@ -224,6 +224,13 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    list_inquiries_event_response:
+      type: object
+      properties:
+        inquiries:
+          type: array
+          items:
+            $ref: '#/components/schemas/inquiry_event_response'
     inquiry_event_response:
       type: object
       properties:
@@ -265,47 +272,23 @@ components:
               description: The token of the payment method used in the inquiry
             card_refresh_event:
               $ref: '#/components/schemas/card_refresh_transaction_response'
-    inquiry_response:
-      type: object
-      properties:
-        transaction:
-          type: object
-          properties:
-            token:
-              type: string
-              description: The token uniquely identifying this transaction at Spreedly
-            succeeded:
-              type: boolean
-              description: '`true` if the transaction request was successfully executed, `false` otherwise'
-            message:
-              type: string
-              description: A human-readable string indicating the result of the transaction
-            state:
-              type: string
-              description: The current state of the transaction
-            transaction_type:
-              type: string
-              description: The type of transaction; contains "Inquiry" for a Card Refresh Inquiry transaction
-            created_at:
-              type: string
-              description: The time the transaction was created
-            updated_at:
-              type: string
-              description: The time the transaction was last updated
-            merchant_id:
-              type: string
-              description: The id associated with the merchant registration used in the inquiry
-            region:
-              type: string
-              description: The region associated with the inquiry
-            inquiry_status:
-              type: string
-              description: 'The status of the inquiry. Possible values are: `succeeded`, `error`, and `rejected`'
-            payment_method_token:
-              type: string
-              description: The token of the payment method used in the inquiry
-            card_refresh_transaction:
-              $ref: '#/components/schemas/card_refresh_transaction_response'
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     card_refresher_inquiry_request:
       type: object
       properties:
@@ -360,23 +343,6 @@ components:
           description: The updating service used for the refresh transaction, e.g. `worldpay`, `mastercard_abu`, or `visa_au`
         payment_method:
           $ref: '#/components/schemas/payment_method'
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     payment_method:
       type: object
       properties:
@@ -538,13 +504,47 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    list_inquiries_event_response:
+    inquiry_response:
       type: object
       properties:
-        inquiries:
-          type: array
-          items:
-            $ref: '#/components/schemas/inquiry_event_response'
+        transaction:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            message:
+              type: string
+              description: A human-readable string indicating the result of the transaction
+            state:
+              type: string
+              description: The current state of the transaction
+            transaction_type:
+              type: string
+              description: The type of transaction; contains "Inquiry" for a Card Refresh Inquiry transaction
+            created_at:
+              type: string
+              description: The time the transaction was created
+            updated_at:
+              type: string
+              description: The time the transaction was last updated
+            merchant_id:
+              type: string
+              description: The id associated with the merchant registration used in the inquiry
+            region:
+              type: string
+              description: The region associated with the inquiry
+            inquiry_status:
+              type: string
+              description: 'The status of the inquiry. Possible values are: `succeeded`, `error`, and `rejected`'
+            payment_method_token:
+              type: string
+              description: The token of the payment method used in the inquiry
+            card_refresh_transaction:
+              $ref: '#/components/schemas/card_refresh_transaction_response'
   securitySchemes:
     basic_auth:
       type: http

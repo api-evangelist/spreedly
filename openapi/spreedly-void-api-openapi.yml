@@ -61,6 +61,23 @@ paths:
                 $ref: '#/components/schemas/unsupported_error'
 components:
   schemas:
+    unsupported_error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: Error Key
+              message:
+                type: string
+                description: Error Message
+              ability:
+                type: string
+                description: The transaction the gateway does not support
     void_response:
       type: object
       properties:
@@ -139,23 +156,6 @@ components:
             reference_token:
               type: object
               description: The token of the transaction being voided
-    unsupported_error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: Error Key
-              message:
-                type: string
-                description: Error Message
-              ability:
-                type: string
-                description: The transaction the gateway does not support
     errors:
       type: array
       items:

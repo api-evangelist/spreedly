@@ -100,6 +100,23 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     protection_provider_response:
       type: object
       properties:
@@ -172,6 +189,15 @@ components:
       required:
       - merchant_profile_key
       - type
+    sca_provider_visa:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/sca_provider_card_details'
+      - type: object
+        properties:
+          merchant_brand_id:
+            type: string
+            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
     sca_provider_card_details:
       type: object
       description: A nested object containing merchant info per card brand that is to be registered with the 3DS server. See `acquirer_bin`, `merchant_url`, and `merchant_password` below for nested field information
@@ -188,32 +214,6 @@ components:
       required:
       - acquirer_bin
       - merchant_url
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
-    sca_provider_visa:
-      type: object
-      allOf:
-      - $ref: '#/components/schemas/sca_provider_card_details'
-      - type: object
-        properties:
-          merchant_brand_id:
-            type: string
-            description: An optional parameter for an id issued to a merchant by a particular card scheme. When passed in the `visa` subhash it can be used to enable DAF via 3DS2 Global.
   securitySchemes:
     basic_auth:
       type: http

@@ -114,13 +114,6 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
-    list_protection_events_response:
-      type: object
-      properties:
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/protection_event_properties'
     protection_event_response:
       type: object
       properties:
@@ -289,6 +282,13 @@ components:
         payment_method_key:
           type: string
           description: The token of the payment method being authenticated. This is the same as the `payment_method_token` field in the `sca_authentication` transaction request.
+    list_protection_events_response:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/protection_event_properties'
   parameters:
     format:
       name: format

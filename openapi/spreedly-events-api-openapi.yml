@@ -112,6 +112,23 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     event_response:
       type: object
       properties:
@@ -136,23 +153,6 @@ components:
             created_at:
               type: string
               description: The time the event was created
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     list_events_response:
       type: object
       properties:

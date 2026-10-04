@@ -214,48 +214,6 @@ paths:
               $ref: '#/components/schemas/environment_update'
 components:
   schemas:
-    environment_response:
-      type: object
-      properties:
-        environment:
-          $ref: '#/components/schemas/environment_properties'
-    list_environments_response:
-      type: object
-      properties:
-        environments:
-          type: array
-          items:
-            $ref: '#/components/schemas/environment_properties'
-    environment_update:
-      type: object
-      properties:
-        environment:
-          type: object
-          properties:
-            name:
-              type: string
-              description: 'The human readable name of the environment. There is a 100 character limit and it cannot contain the following characters: ``\ | ` # $ % { } ; " < >``'
-            callback_url:
-              type: string
-              description: 'The url where Spreedly will attempt delivery of account updater transaction results. Transaction results are posted in JSON format. (default: null)'
-            allow_direct_api_method_creation:
-              type: boolean
-              description: 'If the environment allows payment method creation from anywhere, or only from Spreedly Express or Iframe (default: true).'
-            au_enabled:
-              type: boolean
-              description: 'If the environment should have cards sent to Account Updater or not (default: false).'
-            payment_method_management_enabled:
-              type: boolean
-              description: If an environment is enabled to manage payment methods with Advanced Vaulting.
-            smart_routing_enabled:
-              type: boolean
-              description: 'If an environment has smart routing enabled or not (default: false).'
-            default_gateway_token:
-              type: string
-              description: 'The default gateway to send transactions if smart routing is enabled (default: null).'
-            iframe_enhanced_security_enabled:
-              type: boolean
-              description: If the environment is enabled to pass enhanced security fields to iFrame init.
     environment_create:
       type: object
       properties:
@@ -299,6 +257,53 @@ components:
         required:
         - key
         - message
+    regenerate_environment_signing_secret_response:
+      type: object
+      properties:
+        environment:
+          $ref: '#/components/schemas/environment_properties'
+    list_environments_response:
+      type: object
+      properties:
+        environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/environment_properties'
+    environment_update:
+      type: object
+      properties:
+        environment:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 'The human readable name of the environment. There is a 100 character limit and it cannot contain the following characters: ``\ | ` # $ % { } ; " < >``'
+            callback_url:
+              type: string
+              description: 'The url where Spreedly will attempt delivery of account updater transaction results. Transaction results are posted in JSON format. (default: null)'
+            allow_direct_api_method_creation:
+              type: boolean
+              description: 'If the environment allows payment method creation from anywhere, or only from Spreedly Express or Iframe (default: true).'
+            au_enabled:
+              type: boolean
+              description: 'If the environment should have cards sent to Account Updater or not (default: false).'
+            payment_method_management_enabled:
+              type: boolean
+              description: If an environment is enabled to manage payment methods with Advanced Vaulting.
+            smart_routing_enabled:
+              type: boolean
+              description: 'If an environment has smart routing enabled or not (default: false).'
+            default_gateway_token:
+              type: string
+              description: 'The default gateway to send transactions if smart routing is enabled (default: null).'
+            iframe_enhanced_security_enabled:
+              type: boolean
+              description: If the environment is enabled to pass enhanced security fields to iFrame init.
+    environment_response:
+      type: object
+      properties:
+        environment:
+          $ref: '#/components/schemas/environment_properties'
     environment_properties:
       type: object
       properties:
@@ -338,11 +343,6 @@ components:
         iframe_enhanced_security_enabled:
           type: boolean
           description: If the environment is enabled to pass enhanced security fields to iFrame init.
-    regenerate_environment_signing_secret_response:
-      type: object
-      properties:
-        environment:
-          $ref: '#/components/schemas/environment_properties'
   securitySchemes:
     basic_auth:
       type: http

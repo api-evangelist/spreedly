@@ -71,212 +71,6 @@ paths:
                     currency_code: USD
 components:
   schemas:
-    payment_snapshot:
-      type: object
-      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
-      properties:
-        gateway_tokens:
-          type: array
-          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
-          items:
-            type: string
-        attempts:
-          type: integer
-          description: Number of times the transaction has been attempted.
-        messages:
-          type: object
-          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
-        mode:
-          type: string
-          description: The Recover mode used, either `standard` or `outage_only`.
-        custom_error_used:
-          type: boolean
-          description: '`true` if the transaction used a custom error in the recovery decision process.'
-        override_default_error_codes:
-          type: boolean
-          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
-        created_at:
-          type: string
-          description: The time the payment_snapshot was created.
-        updated_at:
-          type: string
-          description: The time the payment_snapshot was updated.
-        payment_token:
-          type: string
-          description: The token corresponding to the Payment object, containing all information about the Recover chain.
-        previous_transaction_tokens:
-          type: array
-          description: List of all previous transactions associated with the Recover attempt.
-          items:
-            type: string
-    transaction_core_parameters:
-      type: object
-      properties:
-        token:
-          type: string
-          description: The token uniquely identifying this transaction at Spreedly
-        succeeded:
-          type: boolean
-          description: '`true` if the transaction request was successfully executed, `false` otherwise'
-        message:
-          type: string
-          description: A human-readable string indicating the result of the transaction
-        gateway_transaction_id:
-          type: string
-          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
-        retain_on_success:
-          type: boolean
-          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
-        payment_method_added:
-          type: string
-          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
-        response:
-          type: object
-          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
-        payment_method:
-          $ref: '#/components/schemas/payment_method'
-        merchant_profile_key:
-          type: string
-          description: The token of the Merchant Profile associated with the gateway used for the transaction
-        sub_merchant_key:
-          type: string
-          description: The token of the sub-merchant associated with the transaction.
-        gateway_specific_response_fields:
-          type: object
-          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
-        transaction_metadata:
-          type: object
-          description: The hash of key/value pairs that was included in the transaction request body.
-        sca_authentication:
-          type: string
-          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
-        payment_snapshot:
-          $ref: '#/components/schemas/payment_snapshot'
-        protection_provider_key:
-          type: string
-          description: The token of the Protection Provider that was used for this transaction.
-        protection_parameters:
-          $ref: '#/components/schemas/protection_parameters'
-    gateway_specific_fields:
-      type: array
-      description: The list of gateway specific fields that can be specified in supported gateway transactions
-      items:
-        type: string
-    transactions_response:
-      type: object
-      properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/purchase_parameters'
-    credit_partial_request:
-      type: object
-      description: Credit partial amount
-      properties:
-        transaction:
-          type: object
-          properties:
-            amount:
-              type: integer
-              description: The amount to refund, as an integer. E.g., `1000`` for $10.00. If not provided, the full amount of the original purchase will be refunded.
-            currency_code:
-              type: string
-              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
-    protect_fraud_check_response:
-      type: object
-      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
-      properties:
-        updated_at:
-          type: string
-          description: The time the fraud check was last updated
-        created_at:
-          type: string
-          description: The time the fraud check was created
-        protection_provider_key:
-          type: string
-          description: The token of the Protection Provider used for this check
-        succeeded:
-          type: boolean
-          description: Whether the fraud check request was successfully executed
-        state:
-          type: string
-          description: The current state of the fraud check
-        token:
-          type: string
-          description: The token uniquely identifying this fraud check at Spreedly
-        message:
-          type: string
-          description: A human-readable message describing the result (if applicable)
-        amount:
-          type: number
-          description: The transaction amount checked
-        currency_code:
-          type: string
-          description: The currency of the funds in ISO format (e.g., USD)
-        ip:
-          type: string
-          description: The IP address associated with the transaction
-        email:
-          type: string
-          description: The email address associated with the transaction
-        transaction_type:
-          type: string
-          description: The type of transaction
-        gateway_transaction_key:
-          type: string
-          description: The Spreedly transaction token of the parent gateway transaction
-        callback_url:
-          type: string
-          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
-        test_scenario:
-          type: string
-          description: The test scenario used
-        acquiring_bank_fraud_rate:
-          type: string
-          description: The threshold for bank fraud rate used for exemption requests
-        exemption_type:
-          type: string
-          description: The type of exemption requested (if applicable)
-        warning:
-          type: string
-          description: Any warning messages from the fraud check
-        managed_order_token:
-          type: string
-          description: The token of the fraud check returned by the fraud check provider
-        fraud_decision:
-          type: string
-          description: The fraud decision outcome (e.g., approve, decline, review)
-        fraud_recommendation:
-          type: string
-          description: Additional recommendation information from the fraud provider
-        fraud_decision_reason:
-          type: string
-          description: Reason for the fraud decision
-        vendor_response:
-          type: object
-          description: Detailed response from the fraud protection vendor
-          properties:
-            forterDecision:
-              type: string
-              description: The decision returned by Forter
-            recommendation:
-              type: string
-              description: Recommended action from the vendor
-            verificationMethod:
-              type: object
-              description: Methods used to verify the transaction
-            decisionReason:
-              type: string
-              description: Reason for the vendor's decision
-            merchantPolicyId:
-              type: string
-              description: Merchant policy identifier used to make the decision
-            orderId:
-              type: string
-              description: Order identifier in the vendor's system
-            linkToEventInDashboard:
-              type: string
-              description: URL to view the transaction details in the vendor's dashboard
     purchase_parameters:
       type: object
       allOf:
@@ -390,6 +184,216 @@ components:
             $ref: '#/components/schemas/protection_parameters'
           protect_fraud_check:
             $ref: '#/components/schemas/protect_fraud_check_response'
+    transaction_core_parameters:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token uniquely identifying this transaction at Spreedly
+        succeeded:
+          type: boolean
+          description: '`true` if the transaction request was successfully executed, `false` otherwise'
+        message:
+          type: string
+          description: A human-readable string indicating the result of the transaction
+        gateway_transaction_id:
+          type: string
+          description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
+        retain_on_success:
+          type: boolean
+          description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+        payment_method_added:
+          type: string
+          description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+        response:
+          type: object
+          description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+        payment_method:
+          $ref: '#/components/schemas/payment_method'
+        merchant_profile_key:
+          type: string
+          description: The token of the Merchant Profile associated with the gateway used for the transaction
+        sub_merchant_key:
+          type: string
+          description: The token of the sub-merchant associated with the transaction.
+        gateway_specific_response_fields:
+          type: object
+          description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+        transaction_metadata:
+          type: object
+          description: The hash of key/value pairs that was included in the transaction request body.
+        sca_authentication:
+          type: string
+          description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
+        payment_snapshot:
+          $ref: '#/components/schemas/payment_snapshot'
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider that was used for this transaction.
+        protection_parameters:
+          $ref: '#/components/schemas/protection_parameters'
+    payment_snapshot:
+      type: object
+      description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
+      properties:
+        gateway_tokens:
+          type: array
+          description: List of all gateway tokens on which the transaction could be attempted. Includes the primary gateway token and all Recover gateway tokens.
+          items:
+            type: string
+        attempts:
+          type: integer
+          description: Number of times the transaction has been attempted.
+        messages:
+          type: object
+          description: Optional field used to communicate information about different Recover situations, for example, falling back to outage only mode if a gateway is primary gateway is unsupported.
+        mode:
+          type: string
+          description: The Recover mode used, either `standard` or `outage_only`.
+        custom_error_used:
+          type: boolean
+          description: '`true` if the transaction used a custom error in the recovery decision process.'
+        override_default_error_codes:
+          type: boolean
+          description: '`true` if the custom error configuration was used instead of Spreedly''s default error configuration.'
+        created_at:
+          type: string
+          description: The time the payment_snapshot was created.
+        updated_at:
+          type: string
+          description: The time the payment_snapshot was updated.
+        payment_token:
+          type: string
+          description: The token corresponding to the Payment object, containing all information about the Recover chain.
+        previous_transaction_tokens:
+          type: array
+          description: List of all previous transactions associated with the Recover attempt.
+          items:
+            type: string
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    transactions_response:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/purchase_parameters'
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
+    protect_fraud_check_response:
+      type: object
+      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
+      properties:
+        updated_at:
+          type: string
+          description: The time the fraud check was last updated
+        created_at:
+          type: string
+          description: The time the fraud check was created
+        protection_provider_key:
+          type: string
+          description: The token of the Protection Provider used for this check
+        succeeded:
+          type: boolean
+          description: Whether the fraud check request was successfully executed
+        state:
+          type: string
+          description: The current state of the fraud check
+        token:
+          type: string
+          description: The token uniquely identifying this fraud check at Spreedly
+        message:
+          type: string
+          description: A human-readable message describing the result (if applicable)
+        amount:
+          type: number
+          description: The transaction amount checked
+        currency_code:
+          type: string
+          description: The currency of the funds in ISO format (e.g., USD)
+        ip:
+          type: string
+          description: The IP address associated with the transaction
+        email:
+          type: string
+          description: The email address associated with the transaction
+        transaction_type:
+          type: string
+          description: The type of transaction
+        gateway_transaction_key:
+          type: string
+          description: The Spreedly transaction token of the parent gateway transaction
+        callback_url:
+          type: string
+          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
+        test_scenario:
+          type: string
+          description: The test scenario used
+        acquiring_bank_fraud_rate:
+          type: string
+          description: The threshold for bank fraud rate used for exemption requests
+        exemption_type:
+          type: string
+          description: The type of exemption requested (if applicable)
+        warning:
+          type: string
+          description: Any warning messages from the fraud check
+        managed_order_token:
+          type: string
+          description: The token of the fraud check returned by the fraud check provider
+        fraud_decision:
+          type: string
+          description: The fraud decision outcome (e.g., approve, decline, review)
+        fraud_recommendation:
+          type: string
+          description: Additional recommendation information from the fraud provider
+        fraud_decision_reason:
+          type: string
+          description: Reason for the fraud decision
+        vendor_response:
+          type: object
+          description: Detailed response from the fraud protection vendor
+          properties:
+            forterDecision:
+              type: string
+              description: The decision returned by Forter
+            recommendation:
+              type: string
+              description: Recommended action from the vendor
+            verificationMethod:
+              type: object
+              description: Methods used to verify the transaction
+            decisionReason:
+              type: string
+              description: Reason for the vendor's decision
+            merchantPolicyId:
+              type: string
+              description: Merchant policy identifier used to make the decision
+            orderId:
+              type: string
+              description: Order identifier in the vendor's system
+            linkToEventInDashboard:
+              type: string
+              description: URL to view the transaction details in the vendor's dashboard
     payment_method:
       type: object
       properties:
@@ -551,23 +555,19 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
+    credit_partial_request:
+      type: object
+      description: Credit partial amount
+      properties:
+        transaction:
+          type: object
+          properties:
+            amount:
+              type: integer
+              description: The amount to refund, as an integer. E.g., `1000`` for $10.00. If not provided, the full amount of the original purchase will be refunded.
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
     protection_parameters:
       description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
       type: object

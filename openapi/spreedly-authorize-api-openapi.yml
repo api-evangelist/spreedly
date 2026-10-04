@@ -761,6 +761,26 @@ paths:
                     attempt_network_token: true
 components:
   schemas:
+    apple_pay:
+      type: object
+      required:
+      - payment_data
+      properties:
+        payment_data:
+          description: The JSON serialized [`paymentData` property of an Apple Pay PKPaymentToken](https://developer.apple.com/library/ios/documentation/PassKit/Reference/PaymentTokenJSON/PaymentTokenJSON.html#//apple_ref/doc/uid/TP40014929-CH8-SW2)
+          type: object
+          properties:
+            version: {}
+            data: {}
+            signature: {}
+            header:
+              type: object
+              properties:
+                ephemeralPublicKey: {}
+                transactionId: {}
+                publicKeyHash: {}
+        test_card_number:
+          description: Apple Pay does not provide a way to create a test payment token. To mark this as a test Apple Pay payment method, specify a [test card number](https://developer.spreedly.com/docs/test-data#credit-cards) in this field. Doing so will prevent this payment method from being used against a production gateway, while still verifying the submitted Apple Pay payment data.
     payment_snapshot:
       type: object
       description: When Recover is attempted, provides an overview of the results at the time of the current transaction. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
@@ -799,100 +819,59 @@ components:
           description: List of all previous transactions associated with the Recover attempt.
           items:
             type: string
-    provision_network_token:
-      type: boolean
-      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
-    sca_authenticated:
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    recover_params:
       type: object
+      description: When attempting Recover, the following parameters may be used. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
       properties:
-        sca_authentication_token:
+        gateway_tokens:
+          type: array
+          description: List of all Recover gateway tokens on which a failed transaction could be attempted.
+          items:
+            type: string
+        mode:
           type: string
-          description: The token received in response body of SCA Authenticate endpoint when performing an SCA Authentication on a specified payment method. See [instructions to obtain](https://developer.spreedly.com/docs/3ds-solutions#how-to-utilize-your-sca-provider-key)
-        amount:
-          type: integer
-          description: The amount to request, as an integer. E.g., `1000` for $10.00.
-        currency_code:
-          type: string
-          description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
-      required:
-      - sca_authentication_token
-      - amount
-      - currency_code
-    apple_pay:
-      type: object
-      required:
-      - payment_data
-      properties:
-        payment_data:
-          description: The JSON serialized [`paymentData` property of an Apple Pay PKPaymentToken](https://developer.apple.com/library/ios/documentation/PassKit/Reference/PaymentTokenJSON/PaymentTokenJSON.html#//apple_ref/doc/uid/TP40014929-CH8-SW2)
+          description: The Recover mode to use, either `standard` or `outage_only`. Default is `standard`.
+        custom_errors:
           type: object
+          description: Field to use custom error codes when using Recover. See [the guide](https://developer.spreedly.com/docs/recover#how-to-use-custom-error-codes) for more information.
           properties:
-            version: {}
-            data: {}
-            signature: {}
-            header:
-              type: object
-              properties:
-                ephemeralPublicKey: {}
-                transactionId: {}
-                publicKeyHash: {}
-        test_card_number:
-          description: Apple Pay does not provide a way to create a test payment token. To mark this as a test Apple Pay payment method, specify a [test card number](https://developer.spreedly.com/docs/test-data#credit-cards) in this field. Doing so will prevent this payment method from being used against a production gateway, while still verifying the submitted Apple Pay payment data.
-    authorize_response:
-      type: object
-      properties:
-        transaction:
-          type: object
-          properties:
-            token:
-              type: string
-              description: The token uniquely identifying this transaction at Spreedly
-            succeeded:
+            error_codes:
+              type: array
+              description: List of custom error codes to use instead of/in addition to Spreedly designated codes.
+              items:
+                type: string
+            messages:
+              type: array
+              description: List of custom error messages to use instead of/in addition to Spreedly designated codes.
+              items:
+                type: string
+            additional_data:
+              type: array
+              description: List of custom additional data to use instead of/in addition to Spreedly designated codes.
+              items:
+                type: string
+            override_default_error_codes:
               type: boolean
-              description: '`true` if the transaction request was successfully executed, `false` otherwise'
-            message:
-              type: string
-              description: A human-readable string indicating the result of the transaction
-            gateway_transaction_id:
-              type: string
-              description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
-            retain_on_success:
-              type: boolean
-              description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
-            payment_method_added:
-              type: string
-              description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
-            response:
-              type: object
-              description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
-            payment_method:
-              $ref: '#/components/schemas/payment_method'
-            merchant_profile_key:
-              type: string
-              description: The token of the Merchant Profile associated with the gateway used for the transaction
-            sub_merchant_key:
-              type: string
-              description: The token of the sub-merchant associated with the transaction.
-            gateway_specific_response_fields:
-              type: object
-              description: A hash containing unique optional fields that a gateway may return based on certain customized options.
-            transaction_metadata:
-              type: object
-              description: The hash of key/value pairs that was included in the transaction request body.
-            sca_authentication:
-              type: string
-              description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
-            payment_snapshot:
-              $ref: '#/components/schemas/payment_snapshot'
-            protection_provider_key:
-              type: string
-              description: The token of the Protection Provider that was used for this transaction.
-            protection_parameters:
-              $ref: '#/components/schemas/protection_parameters'
-            protect_fraud_check:
-              $ref: '#/components/schemas/protect_fraud_check_response'
-            network_tokenization:
-              $ref: '#/components/schemas/network_tokenization'
+              description: '`true` to use the customer errors instead of, or `false` to use in addition to, Spreedly''s default error configuration. Default is `true`.'
+      required:
+      - gateway_tokens
     credit_card:
       type: object
       description: Credit card element
@@ -969,6 +948,202 @@ components:
       - year
       - first_name
       - last_name
+    provision_network_token:
+      type: boolean
+      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
+    authorize_request:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            amount:
+              type: integer
+              description: The amount to request, as an integer. E.g., `1000` for $10.00.
+            currency_code:
+              type: string
+              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
+            order_id:
+              type: string
+              description: The merchant specified order id. If not provided, the Spreedly transaction token will be used.
+            description:
+              type: string
+              description: A human readable description of the transaction which will be passed to the gateway if it’s supported
+            retain_on_success:
+              type: boolean
+              description: If the card is verified, retain it so it can be used for future transactions
+            ip:
+              type: string
+              description: The IP address of the end-user customer. If one is not provided, this will default to `127.0.0.1`. To actually send a `nil` value, this parameter must be set to `"omit"`.
+            email:
+              type: string
+              description: Override the customer email address associated with the payment method for this transaction
+            gateway_specific_fields:
+              type: object
+              description: Unique optional fields that a gateway may require for certain customized options. To send a GSF it should be nested under `gateway_specific_fields` and under the gateway’s name, i.e. `gateway_type`. Please refer to [using a payment method](https://developer.spreedly.com/docs/using-payment-methods#gateway-specific-fields) for more info.
+            stored_credential_initiator:
+              type: string
+              description: Who is initiating this request, `merchant` or `cardholder`
+            stored_credential_reason_type:
+              type: string
+              description: What kind of transaction is the payment method being used for. e.g. `recurring`, `unscheduled`, or `installment`
+            sub_merchant_key:
+              type: string
+              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
+            sca_provider_key:
+              type: string
+              description: '[SCA Provider](https://developer.spreedly.com/reference/create-sca-provider) token that performs a Spreedly 3DS2 Global authentication before attempting the gateway transaction. Please see our [Spreedly 3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) for more info.'
+            sca_authentication_parameters:
+              type: object
+              description: Additional fields that are accepted by the SCA Authentication, including a `test_scenario` object to indicate valid 3DS2 test flow options and an `exemption_type` field to request an exemption. Please refer to our [3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) to learn more.
+              properties:
+                three_ds_requestor_challenge_ind:
+                  type: string
+                  description: Indicates whether a challenge is being requested for a 3DS2 Global transaction.
+            callback_url:
+              type: string
+              description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
+            callback_format:
+              type: string
+              description: 'The format in which Spreedly will deliver asynchronous results for 3DS and offsite transactions to the specified `callback_url`. If provided, the value must be one of `json` or `xml`. (default: `xml`)'
+            shipping_address:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Customer’s name in the shipping address
+                address1:
+                  type: string
+                  description: Customer’s shipping address, line 1
+                address2:
+                  type: string
+                  description: Customer’s shipping address, line 2
+                city:
+                  type: string
+                  description: Customer’s shipping city
+                state:
+                  type: string
+                  description: Customer’s shipping state/province
+                zip:
+                  type: string
+                  description: Customer’s shipping zip
+                country:
+                  type: string
+                  description: Customer’s shipping country
+                phone_number:
+                  type: string
+                  description: Customer’s shipping phone
+            billing_address:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Customer’s name in the billing address
+                address1:
+                  type: string
+                  description: Customer’s billing address, line 1
+                address2:
+                  type: string
+                  description: Customer’s billing address, line 2
+                city:
+                  type: string
+                  description: Customer’s billing city
+                state:
+                  type: string
+                  description: Customer’s billing state/province
+                zip:
+                  type: string
+                  description: Customer’s billing zip
+                country:
+                  type: string
+                  description: Customer’s billing country
+                phone_number:
+                  type: string
+                  description: Customer’s billing phone
+            transaction_metadata:
+              type: object
+              description: Metadata key-value pairs used for Smart Routing. Keys must be unique and are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types.
+            credit_card:
+              $ref: '#/components/schemas/credit_card'
+            apple_pay:
+              $ref: '#/components/schemas/apple_pay'
+            google_pay:
+              $ref: '#/components/schemas/google_pay'
+            sca_authenticated:
+              $ref: '#/components/schemas/sca_authenticated'
+            payment_method_token:
+              type: string
+              description: The token of the payment method to use
+            attempt_network_token:
+              type: boolean
+              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
+            provision_network_token:
+              $ref: '#/components/schemas/provision_network_token'
+            retry:
+              $ref: '#/components/schemas/recover_params'
+            protection_provider_key:
+              type: string
+              description: The token of the [Protection Provider](https://developer.spreedly.com/reference/create-protection-provider). Triggers a protection check.
+            protection_parameters:
+              $ref: '#/components/schemas/protection_parameters'
+            allow_blank_name:
+              type: boolean
+              description: '`true` if this payment method should skip the name validation requirement during Pass-in Credit Card transactions'
+            allow_expired_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expired date validation requirement during Pass-in Credit Card transactions'
+            allow_blank_date:
+              type: boolean
+              description: '`true` if this payment method should skip the expiration date validation requirement during Pass-in Credit Card transactions'
+          required:
+          - amount
+          - currency_code
+    network_tokenization:
+      type: object
+      description: The network tokenization details for the transaction
+      properties:
+        provisioned:
+          type: boolean
+          default: false
+          description: Indicates if the network tokenization was successfully provisioned
+        token_status:
+          type: string
+          description: The status of the network token
+        token_reference:
+          type: string
+          description: The unique reference key for the network token
+        token_first_six_digits:
+          type: string
+          description: The first six digits of the network token's DPAN
+        token_last_four_digits:
+          type: string
+          description: The last four digits of the network token's DPAN
+        token_created_at:
+          type: string
+          description: The timestamp when the network token was created
+        token_updated_at:
+          type: string
+          description: The timestamp when the network token was last updated
+        attempted:
+          type: boolean
+          default: false
+          description: Indicates if the transaction attempted to use a network token
+        errors:
+          type: array
+          description: An array of errors that occurred during the network tokenization process
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: The error key
+              message:
+                type: string
+                description: The error message
+              action:
+                type: string
+                description: The action taken which lead to the error
+                required: false
     protect_fraud_check_response:
       type: object
       description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
@@ -1064,52 +1239,6 @@ components:
             linkToEventInDashboard:
               type: string
               description: URL to view the transaction details in the vendor's dashboard
-    network_tokenization:
-      type: object
-      description: The network tokenization details for the transaction
-      properties:
-        provisioned:
-          type: boolean
-          default: false
-          description: Indicates if the network tokenization was successfully provisioned
-        token_status:
-          type: string
-          description: The status of the network token
-        token_reference:
-          type: string
-          description: The unique reference key for the network token
-        token_first_six_digits:
-          type: string
-          description: The first six digits of the network token's DPAN
-        token_last_four_digits:
-          type: string
-          description: The last four digits of the network token's DPAN
-        token_created_at:
-          type: string
-          description: The timestamp when the network token was created
-        token_updated_at:
-          type: string
-          description: The timestamp when the network token was last updated
-        attempted:
-          type: boolean
-          default: false
-          description: Indicates if the transaction attempted to use a network token
-        errors:
-          type: array
-          description: An array of errors that occurred during the network tokenization process
-          items:
-            type: object
-            properties:
-              key:
-                type: string
-                description: The error key
-              message:
-                type: string
-                description: The error message
-              action:
-                type: string
-                description: The action taken which lead to the error
-                required: false
     payment_method:
       type: object
       properties:
@@ -1271,189 +1400,22 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
-    authorize_request:
+    sca_authenticated:
       type: object
       properties:
-        transaction:
-          type: object
-          properties:
-            amount:
-              type: integer
-              description: The amount to request, as an integer. E.g., `1000` for $10.00.
-            currency_code:
-              type: string
-              description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
-            order_id:
-              type: string
-              description: The merchant specified order id. If not provided, the Spreedly transaction token will be used.
-            description:
-              type: string
-              description: A human readable description of the transaction which will be passed to the gateway if it’s supported
-            retain_on_success:
-              type: boolean
-              description: If the card is verified, retain it so it can be used for future transactions
-            ip:
-              type: string
-              description: The IP address of the end-user customer. If one is not provided, this will default to `127.0.0.1`. To actually send a `nil` value, this parameter must be set to `"omit"`.
-            email:
-              type: string
-              description: Override the customer email address associated with the payment method for this transaction
-            gateway_specific_fields:
-              type: object
-              description: Unique optional fields that a gateway may require for certain customized options. To send a GSF it should be nested under `gateway_specific_fields` and under the gateway’s name, i.e. `gateway_type`. Please refer to [using a payment method](https://developer.spreedly.com/docs/using-payment-methods#gateway-specific-fields) for more info.
-            stored_credential_initiator:
-              type: string
-              description: Who is initiating this request, `merchant` or `cardholder`
-            stored_credential_reason_type:
-              type: string
-              description: What kind of transaction is the payment method being used for. e.g. `recurring`, `unscheduled`, or `installment`
-            sub_merchant_key:
-              type: string
-              description: The token of the [sub-merchant](https://developer.spreedly.com/reference/create-sub-merchant) to associate with the current transaction. If an invalid `sub_merchant_key` is passed through, the value defaults to `null`
-            sca_provider_key:
-              type: string
-              description: '[SCA Provider](https://developer.spreedly.com/reference/create-sca-provider) token that performs a Spreedly 3DS2 Global authentication before attempting the gateway transaction. Please see our [Spreedly 3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) for more info.'
-            sca_authentication_parameters:
-              type: object
-              description: Additional fields that are accepted by the SCA Authentication, including a `test_scenario` object to indicate valid 3DS2 test flow options and an `exemption_type` field to request an exemption. Please refer to our [3DS2 Global Guide](https://developer.spreedly.com/docs/3ds-solutions) to learn more.
-              properties:
-                three_ds_requestor_challenge_ind:
-                  type: string
-                  description: Indicates whether a challenge is being requested for a 3DS2 Global transaction.
-            callback_url:
-              type: string
-              description: 'The URL where Spreedly will attempt delivery of asynchronous results for 3DS and offsite transactions. Transaction results are posted in the format specified by `callback_format` if provided or XML if `callback_format` is not present or null. (default: `null`)'
-            callback_format:
-              type: string
-              description: 'The format in which Spreedly will deliver asynchronous results for 3DS and offsite transactions to the specified `callback_url`. If provided, the value must be one of `json` or `xml`. (default: `xml`)'
-            shipping_address:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Customer’s name in the shipping address
-                address1:
-                  type: string
-                  description: Customer’s shipping address, line 1
-                address2:
-                  type: string
-                  description: Customer’s shipping address, line 2
-                city:
-                  type: string
-                  description: Customer’s shipping city
-                state:
-                  type: string
-                  description: Customer’s shipping state/province
-                zip:
-                  type: string
-                  description: Customer’s shipping zip
-                country:
-                  type: string
-                  description: Customer’s shipping country
-                phone_number:
-                  type: string
-                  description: Customer’s shipping phone
-            billing_address:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: Customer’s name in the billing address
-                address1:
-                  type: string
-                  description: Customer’s billing address, line 1
-                address2:
-                  type: string
-                  description: Customer’s billing address, line 2
-                city:
-                  type: string
-                  description: Customer’s billing city
-                state:
-                  type: string
-                  description: Customer’s billing state/province
-                zip:
-                  type: string
-                  description: Customer’s billing zip
-                country:
-                  type: string
-                  description: Customer’s billing country
-                phone_number:
-                  type: string
-                  description: Customer’s billing phone
-            transaction_metadata:
-              type: object
-              description: Metadata key-value pairs used for Smart Routing. Keys must be unique and are limited to 50 characters. Values are limited to 500 characters and cannot contain compounding data types.
-            credit_card:
-              $ref: '#/components/schemas/credit_card'
-            apple_pay:
-              $ref: '#/components/schemas/apple_pay'
-            google_pay:
-              $ref: '#/components/schemas/google_pay'
-            sca_authenticated:
-              $ref: '#/components/schemas/sca_authenticated'
-            payment_method_token:
-              type: string
-              description: The token of the payment method to use
-            attempt_network_token:
-              type: boolean
-              description: '`true` if this transaction should use a network token if able. `false` or omit this element to not use a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#transacting-with-network-tokens) for more details on Network Token logic checks.'
-            provision_network_token:
-              $ref: '#/components/schemas/provision_network_token'
-            retry:
-              $ref: '#/components/schemas/recover_params'
-            protection_provider_key:
-              type: string
-              description: The token of the [Protection Provider](https://developer.spreedly.com/reference/create-protection-provider). Triggers a protection check.
-            protection_parameters:
-              $ref: '#/components/schemas/protection_parameters'
-            allow_blank_name:
-              type: boolean
-              description: '`true` if this payment method should skip the name validation requirement during Pass-in Credit Card transactions'
-            allow_expired_date:
-              type: boolean
-              description: '`true` if this payment method should skip the expired date validation requirement during Pass-in Credit Card transactions'
-            allow_blank_date:
-              type: boolean
-              description: '`true` if this payment method should skip the expiration date validation requirement during Pass-in Credit Card transactions'
-          required:
-          - amount
-          - currency_code
-    recover_params:
-      type: object
-      description: When attempting Recover, the following parameters may be used. For more information on Recover, see [the guide](https://developer.spreedly.com/docs/recover).
-      properties:
-        gateway_tokens:
-          type: array
-          description: List of all Recover gateway tokens on which a failed transaction could be attempted.
-          items:
-            type: string
-        mode:
+        sca_authentication_token:
           type: string
-          description: The Recover mode to use, either `standard` or `outage_only`. Default is `standard`.
-        custom_errors:
-          type: object
-          description: Field to use custom error codes when using Recover. See [the guide](https://developer.spreedly.com/docs/recover#how-to-use-custom-error-codes) for more information.
-          properties:
-            error_codes:
-              type: array
-              description: List of custom error codes to use instead of/in addition to Spreedly designated codes.
-              items:
-                type: string
-            messages:
-              type: array
-              description: List of custom error messages to use instead of/in addition to Spreedly designated codes.
-              items:
-                type: string
-            additional_data:
-              type: array
-              description: List of custom additional data to use instead of/in addition to Spreedly designated codes.
-              items:
-                type: string
-            override_default_error_codes:
-              type: boolean
-              description: '`true` to use the customer errors instead of, or `false` to use in addition to, Spreedly''s default error configuration. Default is `true`.'
+          description: The token received in response body of SCA Authenticate endpoint when performing an SCA Authentication on a specified payment method. See [instructions to obtain](https://developer.spreedly.com/docs/3ds-solutions#how-to-utilize-your-sca-provider-key)
+        amount:
+          type: integer
+          description: The amount to request, as an integer. E.g., `1000` for $10.00.
+        currency_code:
+          type: string
+          description: The currency of the funds, as [ISO 4217 alpha currency codes](https://en.wikipedia.org/wiki/ISO_4217#Active_codes), e.g., `USD` for US dollars.
       required:
-      - gateway_tokens
+      - sca_authentication_token
+      - amount
+      - currency_code
     google_pay:
       type: object
       required:
@@ -1499,23 +1461,61 @@ components:
         country:
           type: string
           description: Cardholder's country
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
+    authorize_response:
+      type: object
+      properties:
+        transaction:
+          type: object
+          properties:
+            token:
+              type: string
+              description: The token uniquely identifying this transaction at Spreedly
+            succeeded:
+              type: boolean
+              description: '`true` if the transaction request was successfully executed, `false` otherwise'
+            message:
+              type: string
+              description: A human-readable string indicating the result of the transaction
+            gateway_transaction_id:
+              type: string
+              description: The id of the transaction at the gateway. To be used when corresponding with the gateway or reconciling transactions
+            retain_on_success:
+              type: boolean
+              description: If the payment method was set to be retained on successful completion of the transaction. To determine if the payment method was actually retained, see the `payment_method/storage_state` field
+            payment_method_added:
+              type: string
+              description: If the payment method was added as part of this transaction (i.e. a direct pass-in of the payment information) vs. using an already tokenized payment method
+            response:
+              type: object
+              description: Unmodified details of the gateway response, including the `message` and `error_code`, if applicable. For failed transactions these fields can help determine the root cause
+            payment_method:
+              $ref: '#/components/schemas/payment_method'
+            merchant_profile_key:
+              type: string
+              description: The token of the Merchant Profile associated with the gateway used for the transaction
+            sub_merchant_key:
+              type: string
+              description: The token of the sub-merchant associated with the transaction.
+            gateway_specific_response_fields:
+              type: object
+              description: A hash containing unique optional fields that a gateway may return based on certain customized options.
+            transaction_metadata:
+              type: object
+              description: The hash of key/value pairs that was included in the transaction request body.
+            sca_authentication:
+              type: string
+              description: The details of the SCA Authentication transaction created if performing a Spreedly Global 3DS2 transaction. See the [SCA Authentication Show](https://developer.spreedly.com/reference/authenticate) details for more information on this object.
+            payment_snapshot:
+              $ref: '#/components/schemas/payment_snapshot'
+            protection_provider_key:
+              type: string
+              description: The token of the Protection Provider that was used for this transaction.
+            protection_parameters:
+              $ref: '#/components/schemas/protection_parameters'
+            protect_fraud_check:
+              $ref: '#/components/schemas/protect_fraud_check_response'
+            network_tokenization:
+              $ref: '#/components/schemas/network_tokenization'
     protection_parameters:
       description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
       type: object
