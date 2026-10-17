@@ -81,11 +81,6 @@ paths:
               $ref: '#/components/schemas/authenticate'
 components:
   schemas:
-    authenticate_response:
-      type: object
-      properties:
-        transaction:
-          $ref: '#/components/schemas/authenticate_properties'
     authenticate:
       type: object
       properties:
@@ -126,6 +121,11 @@ components:
           required:
           - payment_method_token
           - browser_info
+    authenticate_response:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/authenticate_properties'
     authenticate_properties:
       type: object
       properties:

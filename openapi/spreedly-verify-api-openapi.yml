@@ -598,23 +598,6 @@ paths:
                     attempt_network_token: true
 components:
   schemas:
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     verify:
       type: object
       properties:
@@ -660,155 +643,165 @@ components:
               $ref: '#/components/schemas/protection_parameters'
           required:
           - payment_method_token
-    provision_network_token:
-      type: boolean
-      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
-    network_tokenization:
+    protection_parameters:
+      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
       type: object
-      description: The network tokenization details for the transaction
       properties:
-        provisioned:
-          type: boolean
-          default: false
-          description: Indicates if the network tokenization was successfully provisioned
-        token_status:
+        test_scenario:
+          type: object
+          description: The protection test scenario
+          properties:
+            scenario:
+              type: string
+              description: The test scenario to run
+              enum:
+              - protect_approved
+              - protect_sca_recommended_challenge
+              - protect_sca_recommended_authenticated
+              - protect_sca_recommended_not_authenticated
+              - protect_declined
+              default: protect_approved
+        fraud_token:
           type: string
-          description: The status of the network token
-        token_reference:
+          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
+        forter_mobile_uid:
           type: string
-          description: The unique reference key for the network token
-        token_first_six_digits:
+          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
+        user_agent:
           type: string
-          description: The first six digits of the network token's DPAN
-        token_last_four_digits:
-          type: string
-          description: The last four digits of the network token's DPAN
-        token_created_at:
-          type: string
-          description: The timestamp when the network token was created
-        token_updated_at:
-          type: string
-          description: The timestamp when the network token was last updated
-        attempted:
-          type: boolean
-          default: false
-          description: Indicates if the transaction attempted to use a network token
-        errors:
+          description: Customer's User agent
+        cart_items:
           type: array
-          description: An array of errors that occurred during the network tokenization process
+          description: A list of all items purchased and shipping details
           items:
             type: object
             properties:
-              key:
+              name:
                 type: string
-                description: The error key
-              message:
+                description: Item name
+                maxLength: 500
+              quantity:
+                type: number
+                description: Item quantity
+              type:
                 type: string
-                description: The error message
-              action:
+                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
+                enum:
+                - TANGIBLE
+                - NON_TANGIBLE
+                default: TANGIBLE
+              price:
                 type: string
-                description: The action taken which lead to the error
-                required: false
-    gateway_specific_fields:
-      type: array
-      description: The list of gateway specific fields that can be specified in supported gateway transactions
-      items:
-        type: string
-    protect_fraud_check_response:
-      type: object
-      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
-      properties:
-        updated_at:
+                description: Final amount due for purchase, after all discounts and promotions
+            required:
+            - name
+            - quantity
+            - type
+            - price
+        delivery_type:
           type: string
-          description: The time the fraud check was last updated
-        created_at:
+          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
+          enum:
+          - PHYSICAL
+          - DIGITAL
+          default: PHYSICAL
+        delivery_method:
           type: string
-          description: The time the fraud check was created
-        protection_provider_key:
+          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
+          maxLength: 50
+        customer_account_id:
           type: string
-          description: The token of the Protection Provider used for this check
-        succeeded:
-          type: boolean
-          description: Whether the fraud check request was successfully executed
-        state:
+          description: Customer's account UID in merchant's site (leave empty if guest)
+        customer_account_type:
           type: string
-          description: The current state of the fraud check
-        token:
-          type: string
-          description: The token uniquely identifying this fraud check at Spreedly
-        message:
-          type: string
-          description: A human-readable message describing the result (if applicable)
-        amount:
+          description: Customer account type
+          enum:
+          - GUEST
+          - PRIVATE
+          - BUSINESS
+          - VIP
+          - MERCHANT_OPERATED
+          - TRIAL
+          - MERCHANT_EMPLOYEE
+          - PREMIUM_PAID
+          - SMALL_BUSINESS
+          - AGENT
+          - BUSINESS_PRIVATE
+          - BUSINESS_PREMIUM_PAID
+          default: BUSINESS
+        customer_account_creation_date:
           type: number
-          description: The transaction amount checked
-        currency_code:
+          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
+        billing_name:
           type: string
-          description: The currency of the funds in ISO format (e.g., USD)
-        ip:
+          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_first_name:
           type: string
-          description: The IP address associated with the transaction
+          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_last_name:
+          type: string
+          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
         email:
           type: string
-          description: The email address associated with the transaction
-        transaction_type:
+          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_country:
           type: string
-          description: The type of transaction
-        gateway_transaction_key:
+          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address1:
           type: string
-          description: The Spreedly transaction token of the parent gateway transaction
-        callback_url:
+          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_address2:
           type: string
-          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
-        test_scenario:
+          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_city:
           type: string
-          description: The test scenario used
-        acquiring_bank_fraud_rate:
+          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_zip:
           type: string
-          description: The threshold for bank fraud rate used for exemption requests
-        exemption_type:
+          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_state:
           type: string
-          description: The type of exemption requested (if applicable)
-        warning:
+          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        billing_phone_number:
           type: string
-          description: Any warning messages from the fraud check
-        managed_order_token:
+          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_name:
           type: string
-          description: The token of the fraud check returned by the fraud check provider
-        fraud_decision:
+          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_first_name:
           type: string
-          description: The fraud decision outcome (e.g., approve, decline, review)
-        fraud_recommendation:
+          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_last_name:
           type: string
-          description: Additional recommendation information from the fraud provider
-        fraud_decision_reason:
+          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_email:
           type: string
-          description: Reason for the fraud decision
-        vendor_response:
-          type: object
-          description: Detailed response from the fraud protection vendor
-          properties:
-            forterDecision:
-              type: string
-              description: The decision returned by Forter
-            recommendation:
-              type: string
-              description: Recommended action from the vendor
-            verificationMethod:
-              type: object
-              description: Methods used to verify the transaction
-            decisionReason:
-              type: string
-              description: Reason for the vendor's decision
-            merchantPolicyId:
-              type: string
-              description: Merchant policy identifier used to make the decision
-            orderId:
-              type: string
-              description: Order identifier in the vendor's system
-            linkToEventInDashboard:
-              type: string
-              description: URL to view the transaction details in the vendor's dashboard
+          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_country:
+          type: string
+          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address1:
+          type: string
+          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_address2:
+          type: string
+          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_city:
+          type: string
+          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_zip:
+          type: string
+          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_state:
+          type: string
+          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+        shipping_phone_number:
+          type: string
+          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+      required:
+      - delivery_method
+      - delivery_type
+      - cart_items
     payment_method:
       type: object
       properties:
@@ -970,6 +963,52 @@ components:
           format: date-time
           nullable: true
           description: 'The time (UTC) the payment method was last successfully transacted with. The following transaction types are considered: Authorization, Purchase, Verification, GeneralCredit, OffsiteVerification, or OffsitePurchase'
+    network_tokenization:
+      type: object
+      description: The network tokenization details for the transaction
+      properties:
+        provisioned:
+          type: boolean
+          default: false
+          description: Indicates if the network tokenization was successfully provisioned
+        token_status:
+          type: string
+          description: The status of the network token
+        token_reference:
+          type: string
+          description: The unique reference key for the network token
+        token_first_six_digits:
+          type: string
+          description: The first six digits of the network token's DPAN
+        token_last_four_digits:
+          type: string
+          description: The last four digits of the network token's DPAN
+        token_created_at:
+          type: string
+          description: The timestamp when the network token was created
+        token_updated_at:
+          type: string
+          description: The timestamp when the network token was last updated
+        attempted:
+          type: boolean
+          default: false
+          description: Indicates if the transaction attempted to use a network token
+        errors:
+          type: array
+          description: An array of errors that occurred during the network tokenization process
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                description: The error key
+              message:
+                type: string
+                description: The error message
+              action:
+                type: string
+                description: The action taken which lead to the error
+                required: false
     verify_response:
       type: object
       properties:
@@ -1067,165 +1106,126 @@ components:
               $ref: '#/components/schemas/protect_fraud_check_response'
             network_tokenization:
               $ref: '#/components/schemas/network_tokenization'
-    protection_parameters:
-      description: Additional fields that are accepted by the Protection provider, including a `test_scenario` object to indicate valid Protect test flow options. Please refer to our [Protect guide](https://developer.spreedly.com/docs/protect) to learn more.
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
+    provision_network_token:
+      type: boolean
+      description: '`true` if this transaction should attempt to provision a network token. `false` or omit this element to not provision a network token for this transaction. Please see our [network tokenization guide](https://developer.spreedly.com/docs/network-tokenization#provisioning-network-tokens) for more details.'
+    gateway_specific_fields:
+      type: array
+      description: The list of gateway specific fields that can be specified in supported gateway transactions
+      items:
+        type: string
+    protect_fraud_check_response:
       type: object
+      description: When a Fraud Check is attempted, provides an overview of the results at the time of the current transaction. For more information on Protection Fraud Checks, see [the guide](https://developer.spreedly.com/docs/protect).
       properties:
-        test_scenario:
-          type: object
-          description: The protection test scenario
-          properties:
-            scenario:
-              type: string
-              description: The test scenario to run
-              enum:
-              - protect_approved
-              - protect_sca_recommended_challenge
-              - protect_sca_recommended_authenticated
-              - protect_sca_recommended_not_authenticated
-              - protect_declined
-              default: protect_approved
-        fraud_token:
+        updated_at:
           type: string
-          description: Forter fraud token. Emitted when running a fraud lifecycle from [the Spreedly iFrame](https://developer.spreedly.com/docs/iframe-api-lifecycle). Required for web transactions only.
-        forter_mobile_uid:
+          description: The time the fraud check was last updated
+        created_at:
           type: string
-          description: Mobile UID. The device identifier such as IMEI in android or identifier for vendor in iOS. This should match the deviceId sent via the mobile events API. Required for mobile transactions only.
-        user_agent:
+          description: The time the fraud check was created
+        protection_provider_key:
           type: string
-          description: Customer's User agent
-        cart_items:
-          type: array
-          description: A list of all items purchased and shipping details
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Item name
-                maxLength: 500
-              quantity:
-                type: number
-                description: Item quantity
-              type:
-                type: string
-                description: TANGIBLE if physical item, NON_TANGIBLE if any other product
-                enum:
-                - TANGIBLE
-                - NON_TANGIBLE
-                default: TANGIBLE
-              price:
-                type: string
-                description: Final amount due for purchase, after all discounts and promotions
-            required:
-            - name
-            - quantity
-            - type
-            - price
-        delivery_type:
+          description: The token of the Protection Provider used for this check
+        succeeded:
+          type: boolean
+          description: Whether the fraud check request was successfully executed
+        state:
           type: string
-          description: 'Type of delivery: PHYSICAL for any type of shipped goods, DIGITAL for non-shipped goods (services, gift cards etc.)'
-          enum:
-          - PHYSICAL
-          - DIGITAL
-          default: PHYSICAL
-        delivery_method:
+          description: The current state of the fraud check
+        token:
           type: string
-          description: Delivery method chosen by customer such as postal service, email, in game transfer, etc.
-          maxLength: 50
-        customer_account_id:
+          description: The token uniquely identifying this fraud check at Spreedly
+        message:
           type: string
-          description: Customer's account UID in merchant's site (leave empty if guest)
-        customer_account_type:
-          type: string
-          description: Customer account type
-          enum:
-          - GUEST
-          - PRIVATE
-          - BUSINESS
-          - VIP
-          - MERCHANT_OPERATED
-          - TRIAL
-          - MERCHANT_EMPLOYEE
-          - PREMIUM_PAID
-          - SMALL_BUSINESS
-          - AGENT
-          - BUSINESS_PRIVATE
-          - BUSINESS_PREMIUM_PAID
-          default: BUSINESS
-        customer_account_creation_date:
+          description: A human-readable message describing the result (if applicable)
+        amount:
           type: number
-          description: Customer account creation date in seconds since unix epoch (UTC, Jan 1, 1970)
-        billing_name:
+          description: The transaction amount checked
+        currency_code:
           type: string
-          description: The customer full name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_first_name:
+          description: The currency of the funds in ISO format (e.g., USD)
+        ip:
           type: string
-          description: The customer first name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_last_name:
-          type: string
-          description: The customer last name. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
+          description: The IP address associated with the transaction
         email:
           type: string
-          description: The customer email address. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_country:
+          description: The email address associated with the transaction
+        transaction_type:
           type: string
-          description: The customer billing country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_address1:
+          description: The type of transaction
+        gateway_transaction_key:
           type: string
-          description: The customer billing address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_address2:
+          description: The Spreedly transaction token of the parent gateway transaction
+        callback_url:
           type: string
-          description: The customer billing address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_city:
+          description: The URL where Spreedly will attempt delivery of asynchronous results (if provided)
+        test_scenario:
           type: string
-          description: The customer billing city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_zip:
+          description: The test scenario used
+        acquiring_bank_fraud_rate:
           type: string
-          description: The customer billing zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_state:
+          description: The threshold for bank fraud rate used for exemption requests
+        exemption_type:
           type: string
-          description: The customer billing state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        billing_phone_number:
+          description: The type of exemption requested (if applicable)
+        warning:
           type: string
-          description: The customer billing phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_name:
+          description: Any warning messages from the fraud check
+        managed_order_token:
           type: string
-          description: The customer's full name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_first_name:
+          description: The token of the fraud check returned by the fraud check provider
+        fraud_decision:
           type: string
-          description: The customer's first name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_last_name:
+          description: The fraud decision outcome (e.g., approve, decline, review)
+        fraud_recommendation:
           type: string
-          description: The customer's last name for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_email:
+          description: Additional recommendation information from the fraud provider
+        fraud_decision_reason:
           type: string
-          description: The customer's email address for shipping. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_country:
-          type: string
-          description: The customer shipping country. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_address1:
-          type: string
-          description: The customer shipping address line 1. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_address2:
-          type: string
-          description: The customer shipping address line 2. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_city:
-          type: string
-          description: The customer shipping city. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_zip:
-          type: string
-          description: The customer shipping zip code. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_state:
-          type: string
-          description: The customer shipping state. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-        shipping_phone_number:
-          type: string
-          description: The customer shipping phone number. If available, this value will be pulled from the payment_method associated with this transaction. Otherwise, it should be provided here.
-      required:
-      - delivery_method
-      - delivery_type
-      - cart_items
+          description: Reason for the fraud decision
+        vendor_response:
+          type: object
+          description: Detailed response from the fraud protection vendor
+          properties:
+            forterDecision:
+              type: string
+              description: The decision returned by Forter
+            recommendation:
+              type: string
+              description: Recommended action from the vendor
+            verificationMethod:
+              type: object
+              description: Methods used to verify the transaction
+            decisionReason:
+              type: string
+              description: Reason for the vendor's decision
+            merchantPolicyId:
+              type: string
+              description: Merchant policy identifier used to make the decision
+            orderId:
+              type: string
+              description: Order identifier in the vendor's system
+            linkToEventInDashboard:
+              type: string
+              description: URL to view the transaction details in the vendor's dashboard
   parameters:
     gateway_token:
       name: gateway_token

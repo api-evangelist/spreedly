@@ -100,23 +100,6 @@ paths:
                 $ref: '#/components/schemas/errors'
 components:
   schemas:
-    errors:
-      type: array
-      items:
-        type: object
-        properties:
-          attribute:
-            type: string
-            description: Which attribute(s) have an error
-          key:
-            type: string
-            description: Error Key
-          message:
-            type: string
-            description: Error Message
-        required:
-        - key
-        - message
     protection_provider_response:
       type: object
       properties:
@@ -189,6 +172,23 @@ components:
       required:
       - merchant_profile_key
       - type
+    errors:
+      type: array
+      items:
+        type: object
+        properties:
+          attribute:
+            type: string
+            description: Which attribute(s) have an error
+          key:
+            type: string
+            description: Error Key
+          message:
+            type: string
+            description: Error Message
+        required:
+        - key
+        - message
     sca_provider_visa:
       type: object
       allOf:
