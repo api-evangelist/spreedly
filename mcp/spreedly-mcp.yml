@@ -95,3 +95,20 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools:
+- name: list-endpoints
+  description: Lists all API paths and their HTTP methods with summaries, organized by path. Results can
+    be passed directly into 'get-endpoint'.
+- name: get-endpoint
+  description: Gets detailed information about a specific API endpoint, including security schemes and
+    servers
+- name: search-endpoints
+  description: Performs a deep search through paths, operations, and parameters to discover relevant API
+    endpoints. Use this tool to find specific API capabilities, required parameters, or data models based
+    on search keywords. Results can be passed directly into 'get-endpoint'.
+- name: search
+  description: Searches through documentation with the given search query, returning a list of results
+    with ID, title, and URL.
+- name: fetch
+  description: Gets detailed content for documentation by ID returned from the `search` tool.
+tools_count: 5
