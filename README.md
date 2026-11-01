@@ -1,4 +1,4 @@
-# Spreedly (spreedly)
+# Spreedly
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,101 +64,157 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Spreedly is a United States payments orchestration platform and PCI-compliant card vault that lets merchants and platforms securely tokenize payment methods once and then transact against hundreds of payment gateways, processors, and third-party APIs through a single integration. Founded in 2008 and headquartered in Durham, North Carolina, it sits in the gateway/PSP layer of the fragmented US payments market as an independent, network-agnostic intermediary — not a card network or acquirer.
+Spreedly is a United States payments orchestration platform and PCI-compliant card vault that lets merchants and platforms securely tokenize payment methods once and then transact against hundreds of payment gateways, processors, and third-party APIs through a single integration. Founded in 2008 and headquartered in Durham, North Carolina, Spreedly sits in the gateway/PSP layer of the deep, fragmented US payments market as an independent, network-agnostic intermediary rather than a card network or acquirer. Its Payments Orchestration offering combines a universal token vault, a normalized transaction API across many gateways, workflow-based routing (Composer), network tokenization, account updater (Card Refresher), 3-D Secure / SCA authentication, and Receivers for forwarding stored payment data to arbitrary third-party endpoints. Spreedly is strongly API-native: it publishes a public developer portal with complete reference documentation and a downloadable OpenAPI 3.1 specification for its Core Transactional API (https://core.spreedly.com/v1), authenticated with HTTP Basic auth using per-environment key/secret credentials.
 
-Spreedly is strongly API-native: it publishes a public ReadMe.io developer portal with complete reference documentation and a downloadable OpenAPI 3.1 specification for its Core Transactional API (`https://core.spreedly.com/v1`), authenticated with HTTP Basic auth using per-environment key/secret credentials.
+**Areas:** Payments · United States · Payment Gateway · Payment Orchestration · Payment Processing · Card Vault · Tokenization · Network Tokenization · PCI Compliance · Subscription
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/spreedly/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/spreedly/refs/heads/main/apis.yml)
+## Spreedly on APIs.io
 
-## Tags
+Everything profiled for Spreedly is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/spreedly/](https://apis.io/providers/spreedly/)** — or go straight to one of the APIs or properties below.
 
-- Payments
-- United States
-- Payment Gateway
-- Payment Orchestration
-- Payment Processing
-- Card Vault
-- Tokenization
-- Network Tokenization
-- PCI Compliance
-- Subscriptions
+### APIs (26)
 
-## Timestamps
+- [Spreedly Access Secrets API](https://apis.io/apis/spreedly/spreedly-access-secrets-api/) — The access_secrets API from Spreedly — 2 operation(s) for access_secrets.
+- [Spreedly Authorize API](https://apis.io/apis/spreedly/spreedly-authorize-api/) — The authorize API from Spreedly — 1 operation(s) for authorize.
+- [Spreedly Capture API](https://apis.io/apis/spreedly/spreedly-capture-api/) — The capture API from Spreedly — 1 operation(s) for capture.
+- [Spreedly Card Refresher API](https://apis.io/apis/spreedly/spreedly-card-refresher-api/) — The card_refresher API from Spreedly — 3 operation(s) for card_refresher.
+- [Spreedly Certificates API](https://apis.io/apis/spreedly/spreedly-certificates-api/) — The certificates API from Spreedly — 3 operation(s) for certificates.
+- [Spreedly Claim API](https://apis.io/apis/spreedly/spreedly-claim-api/) — The claim API from Spreedly — 1 operation(s) for claim.
+- [Spreedly Composer API](https://apis.io/apis/spreedly/spreedly-composer-api/) — The composer API from Spreedly — 3 operation(s) for composer.
+- [Spreedly Credit API](https://apis.io/apis/spreedly/spreedly-credit-api/) — The credit API from Spreedly — 1 operation(s) for credit.
+- [Spreedly Environments API](https://apis.io/apis/spreedly/spreedly-environments-api/) — The environments API from Spreedly — 3 operation(s) for environments.
+- [Spreedly Events API](https://apis.io/apis/spreedly/spreedly-events-api/) — The events API from Spreedly — 2 operation(s) for events.
+- [Spreedly Gateways API](https://apis.io/apis/spreedly/spreedly-gateways-api/) — The gateways API from Spreedly — 6 operation(s) for gateways.
+- [Spreedly General Credit API](https://apis.io/apis/spreedly/spreedly-general-credit-api/) — The general_credit API from Spreedly — 1 operation(s) for general_credit.
+- [Spreedly Merchant Profiles API](https://apis.io/apis/spreedly/spreedly-merchant-profiles-api/) — The merchant_profiles API from Spreedly — 2 operation(s) for merchant_profiles.
+- [Spreedly Network Tokenization API](https://apis.io/apis/spreedly/spreedly-network-tokenization-api/) — The network_tokenization API from Spreedly — 2 operation(s) for network_tokenization.
+- [Spreedly Payment Methods API](https://apis.io/apis/spreedly/spreedly-payment-methods-api/) — The payment_methods API from Spreedly — 12 operation(s) for payment_methods.
+- [Spreedly Payments API](https://apis.io/apis/spreedly/spreedly-payments-api/) — The payments API from Spreedly — 1 operation(s) for payments.
+- [Spreedly Protection Events API](https://apis.io/apis/spreedly/spreedly-protection-events-api/) — The protection_events API from Spreedly — 2 operation(s) for protection_events.
+- [Spreedly Protection Provider API](https://apis.io/apis/spreedly/spreedly-protection-provider-api/) — The protection_provider API from Spreedly — 2 operation(s) for protection_provider.
+- [Spreedly Purchase API](https://apis.io/apis/spreedly/spreedly-purchase-api/) — The purchase API from Spreedly — 2 operation(s) for purchase.
+- [Spreedly Receivers API](https://apis.io/apis/spreedly/spreedly-receivers-api/) — The receivers API from Spreedly — 6 operation(s) for receivers.
+- [Spreedly Sca Authentication API](https://apis.io/apis/spreedly/spreedly-sca-authentication-api/) — The sca_authentication API from Spreedly — 1 operation(s) for sca_authentication.
+- [Spreedly Sca Provider API](https://apis.io/apis/spreedly/spreedly-sca-provider-api/) — The sca_provider API from Spreedly — 2 operation(s) for sca_provider.
+- [Spreedly Sub Merchants API](https://apis.io/apis/spreedly/spreedly-sub-merchants-api/) — The sub_merchants API from Spreedly — 2 operation(s) for sub_merchants.
+- [Spreedly Transactions API](https://apis.io/apis/spreedly/spreedly-transactions-api/) — The transactions API from Spreedly — 5 operation(s) for transactions.
+- [Spreedly Verify API](https://apis.io/apis/spreedly/spreedly-verify-api/) — The verify API from Spreedly — 1 operation(s) for verify.
+- [Spreedly Void API](https://apis.io/apis/spreedly/spreedly-void-api/) — The void API from Spreedly — 1 operation(s) for void.
 
-- **Created:** 2026-07-24
-- **Modified:** 2026-07-24
+### Published properties
 
-## APIs
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-### Spreedly Core Transactional API
+#### AsyncAPI (1)
 
-The primary REST surface for the Payments Orchestration platform — payment method tokenization/vaulting, gateway management, and the full transaction lifecycle (authorize, capture, purchase, verify, void, credit/refund) across many downstream gateways from a single normalized integration. OpenAPI 3.1, 68 paths.
+Event-driven and webhook contracts.
 
-- **Human URL:** [https://developer.spreedly.com/reference/api-introduction](https://developer.spreedly.com/reference/api-introduction)
-- **Base URL:** `https://core.spreedly.com/v1`
-- [OpenAPI](openapi/spreedly-api-v1.json)
-- [Documentation](https://developer.spreedly.com/docs/overview)
+- [Spreedly Webhooks](https://apis.io/asyncapis/spreedly/spreedly-webhooks/)
 
-### Spreedly Payment Methods & Vault API
+#### MCP servers (1)
 
-Create, retain, redact, recache, update, and inspect tokenized payment methods held in Spreedly's PCI-compliant universal vault, including field-level encryption and payment method event history.
+Model Context Protocol servers that expose the API to agents.
 
-- **Human URL:** [https://developer.spreedly.com/reference/create-payment-method](https://developer.spreedly.com/reference/create-payment-method)
-- [OpenAPI](openapi/spreedly-api-v1.json)
+- [spreedly-mcp.yml](https://apis.io/servers/spreedly/spreedly-mcp-yml/)
 
-### Spreedly Composer (Workflows) API
+#### Agentic access (1)
 
-Workflow-driven orchestration endpoints that execute an authorization, purchase, or verification against a configured routing workflow — enabling failover, cascading, and rules-based routing across connected gateways.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://developer.spreedly.com/reference/composerpurchase](https://developer.spreedly.com/reference/composerpurchase)
-- [OpenAPI](openapi/spreedly-api-v1.json)
+- [Spreedly Agentic Access](https://apis.io/agentic-access/spreedly/spreedly-agentic-access/)
 
-### Spreedly Network Tokenization API
+#### Collections (2)
 
-Retrieve card metadata and lifecycle status for network-provisioned tokens (Visa, Mastercard, Amex) for improved authorization rates and credential-on-file security.
+Postman and Open Collection request collections.
 
-- **Human URL:** [https://developer.spreedly.com/reference/network-tokenization-status](https://developer.spreedly.com/reference/network-tokenization-status)
-- [OpenAPI](openapi/spreedly-api-v1.json)
+- [Spreedly API V1](https://apis.io/collections/spreedly/open-spreedly-api-v1/)
+- [Spreedly API V1](https://apis.io/collections/spreedly/postman-spreedly-api-v1/)
 
-### Spreedly Account Updater (Card Refresher) API
+#### Overlays (1)
 
-Card Refresher inquiries that refresh stored card credentials against the card networks' account updater services to reduce declines on stored payment methods.
+OpenAPI overlays, including conversational phrasing for each operation.
 
-- **Human URL:** [https://developer.spreedly.com/reference/card_refresher_inquiry](https://developer.spreedly.com/reference/card_refresher_inquiry)
-- [OpenAPI](openapi/spreedly-api-v1.json)
+- [Spreedly Api V1 Overlay](https://apis.io/overlays/spreedly/spreedly-api-v1-overlay/)
 
-### Spreedly Receivers API
+#### Security (3)
 
-Forward securely vaulted payment data from the Spreedly vault to arbitrary third-party HTTP endpoints, extending tokenization beyond payment gateways to any API that needs card data.
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Human URL:** [https://developer.spreedly.com/reference/list-supported-receivers](https://developer.spreedly.com/reference/list-supported-receivers)
-- [OpenAPI](openapi/spreedly-api-v1.json)
+- [Spreedly Authentication](https://apis.io/security/spreedly/spreedly-authentication/)
+- [Spreedly Domain Security](https://apis.io/security/spreedly/spreedly-domain-security/)
+- [Spreedly Trust Center](https://apis.io/security/spreedly/spreedly-trust-center/)
 
-### Spreedly 3-D Secure / SCA Authentication API
+## Where to find this API
 
-Strong Customer Authentication endpoints to authenticate a payment method and manage SCA providers on a merchant profile, supporting 3-D Secure 2.x flows.
-
-- **Human URL:** [https://developer.spreedly.com/reference/authenticate](https://developer.spreedly.com/reference/authenticate)
-- [OpenAPI](openapi/spreedly-api-v1.json)
-
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.spreedly.com/)
-- [Developer Portal](https://developer.spreedly.com/)
 - [Documentation](https://developer.spreedly.com/docs/overview)
-- [API Reference](https://developer.spreedly.com/reference/api-introduction)
-- [Changelog](https://developer.spreedly.com/changelog)
-- [GitHub Organization](https://github.com/spreedly)
-- [Status Page](https://status.spreedly.com/)
+- [Getting started](https://developer.spreedly.com/docs/overview)
+- [API reference](https://developer.spreedly.com/reference/api-introduction)
 - [Pricing](https://www.spreedly.com/pricing)
+- [Sign up](https://id.spreedly.com/readme/auth)
+- [Support](https://support.spreedly.com/)
+- [Changelog](https://developer.spreedly.com/changelog)
 - [Blog](https://www.spreedly.com/blog)
 - [Security](https://www.spreedly.com/security)
-- [Sign Up / Login](https://id.spreedly.com/readme/auth)
-- [Terms of Service](https://www.spreedly.com/terms-of-service)
-- [Privacy Policy](https://legal.spreedly.com/#privacy-policy)
-- [LinkedIn](https://www.linkedin.com/company/spreedly)
+- [Compliance](https://www.spreedly.com/security-compliance)
+- [Terms of service](https://www.spreedly.com/terms-of-service)
+- [Privacy policy](https://legal.spreedly.com/#privacy-policy)
+- [GitHub](https://github.com/spreedly)
+- [Status](https://status.spreedly.com/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 52.9** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 58.7 |
+| Contract governance | 18.2 |
+| Operational transparency | 48.7 |
+| Developer ergonomics | 58.9 |
+| Access clarity | 42.1 |
+
+**Agent readiness 45.5** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 37.5** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/spreedly/](https://apis.io/providers/spreedly/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Spreedly: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/spreedly/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
